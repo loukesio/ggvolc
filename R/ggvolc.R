@@ -34,7 +34,7 @@
 
 ggvolc <- function(data1,
                    data2 = NULL,
-                   size_var = "log2FoldChange",
+                   size_var = NULL,  # Default value set to NULL
                    p_value = 0.05,
                    fc = 1,
                    not_sig_color = "grey82",
@@ -47,7 +47,11 @@ ggvolc <- function(data1,
   if(!is.null(data2) && !is.data.frame(data2)) stop("data2 must be a data frame")
 
   # Calculate the size aesthetic outside ggplot
-  if (size_var == "pvalue") {
+  if(is.null(size_var)) {
+    data1$size_aes <- 3  # Default size if size_var is NULL
+    if(!is.null(data2)) data2$size_aes <- 3
+    size_aes_range <- c(3, 3)
+  } else if (size_var == "pvalue") {
     data1$size_aes <- abs(-log10(data1$pvalue))
     if(!is.null(data2)) data2$size_aes <- abs(-log10(data2$pvalue))
     size_aes_range <- c(0, 6)
@@ -62,7 +66,8 @@ ggvolc <- function(data1,
       pvalue < p_value & log2FoldChange > fc ~ "s_upregulated",
       pvalue < p_value & log2FoldChange < -fc ~ "s_downregulated",
       TRUE ~ "not_significant"
-    ), levels = c("s_downregulated", "not_significant", "s_upregulated")))
+    ), levels = c("not_significant", "s_downregulated", "s_upregulated")))
+
 
   if (is.null(data2)) {
     dat1.2 <- dat1
@@ -81,9 +86,12 @@ ggvolc <- function(data1,
     ggplot2::labs(title = "Exploring data with ggvolc",
                   x = "log2FoldChange",
                   y = "-log10(pvalue)") +
-    ggplot2::scale_color_manual(values = color_mapping,
-                                name = "Genes",
-                                labels = c("Downregulated", "non-significant", "Upregulated")) +
+    ggplot2::scale_color_manual(
+      values = color_mapping,
+      name = "Genes",
+      breaks = c("s_downregulated", "not_significant", "s_upregulated"),
+      labels = c("Downregulated", "non-significant", "Upregulated")
+    )  +
     ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(size = 5, alpha=1)))
 
   if (!is.null(data2)) {
@@ -92,15 +100,18 @@ ggvolc <- function(data1,
         pvalue < p_value & log2FoldChange > fc ~ "s_upregulated",
         pvalue < p_value & log2FoldChange < -fc ~ "s_downregulated",
         TRUE ~ "not_significant"
-      ), levels = c("s_downregulated", "not_significant", "s_upregulated")))
+      ),levels = c("not_significant", "s_downregulated", "s_upregulated")))
 
     p <- p + ggplot2::geom_point(data = data2, aes(x = log2FoldChange, y = -log10(pvalue),
                                                    fill = threshold, size = size_aes),
                                  shape = 21, color = "black") +
-      ggplot2::scale_fill_manual(values = color_mapping,
-                                 name = "Genes",
-                                 labels = c("Downregulated", "non-significant", "Upregulated"),
-                                 guide="none")
+      ggplot2::scale_fill_manual(
+        values = color_mapping,
+        name = "Genes",
+        breaks = c("s_downregulated", "not_significant", "s_upregulated"),
+        labels = c("Downregulated", "non-significant", "Upregulated"),
+        guide = "none"
+      )
 
     p <- p + ggrepel::geom_text_repel(data = data2,
                                       aes(x = log2FoldChange, y = -log10(pvalue),
@@ -109,12 +120,17 @@ ggvolc <- function(data1,
                                       segment.alpha = 0.5)
   }
 
-  size_legend_name <- ifelse(size_var == "log2FoldChange", "log2FoldChange", "-log10(pvalue)")
 
-  # Use size_aes_range for the breaks and limits in scale_size_continuous
-  p <- p + scale_size_continuous(name=size_legend_name,
-                                 range = size_aes_range) +
-    guides(size = guide_legend(override.aes = list(shape = 21, fill=NA))) +
+  if (is.null(size_var)) {
+    p <- p + scale_size_continuous(guide = "none")  # No legend for size when size_var is NULL
+  } else {
+    size_legend_name <- ifelse(size_var == "log2FoldChange", "log2FoldChange", "-log10(pvalue)")
+    p <- p + scale_size_continuous(name = size_legend_name,
+                                   range = size_aes_range) +
+      guides(size = guide_legend(override.aes = list(shape = 21, fill = NA)))
+  }
+
+  p <- p +
     ggplot2::theme_bw() +
     ggplot2::theme(
       axis.text = ggplot2::element_text(size=14),
@@ -125,7 +141,7 @@ ggvolc <- function(data1,
       axis.ticks = ggplot2::element_line(color = "#333333", linewidth= .5),
       axis.title = ggplot2::element_text(size=15),
       panel.grid.major = ggplot2::element_line(color=NA),
-      panel.border = ggplot2::element_rect(linewidth = 0.75, color="#333333"),
+      panel.border = ggplot2::element_rect(linewidth = 1, color="#333333"),
       legend.title = ggplot2::element_text(hjust=0.5, size=12),
       legend.text = ggplot2::element_text(size=10),
       plot.title = ggtext::element_markdown(color = "#333333", size = 18, face = "bold", margin = margin(0,0,0.5,0, unit = "cm"), hjust=0.5),
@@ -134,7 +150,6 @@ ggvolc <- function(data1,
     )
 
   if (add_seg) {
-
     expression_limits <- data.frame(
       x.start = c(-fc, fc, min(data1$log2FoldChange, na.rm = TRUE)),
       x.end = c(-fc, fc, max(data1$log2FoldChange, na.rm = TRUE)),
@@ -147,9 +162,9 @@ ggvolc <- function(data1,
     p <- p + ggplot2::geom_segment(data = expression_limits,
                                    aes(x = x.start, xend = x.end,
                                        y = y.start, yend = y.end),
-                                   linetype="dashed", alpha=0.5)
+                                   linetype = "dashed")
   }
-
 
   return(p)
 }
+
