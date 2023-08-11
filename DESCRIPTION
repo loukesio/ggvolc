@@ -1,0 +1,18 @@
+Package: ggvolc
+Type: Package
+Title: Create volcano plots from RNA-seq data
+Version: 0.1.0
+Author: Loukas Theodosiou
+Maintainer: The package maintainer <theodosiou@evolbio.mpg.de>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+    dplyr,
+    ggplot2,
+    ggrepel,
+    ggtext
+RoxygenNote: 7.2.3
+
