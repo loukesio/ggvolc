@@ -26,7 +26,7 @@ library(ggvolc)
 ### How do I start?
 Load the library and explore the example datasets! 
 
-``` r
+```console
 library(ggvolc)
 #> Welcome to ggvolc version 0.1.0 !
 #> 
@@ -41,7 +41,9 @@ library(ggvolc)
 #>      888      888
 #> Y8b d88P Y8b d88P
 #>  "Y88P"   "Y88P"
-#> 
+#>
+```
+```
 data(all_genes)     # data.frame that contains the output of differentially expressed genes
 head(all_genes,5)   # have a look at the first 5 rows 
 
