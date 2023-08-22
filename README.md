@@ -103,7 +103,7 @@ ggvolc(all_genes, attention_genes, size_var = "log2FoldChange", add_seg = TRUE)
 <img align="center" src="logo/simple_volc_plot_attentionGenes_Log2FoldChange.png" width=750>
 
 
-### ...indicate the size of point based on the pvalue column and add segments based on the pvalue thresholds
+### ...indicate the size of the point based on the pvalue column and add segments based on the pvalue thresholds
 
 ```
 ggvolc(all_genes, attention_genes, size_var = "pvalue", add_seg = TRUE)
