@@ -140,7 +140,8 @@ ggvolc <- function(data1,
       axis.ticks.length.y = grid::unit(0.25,"cm"),
       axis.ticks = ggplot2::element_line(color = "#333333", linewidth= .5),
       axis.title = ggplot2::element_text(size=15),
-      panel.grid.major = ggplot2::element_line(color=NA),
+      panel.grid.major = ggplot2::element_line(color="grey93"),
+      panel.grid.minor =ggplot2::element_line(color=NA),
       panel.border = ggplot2::element_rect(linewidth = 1, color="#333333"),
       legend.title = ggplot2::element_text(hjust=0.5, size=12),
       legend.text = ggplot2::element_text(size=10),
@@ -167,4 +168,3 @@ ggvolc <- function(data1,
 
   return(p)
 }
-
