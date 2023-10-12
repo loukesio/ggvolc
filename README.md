@@ -79,39 +79,54 @@ head(attention_genes,5)   # have a look at the first five rows
 <sup>Created on 2023-08-11 with [reprex v2.0.2](https://reprex.tidyverse.org)</sup>
 
 
-### Plot a simple volcano plot! 
+### 1. Plot a simple volcano plot! 
 
 Install the package using the following commands 
 
 ```
 ggvolc(all_genes)
 ```
-<img align="center" src="logo/simple_volc_plot.png" width=750>
+<img align="center" src="logo/plot1_basic.png" width=750>
 
-### ...add the genes of attention 
+### 2. Add the genes of attention.
 
 ```
 ggvolc(all_genes, attention_genes)
 ```
-<img align="center" src="logo/simple_volc_plot_attentionGenes.png" width=750>
+<img align="center" src="logo/plot2_AttentionGenes.png" width=750>
 
-### ...indicate the size of point based on the log2FoldChange column and add segments based on the pvalue thresholds
+### 3. Add segments to indicate areas of significance.
+
+```
+ggvolc(all_genes, attention_genes, add_seg = TRUE) +
+  labs(title="Add segments of significance")
+```
+<img align="center" src="logo/plot3_Segments.png" width=750>
+
+### 4. Indicate the size of point based on the log2FoldChange column.
 
 ```
 ggvolc(all_genes, attention_genes, size_var = "log2FoldChange", add_seg = TRUE)
 ```
-<img align="center" src="logo/simple_volc_plot_attentionGenes_Log2FoldChange.png" width=750>
+<img align="center" src="logo/plot4_scale_Log2foldChange.png" width=750>
 
-
-### ...indicate the size of the point based on the pvalue column and add segments based on the pvalue thresholds
+###  5. Indicate the size of the point based on the pvalue.
 
 ```
 ggvolc(all_genes, attention_genes, size_var = "pvalue", add_seg = TRUE)
 ```
+<img align="center" src="logo/plot5_scalePvalue.png" width=750>
 
-<img align="center" src="logo/simple_volc_plot_attentionGenes_pvalue_addseg.png" width=750>
+###  5. Add a table with the genes of interest.
 
+```
+plot <- ggvolc(all_genes, attention_genes, add_seg = TRUE) +
+  labs(title="Add a table with the genes of interest")
 
+plot %>%
+  genes_table(attention_genes)
+```
 
+<img align="center" src="logo/plot6_adding_table.png" width=750>
 
 
