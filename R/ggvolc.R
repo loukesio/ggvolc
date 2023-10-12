@@ -40,7 +40,7 @@ ggvolc <- function(data1,
                    not_sig_color = "grey82",
                    down_reg_color = "#00798c",
                    up_reg_color = "#d1495b",
-                   add_seg = FALSE) {
+                   add_seg = FALSE){
 
   # Validate input
   if(!is.data.frame(data1)) stop("data1 must be a data frame")
@@ -166,5 +166,5 @@ ggvolc <- function(data1,
                                    linetype = "dashed")
   }
 
-  return(p)
-}
+    return(p)
+  }

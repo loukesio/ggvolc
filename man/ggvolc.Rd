@@ -7,7 +7,7 @@
 ggvolc(
   data1,
   data2 = NULL,
-  size_var = "log2FoldChange",
+  size_var = NULL,
   p_value = 0.05,
   fc = 1,
   not_sig_color = "grey82",

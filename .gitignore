@@ -1,14 +1,7 @@
-<<<<<<< HEAD
-.Rproj.user
-.Rhistory
-.Rdata
-.httr-oauth
-**/.DS_Store
-=======
 # History files
 .Rhistory
 .Rapp.history
-.DS_Store
+**/.DS_Store
 
 # Session Data files
 .RData
@@ -55,4 +48,3 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
->>>>>>> 42104d18f031b01a92c94f9acd225ea28c133775
