@@ -117,7 +117,7 @@ ggvolc(all_genes, attention_genes, size_var = "pvalue", add_seg = TRUE)
 ```
 <img align="center" src="logo/plot5_scalePvalue.png" width=750>
 
-###  5. Add a table with the genes of interest.
+###  6. Add a table with the genes of interest.
 
 ```
 plot <- ggvolc(all_genes, attention_genes, add_seg = TRUE) +
