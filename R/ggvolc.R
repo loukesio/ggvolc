@@ -21,7 +21,6 @@
 #' @importFrom ggplot2 guide_legend
 #' @importFrom ggplot2 theme_minimal
 #' @importFrom ggplot2 margin
-#' @importFrom magrittr %>%
 #'
 #' @return A ggplot2 object displaying the volcano plot.
 #' @export

@@ -15,8 +15,6 @@ Imports:
     ggrepel,
     ggtext,
     gridExtra,
-    grid,
-    patchwork,
-    magrittr
+    grid
 RoxygenNote: 7.2.3
 
