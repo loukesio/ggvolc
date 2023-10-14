@@ -16,6 +16,7 @@ Imports:
     ggtext,
     gridExtra,
     grid,
-    patchwork
+    patchwork,
+    magrittr
 RoxygenNote: 7.2.3
 

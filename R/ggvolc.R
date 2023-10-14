@@ -21,6 +21,7 @@
 #' @importFrom ggplot2 guide_legend
 #' @importFrom ggplot2 theme_minimal
 #' @importFrom ggplot2 margin
+#' @importFrom magrittr %>%
 #'
 #' @return A ggplot2 object displaying the volcano plot.
 #' @export
@@ -31,8 +32,6 @@
 #' ggvolc(df1, df2)
 #' }
 #'
-data("all_genes")
-
 ggvolc <- function(data1,
                    data2 = NULL,
                    size_var = NULL,  # Default value set to NULL
@@ -169,6 +168,3 @@ ggvolc <- function(data1,
 
     return(p)
   }
-
-
-ggvolc(all_genes)

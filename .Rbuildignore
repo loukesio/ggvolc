@@ -1,3 +1,10 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^\.DS_Store$
+^\.Rhistory$
+^\.gitignore$
+^R/\.DS_Store$
+^logo/\.DS_Store$
+^\.Rproj.user$
+^\.git/
