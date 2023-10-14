@@ -31,6 +31,7 @@
 #' ggvolc(df1, df2)
 #' }
 #'
+data("all_genes")
 
 ggvolc <- function(data1,
                    data2 = NULL,
@@ -168,3 +169,6 @@ ggvolc <- function(data1,
 
     return(p)
   }
+
+
+ggvolc(all_genes)

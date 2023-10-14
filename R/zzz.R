@@ -21,19 +21,6 @@ Y8b d88P Y8b d88P
 
 }
 
-# .onLoad <- function(libname, pkgname) {
-#   packages_needed <- c("dplyr", "grid", "gridExtra", "ggplot2", "patchwork")
-#
-#   for (pkg in packages_needed) {
-#     if (!requireNamespace(pkg, quietly = TRUE)) {
-#       stop(paste0("Package '", pkg, "' is needed for this package. Please install it."))
-#     }
-#   }
-#
-#   invisible(NULL)
-# }
-
-
 #' Print Welcome Message and ASCII Art upon Loading `ggvolc`
 #'
 #' This function is executed when the `ggvolc` package is attached to the R session.

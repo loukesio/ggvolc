@@ -8,8 +8,6 @@
 #' @param data2 A data frame containing gene details. It should have columns named
 #'   "genes", "baseMean", "log2FoldChange", "pvalue", and "padj".
 #'
-#' @importFrom gridExtra ttheme_default
-#' @importFrom gridExtra tableGrob
 #' @return A gridExtra object showing the ggplot stacked above a table of gene details.
 #' @export
 #'
