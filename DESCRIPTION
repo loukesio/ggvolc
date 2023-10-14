@@ -13,6 +13,9 @@ Imports:
     dplyr,
     ggplot2,
     ggrepel,
-    ggtext
+    ggtext,
+    gridExtra,
+    grid,
+    patchwork
 RoxygenNote: 7.2.3
 
