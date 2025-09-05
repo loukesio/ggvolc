@@ -36,7 +36,7 @@ ggvolc <- function(data1,
                    size_var = NULL,  # Default value set to NULL
                    p_value = 0.05,
                    fc = 1,
-                   not_sig_color = "grey82",
+                   not_sig_color = "#808080",
                    down_reg_color = "#00798c",
                    up_reg_color = "#d1495b",
                    add_seg = FALSE){
