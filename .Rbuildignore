@@ -1,8 +1,3 @@
-nano .Rbuildignore
-```
-
-Replace the entire content with this merged version:
-```
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
