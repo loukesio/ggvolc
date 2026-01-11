@@ -34,3 +34,8 @@
 ^plot6_adding_table\.png$
 ^\.RData$
 ^\.claude$
+^Dockerfile$
+^\.dockerignore$
+^docker-compose\.yml$
+^DOCKER\.md$
+^workspace$
