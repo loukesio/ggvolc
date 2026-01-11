@@ -8,20 +8,20 @@
 #' @param data2 A data frame containing gene details. It should have columns named
 #'   "genes", "baseMean", "log2FoldChange", "pvalue", and "padj".
 #'
-#' @return A gridExtra object showing the ggplot stacked above a table of gene details.
+#' @return A gtable object showing the ggplot stacked above a table of gene details.
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' plot <- ggplot2::qplot(1:10, 1:10) # replace this with your ggvolc function call
-#' data_example <- data.frame(genes = letters[1:10],
-#'                            baseMean = rnorm(10),
-#'                            log2FoldChange = rnorm(10),
-#'                            pvalue = runif(10),
-#'                            padj = runif(10))
-#' plot %>%
-#'   genes_table(data2 = data_example)
-#' }
+#' # Load example datasets
+#' data(all_genes)
+#' data(attention_genes)
+#'
+#' # Create a volcano plot highlighting genes of interest
+#' plot <- ggvolc(all_genes, attention_genes, add_seg = TRUE)
+#'
+#' # Combine the plot with a table showing gene statistics
+#' # The table includes: gene names, baseMean, log2FoldChange, pvalue, and padj
+#' genes_table(plot, attention_genes)
 #'
 genes_table <- function(plot_obj, data2) {
   # Check if the provided object is a ggplot
@@ -42,6 +42,9 @@ genes_table <- function(plot_obj, data2) {
   # Create the tableGrob with the custom theme
   attention.genes.tbl <- gridExtra::tableGrob(selected_data, rows = NULL, theme = custom_theme)
 
-  combined_plot <- plot_obj / attention.genes.tbl
+  # Combine plot and table using grid.arrange
+  combined_plot <- gridExtra::grid.arrange(plot_obj, attention.genes.tbl,
+                                           ncol = 1,
+                                           heights = c(3, 1))
   return(combined_plot)
 }

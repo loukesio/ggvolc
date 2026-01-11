@@ -1,3 +1,8 @@
+nano .Rbuildignore
+```
+
+Replace the entire content with this merged version:
+```
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
@@ -24,6 +29,7 @@
 ^logo$
 ^\.DS_Store$
 ^.*\.DS_Store$
+^R/\.DS_Store$
 ^ggvolc_logo\.png$
 ^plot1_basic\.png$
 ^plot2_AttentionGenes\.png$
@@ -31,3 +37,5 @@
 ^plot4_scale_Log2foldChange\.png$
 ^plot5_scalePvalue\.png$
 ^plot6_adding_table\.png$
+^\.RData$
+^\.claude$

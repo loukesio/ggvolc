@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(R CMD build:*)",
+      "Bash(/usr/local/bin/tidy:*)",
+      "Bash(echo:*)",
+      "Bash(R CMD check:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

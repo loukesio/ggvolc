@@ -1,11 +1,16 @@
 Package: ggvolc
 Type: Package
-Title: Create volcano plots from RNA-seq data
+Title: Create Volcano Plots for Differential Gene Expression Data
 Version: 0.1.0
-Author: Loukas Theodosiou
-Maintainer: The package maintainer <theodosiou@evolbio.mpg.de>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Authors@R: person("Loukas", "Theodosiou",
+    email = "theodosiou@evolbio.mpg.de",
+    role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0001-6418-4652"))
+Description: Provides functionality to create customizable volcano plots for
+    visualizing differential gene expression analysis results. The package
+    offers options to highlight genes of interest, adjust significance
+    thresholds, customize colors, and add informative labels. Designed
+    specifically for RNA-seq data analysis workflows.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -16,5 +21,6 @@ Imports:
     ggtext,
     gridExtra,
     grid
-RoxygenNote: 7.2.3
-
+RoxygenNote: 7.3.3
+Depends:
+    R (>= 3.5.0)

@@ -10,7 +10,7 @@ ggvolc(
   size_var = NULL,
   p_value = 0.05,
   fc = 1,
-  not_sig_color = "grey82",
+  not_sig_color = "#808080",
   down_reg_color = "#00798c",
   up_reg_color = "#d1495b",
   add_seg = FALSE
@@ -43,10 +43,30 @@ This function creates a volcano plot using ggplot2 based on provided datasets.
 It is particularly useful for visualizing differential gene expression data.
 }
 \examples{
-\dontrun{
-# Assuming df1 and df2 are your data frames:
-library(ggvolc)
-ggvolc(df1, df2)
-}
+# Load example datasets included in the package
+data(all_genes)
+data(attention_genes)
+
+# Create a basic volcano plot with default settings
+# Points are colored by significance (p < 0.05, |log2FC| > 1)
+ggvolc(all_genes)
+
+# Highlight specific genes of interest with labels
+# These genes are shown with black borders and gene names
+ggvolc(all_genes, attention_genes)
+
+# Add dashed lines to indicate significance thresholds
+ggvolc(all_genes, attention_genes, add_seg = TRUE)
+
+# Customize colors for up- and down-regulated genes
+ggvolc(all_genes, attention_genes,
+       up_reg_color = "#E63946",
+       down_reg_color = "#457B9D")
+
+# Scale point size by p-value instead of default
+ggvolc(all_genes, attention_genes, size_var = "pvalue")
+
+# Adjust significance thresholds (p-value and fold change)
+ggvolc(all_genes, p_value = 0.01, fc = 2)
 
 }

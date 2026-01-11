@@ -13,7 +13,7 @@ genes_table(plot_obj, data2)
 "genes", "baseMean", "log2FoldChange", "pvalue", and "padj".}
 }
 \value{
-A gridExtra object showing the ggplot stacked above a table of gene details.
+A gtable object showing the ggplot stacked above a table of gene details.
 }
 \description{
 This function takes a ggplot object and a data frame of gene details and
@@ -21,15 +21,15 @@ produces a combined plot where the ggplot object is stacked above a table of
 gene details.
 }
 \examples{
-\dontrun{
-plot <- ggplot2::qplot(1:10, 1:10) # replace this with your ggvolc function call
-data_example <- data.frame(genes = letters[1:10],
-                           baseMean = rnorm(10),
-                           log2FoldChange = rnorm(10),
-                           pvalue = runif(10),
-                           padj = runif(10))
-plot \%>\%
-  genes_table(data2 = data_example)
-}
+# Load example datasets
+data(all_genes)
+data(attention_genes)
+
+# Create a volcano plot highlighting genes of interest
+plot <- ggvolc(all_genes, attention_genes, add_seg = TRUE)
+
+# Combine the plot with a table showing gene statistics
+# The table includes: gene names, baseMean, log2FoldChange, pvalue, and padj
+genes_table(plot, attention_genes)
 
 }
