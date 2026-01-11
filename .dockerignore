@@ -1,0 +1,44 @@
+# Git files
+.git
+.gitignore
+.github
+
+# R specific
+.Rhistory
+.RData
+.Rproj.user
+*.Rproj
+
+# Package check artifacts
+ggvolc.Rcheck/
+*.tar.gz
+*.zip
+
+# Documentation build artifacts
+docs/
+_pkgdown.yml
+pkgdown/
+
+# CI/CD
+.travis.yml
+appveyor.yml
+.github/
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+.claude/
+
+# Development files
+cran-comments.md
+CRAN-SUBMISSION
+README_files/
+
+# Logo and images (if large)
+logo/
+
+# Vignette cache
+vignettes/*_cache/
+vignettes/*_files/
+vignettes/*.html
