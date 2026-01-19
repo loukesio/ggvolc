@@ -1,6 +1,6 @@
-[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/icon)](https://cran.r-project.org/package=icons)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/ggvolc)](https://cran.r-project.org/package=ggvolc)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/ggvolc)](https://cran.r-project.org/package=ggvolc)
 
 ## Install the `ggvolc` package
 Install the package using the following commands  <img align="right" src="logo/ggvolc_logo.png" width=400>
