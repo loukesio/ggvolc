@@ -21,6 +21,8 @@ on:
       - 'Dockerfile'
       - 'docker-compose.yml'
       - '.dockerignore'
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
@@ -132,46 +134,49 @@ jobs:
   #         cache-from: type=gha
   #         cache-to: type=gha,mode=max
 
-  # Optional: Push to GitHub Container Registry (ghcr.io)
-  # push-to-ghcr:
-  #   needs: build-and-test
-  #   runs-on: ubuntu-latest
-  #   if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-  #   permissions:
-  #     contents: read
-  #     packages: write
-  #
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v3
-  #
-  #     - name: Log in to GitHub Container Registry
-  #       uses: docker/login-action@v3
-  #       with:
-  #         registry: ghcr.io
-  #         username: ${{ github.actor }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
-  #
-  #     - name: Extract metadata
-  #       id: meta
-  #       uses: docker/metadata-action@v5
-  #       with:
-  #         images: ghcr.io/${{ github.repository_owner }}/ggvolc
-  #         tags: |
-  #           type=ref,event=branch
-  #           type=semver,pattern={{version}}
-  #           type=raw,value=latest,enable={{is_default_branch}}
-  #
-  #     - name: Build and push
-  #       uses: docker/build-push-action@v5
-  #       with:
-  #         context: .
-  #         file: ./Dockerfile
-  #         push: true
-  #         tags: ${{ steps.meta.outputs.tags }}
-  #         labels: ${{ steps.meta.outputs.labels }}
-  #         cache-from: type=gha
-  #         cache-to: type=gha,mode=max
+  # Publish the image to the GitHub Container Registry (ghcr.io).
+  # Runs on pushes to master and on published releases, and uses the built-in
+  # GITHUB_TOKEN, so no registry secrets are required.
+  push-to-ghcr:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'release'
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/ggvolc
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

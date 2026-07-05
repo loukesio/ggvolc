@@ -7,6 +7,23 @@ This Docker image provides a complete R environment with RStudio Server and the 
 - [Docker](https://docs.docker.com/get-docker/) installed on your system
 - [Docker Compose](https://docs.docker.com/compose/install/) (optional, but recommended)
 
+## Pull the pre-built image
+
+A ready-to-run image is published to the GitHub Container Registry by CI on
+every push to `master` and on each release, so you do not have to build it
+yourself:
+
+```bash
+# latest build from master
+docker pull ghcr.io/loukesio/ggvolc:latest
+
+# a specific release
+docker pull ghcr.io/loukesio/ggvolc:0.3.0
+
+# run RStudio Server on http://localhost:8787 (user: rstudio, password: ggvolc123)
+docker run --rm -p 8787:8787 -e PASSWORD=ggvolc123 ghcr.io/loukesio/ggvolc:latest
+```
+
 ## Quick Start
 
 ### Option 1: Using Docker Compose (Recommended)
