@@ -42,3 +42,5 @@
 ^Rplots\.pdf$
 ^ggvolc-.*\.tar\.gz$
 ^\.Rhistory$
+^doc$
+^Meta$

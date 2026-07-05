@@ -14,6 +14,8 @@ Description: Provides functionality to create customizable volcano plots for
     Gene tables are rendered with 'gt' and composed with 'patchwork'.
     Designed specifically for RNA-seq data analysis workflows.
 License: MIT + file LICENSE
+URL: https://loukesio.github.io/ggvolc/, https://github.com/loukesio/ggvolc
+BugReports: https://github.com/loukesio/ggvolc/issues
 Encoding: UTF-8
 LazyData: true
 Imports:
@@ -27,7 +29,11 @@ Imports:
 RoxygenNote: 7.3.3
 Suggests:
     testthat (>= 3.0.0),
-    ggiraph
+    ggiraph,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
 Config/testthat/edition: 3
+Config/Needs/website: pkgdown
 Depends:
     R (>= 3.5.0)

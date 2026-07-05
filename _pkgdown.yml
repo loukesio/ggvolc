@@ -1,0 +1,15 @@
+url: https://loukesio.github.io/ggvolc/
+
+template:
+  bootstrap: 5
+
+reference:
+- title: Volcano plots
+  desc: Build and compose volcano plots.
+  contents:
+  - ggvolc
+  - genes_table
+- title: Example data
+  contents:
+  - all_genes
+  - attention_genes
