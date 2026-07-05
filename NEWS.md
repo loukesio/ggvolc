@@ -28,6 +28,11 @@
   statistics. `ggiraph` is an optional (`Suggests`) dependency, so the core
   package still installs without it.
 * New internal helper: `neglog10_cap()`.
+* The README is now generated from `README.Rmd` (via `devtools::build_readme()`)
+  so every example plot is rendered from live code and kept in sync with the
+  package.
+* `DESCRIPTION` now declares `R (>= 4.1.0)`, matching the native pipe (`|>`)
+  used internally (previously mis-declared as `>= 3.5.0`).
 
 # ggvolc 0.2.0
 

@@ -3,6 +3,8 @@
 ^LICENSE\.md$
 ^README_files$
 ^README\.md$
+^README\.Rmd$
+^man/figures/README-
 ^\.git$
 ^\.github$
 ^\.Rcheck$
