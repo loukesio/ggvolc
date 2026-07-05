@@ -44,12 +44,24 @@
 <a href="https://docs.docker.com/compose/install/" class="external-link">Docker Compose</a> (optional, but recommended)</li>
 </ul></div>
 <div class="section level2">
+<h2 id="pull-the-pre-built-image">Pull the pre-built image<a class="anchor" aria-label="anchor" href="#pull-the-pre-built-image"></a></h2>
+<p>A ready-to-run image is published to the GitHub Container Registry by CI on every push to <code>master</code> and on each release, so you do not have to build it yourself:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># latest build from master</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="ex">docker</span> pull ghcr.io/loukesio/ggvolc:latest</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># a specific release</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="ex">docker</span> pull ghcr.io/loukesio/ggvolc:0.3.0</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co"># run RStudio Server on http://localhost:8787 (user: rstudio, password: ggvolc123)</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-p</span> 8787:8787 <span class="at">-e</span> PASSWORD=ggvolc123 ghcr.io/loukesio/ggvolc:latest</span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a></h2>
 <div class="section level3">
 <h3 id="option-1-using-docker-compose-recommended">Option 1: Using Docker Compose (Recommended)<a class="anchor" aria-label="anchor" href="#option-1-using-docker-compose-recommended"></a></h3>
 <ol style="list-style-type: decimal"><li>
 <p><strong>Build and start the container:</strong></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ex">docker-compose</span> up <span class="at">-d</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">docker-compose</span> up <span class="at">-d</span></span></code></pre></div>
 </li>
 <li>
 <p><strong>Access RStudio Server:</strong></p>
@@ -61,7 +73,7 @@
 </ul></li>
 <li>
 <p><strong>Start using ggvolc:</strong></p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://loukesio.github.io/ggvolc/">ggvolc</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Load example data</span></span>
@@ -73,23 +85,23 @@
 </li>
 <li>
 <p><strong>Stop the container:</strong></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">docker-compose</span> down</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="ex">docker-compose</span> down</span></code></pre></div>
 </li>
 </ol></div>
 <div class="section level3">
 <h3 id="option-2-using-docker-cli">Option 2: Using Docker CLI<a class="anchor" aria-label="anchor" href="#option-2-using-docker-cli"></a></h3>
 <ol style="list-style-type: decimal"><li>
 <p><strong>Build the image:</strong></p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> ggvolc:latest .</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> ggvolc:latest .</span></code></pre></div>
 </li>
 <li>
 <p><strong>Run the container:</strong></p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="dt">\</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">--name</span> ggvolc-rstudio <span class="dt">\</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">-p</span> 8787:8787 <span class="dt">\</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">-e</span> PASSWORD=ggvolc123 <span class="dt">\</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">-v</span> <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>/workspace:/home/rstudio/workspace <span class="dt">\</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  ggvolc:latest</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="dt">\</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="at">--name</span> ggvolc-rstudio <span class="dt">\</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">-p</span> 8787:8787 <span class="dt">\</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">-e</span> PASSWORD=ggvolc123 <span class="dt">\</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">-v</span> <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>/workspace:/home/rstudio/workspace <span class="dt">\</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  ggvolc:latest</span></code></pre></div>
 </li>
 <li>
 <p><strong>Access RStudio Server:</strong></p>
@@ -100,18 +112,18 @@
 </ul></li>
 <li>
 <p><strong>Stop and remove the container:</strong></p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">docker</span> stop ggvolc-rstudio</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="ex">docker</span> rm ggvolc-rstudio</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="ex">docker</span> stop ggvolc-rstudio</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="ex">docker</span> rm ggvolc-rstudio</span></code></pre></div>
 </li>
 </ol></div>
 <div class="section level3">
 <h3 id="option-3-r-console-only-no-rstudio">Option 3: R Console Only (No RStudio)<a class="anchor" aria-label="anchor" href="#option-3-r-console-only-no-rstudio"></a></h3>
 <p>If you just need R console without the web interface:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Using docker-compose</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="ex">docker-compose</span> run <span class="at">--rm</span> r-console</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co"># Or using Docker CLI</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-it</span> <span class="at">--rm</span> ggvolc:latest R</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Using docker-compose</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="ex">docker-compose</span> run <span class="at">--rm</span> r-console</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co"># Or using Docker CLI</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-it</span> <span class="at">--rm</span> ggvolc:latest R</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -132,30 +144,30 @@
 <div class="section level3">
 <h3 id="change-rstudio-password">Change RStudio Password<a class="anchor" aria-label="anchor" href="#change-rstudio-password"></a></h3>
 <p>Edit the <code>PASSWORD</code> environment variable in <code>docker-compose.yml</code>:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">environment</span><span class="kw">:</span></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> PASSWORD=your_secure_password</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> PASSWORD=your_secure_password</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="disable-authentication-local-use-only">Disable Authentication (Local Use Only)<a class="anchor" aria-label="anchor" href="#disable-authentication-local-use-only"></a></h3>
 <p>Add this to the environment section in <code>docker-compose.yml</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">environment</span><span class="kw">:</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> DISABLE_AUTH=true</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> DISABLE_AUTH=true</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="mount-additional-directories">Mount Additional Directories<a class="anchor" aria-label="anchor" href="#mount-additional-directories"></a></h3>
 <p>Add volume mounts in <code>docker-compose.yml</code>:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">volumes</span><span class="kw">:</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> ./workspace:/home/rstudio/workspace</span></span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> ./data:/home/rstudio/data</span></span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> ./scripts:/home/rstudio/scripts</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> ./workspace:/home/rstudio/workspace</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> ./data:/home/rstudio/data</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> ./scripts:/home/rstudio/scripts</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="install-additional-r-packages">Install Additional R Packages<a class="anchor" aria-label="anchor" href="#install-additional-r-packages"></a></h3>
 <p>You can install packages interactively in RStudio, or add them to the Dockerfile:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode dockerfile"><code class="sourceCode dockerfile"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">install2.r</span> <span class="at">--error</span> <span class="at">--skipinstalled</span> <span class="dt">\</span></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>    package1 <span class="dt">\</span></span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>    package2 <span class="dt">\</span></span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="fu">rm</span> <span class="at">-rf</span> /tmp/downloaded_packages</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode dockerfile"><code class="sourceCode dockerfile"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">install2.r</span> <span class="at">--error</span> <span class="at">--skipinstalled</span> <span class="dt">\</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>    package1 <span class="dt">\</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>    package2 <span class="dt">\</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="fu">rm</span> <span class="at">-rf</span> /tmp/downloaded_packages</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -167,23 +179,23 @@
 <div class="section level3">
 <h3 id="port-8787-is-already-in-use">Port 8787 is already in use<a class="anchor" aria-label="anchor" href="#port-8787-is-already-in-use"></a></h3>
 <p>Change the port mapping in <code>docker-compose.yml</code>:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">ports</span><span class="kw">:</span></span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="st">"8888:8787"</span><span class="co">  # Access RStudio at localhost:8888</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="st">"8888:8787"</span><span class="co">  # Access RStudio at localhost:8888</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="permission-issues-with-mounted-volumes">Permission issues with mounted volumes<a class="anchor" aria-label="anchor" href="#permission-issues-with-mounted-volumes"></a></h3>
 <p>On Linux, you may need to set proper ownership:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">sudo</span> chown <span class="at">-R</span> 1000:1000 workspace/</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">sudo</span> chown <span class="at">-R</span> 1000:1000 workspace/</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="container-wont-start">Container won’t start<a class="anchor" aria-label="anchor" href="#container-wont-start"></a></h3>
 <p>Check logs:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="ex">docker-compose</span> logs rstudio</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="ex">docker-compose</span> logs rstudio</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="rebuild-after-changes">Rebuild after changes<a class="anchor" aria-label="anchor" href="#rebuild-after-changes"></a></h3>
-<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="ex">docker-compose</span> build <span class="at">--no-cache</span></span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="ex">docker-compose</span> up <span class="at">-d</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="ex">docker-compose</span> build <span class="at">--no-cache</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="ex">docker-compose</span> up <span class="at">-d</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -198,14 +210,14 @@
 <ol style="list-style-type: decimal"><li><p>Make changes to the R code</p></li>
 <li>
 <p>Rebuild the container:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="ex">docker-compose</span> build</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="ex">docker-compose</span> up <span class="at">-d</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="ex">docker-compose</span> build</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="ex">docker-compose</span> up <span class="at">-d</span></span></code></pre></div>
 </li>
 </ol></div>
 <div class="section level3">
 <h3 id="accessing-r-package-check-logs">Accessing R Package Check Logs<a class="anchor" aria-label="anchor" href="#accessing-r-package-check-logs"></a></h3>
-<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-v</span> <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>:/pkg ggvolc:latest <span class="dt">\</span></span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  R CMD check <span class="at">--as-cran</span> /pkg</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-v</span> <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>:/pkg ggvolc:latest <span class="dt">\</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>  R CMD check <span class="at">--as-cran</span> /pkg</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -230,7 +242,7 @@
 <h3 id="publishing-to-docker-hub-optional">Publishing to Docker Hub (Optional)<a class="anchor" aria-label="anchor" href="#publishing-to-docker-hub-optional"></a></h3>
 <p>Want to publish images automatically? See <a href="DOCKER_PUBLISHING.html">.github/DOCKER_PUBLISHING.md</a> for setup instructions.</p>
 <p>Once enabled, images will be available as:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="ex">docker</span> pull loukesio/ggvolc:latest</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="ex">docker</span> pull loukesio/ggvolc:latest</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
