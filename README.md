@@ -28,7 +28,11 @@ library(ggvolc)
 
 ### How do I start?
 
-Load the library and explore the example datasets!
+`ggvolc` turns the results of a differential-expression analysis — from **DESeq2**,
+**edgeR**, or **limma** — into a clean, publication-ready volcano plot. From there
+you can highlight genes, auto-label the top hits, attach a `gt` table, or make the
+whole thing interactive. Start by loading the library and exploring the two example
+datasets that ship with the package:
 
 ``` console
 library(ggvolc)
@@ -84,6 +88,9 @@ library(ggvolc)
 
 ### 1. Plot a simple volcano plot!
 
+Pass a single data frame and every gene is coloured by significance — down, up,
+or not significant.
+
 ``` r
 ggvolc(all_genes)
 ```
@@ -92,6 +99,8 @@ ggvolc(all_genes)
 
 ### 2. Add the genes of attention.
 
+Supply a second data frame to outline and label the genes you care about.
+
 ``` r
 ggvolc(all_genes, attention_genes)
 ```
@@ -99,6 +108,8 @@ ggvolc(all_genes, attention_genes)
 <img src="man/figures/README-plot2-attention-1.png" alt="" width="750px" style="display: block; margin: auto;" />
 
 ### 3. Add segments to indicate areas of significance.
+
+Turn on `add_seg` to draw the fold-change and significance thresholds.
 
 ``` r
 ggvolc(all_genes, attention_genes, add_seg = TRUE) +
@@ -109,6 +120,8 @@ ggvolc(all_genes, attention_genes, add_seg = TRUE) +
 
 ### 4. Indicate the size of point based on the log2FoldChange column.
 
+Scale point size by effect size with `size_var = "log2FoldChange"`.
+
 ``` r
 ggvolc(all_genes, attention_genes, size_var = "log2FoldChange", add_seg = TRUE)
 ```
@@ -116,6 +129,8 @@ ggvolc(all_genes, attention_genes, size_var = "log2FoldChange", add_seg = TRUE)
 <img src="man/figures/README-plot4-size-log2fc-1.png" alt="" width="750px" style="display: block; margin: auto;" />
 
 ### 5. Indicate the size of the point based on the pvalue.
+
+Or scale it by significance with `size_var = "pvalue"`.
 
 ``` r
 ggvolc(all_genes, attention_genes, size_var = "pvalue", add_seg = TRUE)
@@ -152,6 +167,9 @@ names (as edgeR/limma often do) are promoted to a `genes` column automatically.
 | edgeR (`topTags()`)  | `logFC`          | `PValue`  | `FDR`       | `logCPM`   |
 | limma (`topTable()`) | `logFC`          | `P.Value` | `adj.P.Val` | `AveExpr`  |
 
+The package ships `edger_genes`, an example `topTags()`-style table, so you can
+see this directly. In your own analysis you would pass the real thing:
+
 ``` r
 # edgeR: pass topTags()$table straight in
 edger_res <- as.data.frame(edgeR::topTags(qlf, n = Inf))
@@ -159,16 +177,14 @@ ggvolc(edger_res)
 ```
 
 ``` r
-# a topTags()-style edgeR table (built here for illustration)
-set.seed(1)
-edger_res <- data.frame(
-  genes  = paste0("gene", 1:200),
-  logFC  = rnorm(200, 0, 2.5),
-  logCPM = runif(200, 2, 14),
-  PValue = 10^-runif(200, 0, 8),
-  FDR    = 10^-runif(200, 0, 6)
-)
-ggvolc(edger_res, label_top = 8, add_seg = TRUE)
+data(edger_genes)          # an edgeR topTags()-style table (genes in the rownames)
+head(edger_genes, 3)
+#>           logFC  logCPM       PValue          FDR
+#> GCR1   2.244064 12.8143 4.434241e-29 2.153711e-25
+#> OPI10 -2.257454  9.9807 4.880607e-27 1.185255e-23
+#> AGA2   3.829474  7.9665 4.143136e-26 6.707736e-23
+
+ggvolc(edger_genes, label_top = 8, add_seg = TRUE, title = "edgeR input")
 ```
 
 <img src="man/figures/README-plot7-edger-1.png" alt="" width="750px" style="display: block; margin: auto;" />
@@ -225,8 +241,19 @@ optional dependency (install it with `install.packages("ggiraph")`).
 ggvolc(all_genes, attention_genes, interactive = TRUE)
 ```
 
-> The volcano below is a static preview. Hover-to-inspect works when you run the
-> code in R or view the
-> [live version on the package website](https://loukesio.github.io/ggvolc/articles/ggvolc.html).
+> **Note:** GitHub can’t run the widget, so the image below is a static preview.
+> The live, hover-to-inspect version runs in RStudio and on the
+> [package website](https://loukesio.github.io/ggvolc/articles/ggvolc.html).
 
 <img src="man/figures/README-plot10-interactive-preview-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+
+## Learn more
+
+- 📖 [**Package website**](https://loukesio.github.io/ggvolc/) — full function
+  reference and a getting-started article with every example (including the live
+  interactive volcano).
+- 🐳 [**Docker image**](https://github.com/loukesio/ggvolc/pkgs/container/ggvolc)
+  — `docker pull ghcr.io/loukesio/ggvolc:latest` for a ready-to-run RStudio
+  environment with `ggvolc` pre-installed.
+- 🐛 [**Issues & questions**](https://github.com/loukesio/ggvolc/issues) — bug
+  reports and feature requests are welcome.

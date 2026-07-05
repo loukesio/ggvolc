@@ -31,3 +31,22 @@
 #'   \item{padj}{Numeric vector: Adjusted p-value for multiple testing using the Benjamini-Hochberg procedure}
 #' }
 "attention_genes"
+
+
+#' edgeR-style Differential Expression Dataset
+#'
+#' The same experiment as \code{\link{all_genes}}, re-expressed with the column
+#' conventions of \pkg{edgeR}'s \code{topTags()} output. The gene identifiers are
+#' stored in the row names (as \code{topTags()} returns them), which lets it
+#' demonstrate that \code{\link{ggvolc}} accepts edgeR results directly and
+#' promotes rowname gene IDs to a \code{genes} column automatically.
+#'
+#' @format A data frame with gene identifiers in the row names and the following
+#'   columns:
+#' \describe{
+#'   \item{logFC}{Numeric. Log2 fold change of gene expression.}
+#'   \item{logCPM}{Numeric. Average log2 counts per million.}
+#'   \item{PValue}{Numeric. Raw p-value from the differential expression test.}
+#'   \item{FDR}{Numeric. Benjamini-Hochberg adjusted p-value (false discovery rate).}
+#' }
+"edger_genes"

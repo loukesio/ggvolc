@@ -405,3 +405,18 @@ test_that("ggvolc interactive = TRUE returns a girafe widget", {
   g <- ggvolc(df, att, interactive = TRUE)
   expect_s3_class(g, "girafe")
 })
+
+
+# ===========================================================================
+# bundled datasets
+# ===========================================================================
+
+test_that("edger_genes ships in edgeR format and plots directly", {
+  data(edger_genes, package = "ggvolc", envir = environment())
+  expect_true(is.data.frame(edger_genes))
+  # genes live in the row names, edgeR-style columns present
+  expect_false("genes" %in% colnames(edger_genes))
+  expect_true(all(c("logFC", "logCPM", "PValue", "FDR") %in% colnames(edger_genes)))
+  p <- ggvolc(edger_genes, label_top = 5, add_seg = TRUE)
+  expect_s3_class(p, "gg")
+})

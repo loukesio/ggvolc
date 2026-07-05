@@ -125,18 +125,14 @@ Column names from all three pipelines are detected and mapped automatically, so
 you can pass their output straight in. Gene identifiers held in the row names
 (as edgeR and limma often do) are promoted to a `genes` column for you.
 
-```{r}
-# an edgeR topTags()-style table
-set.seed(1)
-edger <- data.frame(
-  genes  = paste0("gene", 1:200),
-  logFC  = rnorm(200, 0, 2.5),
-  logCPM = runif(200, 2, 14),
-  PValue = 10^-runif(200, 0, 8),
-  FDR    = 10^-runif(200, 0, 6)
-)
+The package ships `edger_genes`, an example `topTags()`-style table with the gene
+identifiers in the row names, so you can try this right away:
 
-ggvolc(edger, label_top = 8, add_seg = TRUE, title = "edgeR input")
+```{r}
+data(edger_genes)
+head(edger_genes, 3)
+
+ggvolc(edger_genes, label_top = 8, add_seg = TRUE, title = "edgeR input")
 ```
 
 | Pipeline | Fold change | p-value | adjusted p | expression |
