@@ -4,7 +4,15 @@
 \alias{genes_table}
 \title{Combine a Volcano Plot with a gt Table of Genes}
 \usage{
-genes_table(plot_obj, data2, p_value = 0.05, table_height = 1)
+genes_table(
+  plot_obj,
+  data2,
+  top_n = NULL,
+  sig_col = c("padj", "pvalue"),
+  dir = c("both", "up", "down", "each"),
+  p_value = 0.05,
+  table_height = 1
+)
 }
 \arguments{
 \item{plot_obj}{A ggplot object, typically the output of \code{\link{ggvolc}}.}
@@ -13,10 +21,30 @@ genes_table(plot_obj, data2, p_value = 0.05, table_height = 1)
 Columns are auto-detected in the same way as \code{\link{ggvolc}} (DESeq2,
 edgeR, or limma conventions). Required columns after mapping:
 \code{genes}, \code{log2FoldChange}, \code{pvalue}.
-Optional: \code{baseMean}, \code{padj}.}
+Optional: \code{baseMean}, \code{padj}.
+When \code{top_n} is supplied you can pass the full DE table here (e.g.
+\code{all_genes}) and the most significant genes are selected automatically.}
+
+\item{top_n}{Optional integer. When supplied, the \code{top_n} most
+significant genes (smallest \code{sig_col}, among genes with
+\code{sig_col < p_value}) are selected from \code{data2} for the table.
+When \code{NULL} (default) every row of \code{data2} is shown, so passing a
+pre-filtered set such as \code{attention_genes} behaves as before.}
+
+\item{sig_col}{Column used to rank significance when \code{top_n} is set.
+Either \code{"padj"} (adjusted p-value / FDR, the default) or
+\code{"pvalue"}. Falls back to \code{"pvalue"} when \code{"padj"} is the
+default but no adjusted-p column is present.}
+
+\item{dir}{Direction to draw the \code{top_n} genes from. One of
+\code{"both"} (top N over all significant genes, the default),
+\code{"up"} (top N upregulated), \code{"down"} (top N downregulated), or
+\code{"each"} (top N up \emph{and} top N down, up to \code{2 * top_n} rows).
+Ignored when \code{top_n} is \code{NULL}.}
 
 \item{p_value}{Significance threshold used for color-coding the p-value
-column. Default is 0.05.}
+column, and for filtering eligible genes when \code{top_n} is set.
+Default is 0.05.}
 
 \item{table_height}{Relative height of the table panel (plot panel is always 3).
 Default is 1.}
@@ -39,5 +67,12 @@ data(attention_genes)
 # Create a volcano plot and combine it with a gt gene table
 p <- ggvolc(all_genes, attention_genes, add_seg = TRUE)
 genes_table(p, attention_genes)
+
+# Auto-select the 10 most significant genes from the full table
+p2 <- ggvolc(all_genes, label_top = 10)
+genes_table(p2, all_genes, top_n = 10)
+
+# Top 8 of each direction (up to 16 rows)
+genes_table(p2, all_genes, top_n = 8, dir = "each")
 
 }

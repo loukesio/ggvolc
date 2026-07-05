@@ -119,6 +119,16 @@ p <- ggvolc(all_genes, attention_genes, add_seg = TRUE)
 genes_table(p, attention_genes)
 ```
 
+To tabulate the most significant genes without curating them yourself, pass the
+full DE table and a `top_n`. Genes are ranked by `sig_col` (`padj` by default,
+falling back to `pvalue`); `dir = "each"` takes the top N up- and
+down-regulated genes.
+
+```{r, fig.height = 7}
+p_top <- ggvolc(all_genes, label_top = 10, add_seg = TRUE)
+genes_table(p_top, all_genes, top_n = 10)
+```
+
 ## Works with DESeq2, edgeR, and limma
 
 Column names from all three pipelines are detected and mapped automatically, so

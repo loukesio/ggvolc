@@ -11,8 +11,25 @@
 #'   edgeR, or limma conventions). Required columns after mapping:
 #'   \code{genes}, \code{log2FoldChange}, \code{pvalue}.
 #'   Optional: \code{baseMean}, \code{padj}.
+#'   When \code{top_n} is supplied you can pass the full DE table here (e.g.
+#'   \code{all_genes}) and the most significant genes are selected automatically.
+#' @param top_n Optional integer. When supplied, the \code{top_n} most
+#'   significant genes (smallest \code{sig_col}, among genes with
+#'   \code{sig_col < p_value}) are selected from \code{data2} for the table.
+#'   When \code{NULL} (default) every row of \code{data2} is shown, so passing a
+#'   pre-filtered set such as \code{attention_genes} behaves as before.
+#' @param sig_col Column used to rank significance when \code{top_n} is set.
+#'   Either \code{"padj"} (adjusted p-value / FDR, the default) or
+#'   \code{"pvalue"}. Falls back to \code{"pvalue"} when \code{"padj"} is the
+#'   default but no adjusted-p column is present.
+#' @param dir Direction to draw the \code{top_n} genes from. One of
+#'   \code{"both"} (top N over all significant genes, the default),
+#'   \code{"up"} (top N upregulated), \code{"down"} (top N downregulated), or
+#'   \code{"each"} (top N up \emph{and} top N down, up to \code{2 * top_n} rows).
+#'   Ignored when \code{top_n} is \code{NULL}.
 #' @param p_value Significance threshold used for color-coding the p-value
-#'   column. Default is 0.05.
+#'   column, and for filtering eligible genes when \code{top_n} is set.
+#'   Default is 0.05.
 #' @param table_height Relative height of the table panel (plot panel is always 3).
 #'   Default is 1.
 #'
@@ -29,14 +46,52 @@
 #' p <- ggvolc(all_genes, attention_genes, add_seg = TRUE)
 #' genes_table(p, attention_genes)
 #'
-genes_table <- function(plot_obj, data2, p_value = 0.05, table_height = 1) {
+#' # Auto-select the 10 most significant genes from the full table
+#' p2 <- ggvolc(all_genes, label_top = 10)
+#' genes_table(p2, all_genes, top_n = 10)
+#'
+#' # Top 8 of each direction (up to 16 rows)
+#' genes_table(p2, all_genes, top_n = 8, dir = "each")
+#'
+genes_table <- function(plot_obj, data2,
+                        top_n        = NULL,
+                        sig_col      = c("padj", "pvalue"),
+                        dir          = c("both", "up", "down", "each"),
+                        p_value      = 0.05,
+                        table_height = 1) {
+
+  sig_col_explicit <- !missing(sig_col)
+  sig_col <- match.arg(sig_col)
+  dir     <- match.arg(dir)
 
   # Check input
   if (!inherits(plot_obj, "gg")) stop("plot_obj must be a ggplot object", call. = FALSE)
   if (!is.data.frame(data2))    stop("data2 must be a data frame", call. = FALSE)
+  if (!is.null(top_n) &&
+      (!is.numeric(top_n) || length(top_n) != 1 || top_n < 1)) {
+    stop("top_n must be a single positive number", call. = FALSE)
+  }
 
   # Standardize columns (so edgeR / limma tables work too)
   data2 <- standardize_de_columns(data2)
+
+  # Auto-select the most significant genes when top_n is requested
+  if (!is.null(top_n)) {
+    # Default is padj (FDR); fall back to the raw p-value when there is no
+    # adjusted-p column and the user did not explicitly ask for padj.
+    if (sig_col == "padj" && !"padj" %in% colnames(data2) && !sig_col_explicit) {
+      message("genes_table: no adjusted p-value (padj) column found; ",
+              "using sig_col = 'pvalue' instead.")
+      sig_col <- "pvalue"
+    }
+    data2 <- select_top_genes(data2, top_n = top_n, sig_col = sig_col,
+                              dir = dir, p_value = p_value)
+    if (nrow(data2) == 0) {
+      warning("genes_table: no genes passed the significance threshold; ",
+              "returning the plot without a table.", call. = FALSE)
+      return(plot_obj)
+    }
+  }
 
   # Select columns that exist
   show_cols <- c("genes", "baseMean", "log2FoldChange", "pvalue", "padj")

@@ -119,6 +119,58 @@ detect_de_source <- function(cols) {
 }
 
 
+#' Select the top N most significant genes
+#'
+#' Ranks a standardized DE data frame by \code{sig_col} (ascending) among genes
+#' that pass the significance threshold and returns the strongest ones. Mirrors
+#' the \code{label_top} / \code{label_dir} selection used by \code{\link{ggvolc}}
+#' so the gene table and the plot agree on which genes are "top".
+#'
+#' @param df A standardized DE data frame (see \code{\link{standardize_de_columns}}),
+#'   with at least \code{genes}, \code{log2FoldChange}, and \code{sig_col}.
+#' @param top_n Number of genes to return. For \code{dir = "each"} this is per
+#'   direction (up to \code{2 * top_n} rows).
+#' @param sig_col Column used to rank significance, typically \code{"padj"} or
+#'   \code{"pvalue"}.
+#' @param dir One of \code{"both"} (top N over all significant genes),
+#'   \code{"up"} (top N upregulated), \code{"down"} (top N downregulated), or
+#'   \code{"each"} (top N up \emph{and} top N down).
+#' @param p_value Significance threshold; only genes with
+#'   \code{sig_col < p_value} are eligible.
+#' @return A data frame containing the selected rows, ordered by \code{sig_col}.
+#' @keywords internal
+select_top_genes <- function(df, top_n,
+                             sig_col = "padj",
+                             dir     = c("both", "up", "down", "each"),
+                             p_value = 0.05) {
+  dir <- match.arg(dir)
+
+  if (!sig_col %in% colnames(df)) {
+    stop("sig_col = '", sig_col, "' is not a column in the data.", call. = FALSE)
+  }
+
+  # Eligible = significant genes with a usable ranking value
+  eligible <- df[!is.na(df[[sig_col]]) & df[[sig_col]] < p_value, , drop = FALSE]
+
+  pick_top <- function(pool, n) {
+    pool <- pool[order(pool[[sig_col]]), , drop = FALSE]
+    pool[seq_len(min(n, nrow(pool))), , drop = FALSE]
+  }
+
+  up_pool   <- eligible[eligible$log2FoldChange > 0, , drop = FALSE]
+  down_pool <- eligible[eligible$log2FoldChange < 0, , drop = FALSE]
+
+  out <- switch(dir,
+    both = pick_top(eligible,  top_n),
+    up   = pick_top(up_pool,   top_n),
+    down = pick_top(down_pool, top_n),
+    each = rbind(pick_top(up_pool, top_n), pick_top(down_pool, top_n))
+  )
+
+  out[!duplicated(out$genes), , drop = FALSE]
+}
+
+
 #' Compute -log10(p) with infinite values capped
 #'
 #' \code{-log10()} of a p-value of exactly 0 (which DESeq2 and edgeR can emit
