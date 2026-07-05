@@ -246,6 +246,108 @@ test_that("genes_table rejects non-dataframe data2", {
 
 
 # ===========================================================================
+# select_top_genes — top-N selection helper
+# ===========================================================================
+
+test_that("select_top_genes returns the n smallest sig_col rows", {
+  df <- standardize_de_columns(make_deseq2_df(200))
+  top <- select_top_genes(df, top_n = 10, sig_col = "padj", dir = "both")
+  expect_equal(nrow(top), 10)
+  # the returned padj values are the 10 smallest among significant genes
+  sig <- df[df$padj < 0.05, ]
+  expected <- sort(sig$padj)[1:10]
+  expect_equal(sort(top$padj), expected)
+})
+
+test_that("select_top_genes dir = 'up' / 'down' respect direction", {
+  set.seed(1)
+  df <- data.frame(
+    genes = paste0("gene", 1:40),
+    baseMean = 100,
+    log2FoldChange = c(rep(3, 20), rep(-3, 20)),
+    pvalue = 1e-6,
+    padj   = 1e-5
+  )
+  up   <- select_top_genes(df, top_n = 5, sig_col = "padj", dir = "up")
+  down <- select_top_genes(df, top_n = 5, sig_col = "padj", dir = "down")
+  expect_true(all(up$log2FoldChange > 0))
+  expect_true(all(down$log2FoldChange < 0))
+  expect_equal(nrow(up), 5)
+  expect_equal(nrow(down), 5)
+})
+
+test_that("select_top_genes dir = 'each' returns up to 2 * top_n rows", {
+  set.seed(1)
+  df <- data.frame(
+    genes = paste0("gene", 1:40),
+    baseMean = 100,
+    log2FoldChange = c(rep(3, 20), rep(-3, 20)),
+    pvalue = 1e-6,
+    padj   = 1e-5
+  )
+  each <- select_top_genes(df, top_n = 5, sig_col = "padj", dir = "each")
+  expect_equal(nrow(each), 10)
+  expect_true(any(each$log2FoldChange > 0))
+  expect_true(any(each$log2FoldChange < 0))
+})
+
+test_that("select_top_genes caps at the number of eligible genes", {
+  df <- standardize_de_columns(make_deseq2_df(200))
+  n_sig <- sum(df$padj < 0.05)
+  top <- select_top_genes(df, top_n = n_sig + 100, sig_col = "padj", dir = "both")
+  expect_equal(nrow(top), n_sig)
+})
+
+
+# ===========================================================================
+# genes_table — top_n auto-selection
+# ===========================================================================
+
+test_that("genes_table top_n selects the most significant genes", {
+  all <- make_deseq2_df(200)
+  p <- ggvolc(all, label_top = 10)
+  combined <- genes_table(p, all, top_n = 10)
+  expect_s3_class(combined, "patchwork")
+})
+
+test_that("genes_table top_n = NULL keeps the passed rows (backward compatible)", {
+  all <- make_deseq2_df(200)
+  att <- all[sample(200, 5), ]
+  p <- ggvolc(all, att)
+  # both calls should build a table; top_n = NULL is the historical behavior
+  expect_s3_class(genes_table(p, att), "patchwork")
+})
+
+test_that("genes_table top_n works for edgeR input", {
+  all <- make_edger_df(200)
+  p <- ggvolc(all, label_top = 8)
+  combined <- genes_table(p, all, top_n = 8, dir = "each")
+  expect_s3_class(combined, "patchwork")
+})
+
+test_that("genes_table falls back to pvalue when padj is absent", {
+  all <- make_edger_df(200)
+  all$FDR <- NULL                       # no column maps to padj
+  p <- ggvolc(all)
+  expect_message(genes_table(p, all, top_n = 5), "pvalue")
+})
+
+test_that("genes_table rejects an invalid top_n", {
+  p <- ggvolc(make_deseq2_df())
+  expect_error(genes_table(p, make_deseq2_df(50), top_n = -1), "top_n")
+  expect_error(genes_table(p, make_deseq2_df(50), top_n = "ten"), "top_n")
+})
+
+test_that("genes_table warns and returns the plot when nothing is significant", {
+  df <- make_deseq2_df(50)
+  df$padj <- 0.9                        # nothing passes the threshold
+  p <- ggvolc(df, sig_col = "pvalue")
+  expect_warning(out <- genes_table(p, df, top_n = 5), "no genes")
+  expect_s3_class(out, "gg")
+})
+
+
+# ===========================================================================
 # neglog10_cap — infinite value handling
 # ===========================================================================
 

@@ -168,6 +168,19 @@ The gene table is rendered with [`gt`](https://gt.rstudio.com) and composed with
 [`patchwork`](https://patchwork.data-imaginist.com), so the result is a single
 object you can style further or save with `ggplot2::ggsave()`.
 
+Instead of curating your own set of genes, you can let `genes_table()` pick the
+most significant ones automatically with `top_n`. Pass the full DE table and it
+selects the top genes by `sig_col` (defaults to `padj`, falling back to
+`pvalue`). Use `dir = "each"` to take the top N up- *and* down-regulated genes.
+
+```{r plot6b-topn, fig.height = 8}
+plot_top <- ggvolc(all_genes, label_top = 10, add_seg = TRUE) +
+  labs(title = "Top 10 most significant genes")
+
+plot_top %>%
+  genes_table(all_genes, top_n = 10)
+```
+
 ### 7. Works with DESeq2, edgeR, and limma out of the box
 
 `ggvolc()` and `genes_table()` accept the output of all three major
