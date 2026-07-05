@@ -19,10 +19,12 @@
 #' @param fc Fold change threshold for determining upregulated or downregulated
 #'   genes. Default is 1.
 #' @param sig_col Column used to call significance and to build the y-axis.
-#'   Either \code{"pvalue"} (raw p-value, the default) or \code{"padj"} (the
-#'   adjusted p-value / FDR, which is the recommended cutoff for calling hits in
-#'   most DE workflows). The y-axis and the significance segment follow this
-#'   choice, so the plot stays internally consistent.
+#'   Either \code{"padj"} (the adjusted p-value / FDR, the default and the
+#'   recommended cutoff for calling hits in most DE workflows) or
+#'   \code{"pvalue"} (the raw p-value). The y-axis and the significance segment
+#'   follow this choice, so the plot stays internally consistent. When the
+#'   default \code{"padj"} is used but the data has no adjusted-p column, ggvolc
+#'   falls back to the raw p-value.
 #' @param label_top Optional integer. When supplied, the \code{label_top} most
 #'   significant genes (smallest \code{sig_col}, among significant genes) are
 #'   highlighted and labelled automatically, without building a separate
@@ -70,8 +72,9 @@
 #' # Add dashed lines to indicate significance thresholds
 #' ggvolc(all_genes, attention_genes, add_seg = TRUE)
 #'
-#' # Call significance on the adjusted p-value (FDR) instead of the raw p-value
-#' ggvolc(all_genes, sig_col = "padj")
+#' # Significance is called on the adjusted p-value (FDR) by default;
+#' # use the raw p-value instead with:
+#' ggvolc(all_genes, sig_col = "pvalue")
 #'
 #' # Automatically label the 10 most significant genes
 #' ggvolc(all_genes, label_top = 10)
@@ -128,7 +131,7 @@ ggvolc <- function(data1,
                    size_var = NULL,  # Default value set to NULL
                    p_value = 0.05,
                    fc = 1,
-                   sig_col = c("pvalue", "padj"),
+                   sig_col = c("padj", "pvalue"),
                    label_top = NULL,
                    label_dir = c("both", "up", "down", "each"),
                    title = NULL,
@@ -138,6 +141,7 @@ ggvolc <- function(data1,
                    up_reg_color = "#d1495b",
                    add_seg = FALSE){
 
+  sig_col_explicit <- !missing(sig_col)
   sig_col   <- match.arg(sig_col)
   label_dir <- match.arg(label_dir)
 
@@ -156,6 +160,14 @@ ggvolc <- function(data1,
   # ---- Standardize column names (DESeq2 / edgeR / limma) ----------------
   data1 <- standardize_de_columns(data1)
   if (!is.null(data2)) data2 <- standardize_de_columns(data2)
+
+  # Default is padj (FDR); fall back to the raw p-value when there is no
+  # adjusted-p column and the user did not explicitly ask for padj.
+  if (sig_col == "padj" && !"padj" %in% colnames(data1) && !sig_col_explicit) {
+    message("ggvolc: no adjusted p-value (padj) column found; ",
+            "using sig_col = 'pvalue' instead.")
+    sig_col <- "pvalue"
+  }
 
   if (!sig_col %in% colnames(data1)) {
     stop("sig_col = '", sig_col, "' is not available after column detection.\n",

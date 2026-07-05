@@ -157,16 +157,20 @@ ggvolc(edger_res, top, add_seg = TRUE) %>%
   genes_table(top)
 ```
 
-### 8. Call significance on the adjusted p-value (FDR)
+### 8. Significance on the adjusted p-value (FDR) — the default
 
-By default the significance colouring uses the raw p-value. In most DE workflows
-you want to call hits on the **adjusted** p-value (FDR) instead — set
-`sig_col = "padj"` and the y-axis and the significance line follow along, so the
-plot stays consistent.
+`ggvolc()` calls significance on the **adjusted** p-value (FDR) by default — the
+right cutoff for most DE workflows — and the y-axis and the significance line
+follow along, so the plot stays consistent. Prefer the raw p-value? Set
+`sig_col = "pvalue"`.
 
 ```r
-ggvolc(all_genes, sig_col = "padj", add_seg = TRUE)
+ggvolc(all_genes, add_seg = TRUE)                      # FDR (padj) by default
+ggvolc(all_genes, sig_col = "pvalue", add_seg = TRUE)  # raw p-value
 ```
+
+If your table has no adjusted-p column, ggvolc automatically falls back to the
+raw p-value.
 
 `ggvolc()` is also robust to p-values of exactly `0` (which DESeq2/edgeR can emit
 for the strongest genes): instead of silently dropping them, their `-log10`

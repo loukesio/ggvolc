@@ -273,21 +273,27 @@ test_that("neglog10_cap leaves NA values untouched", {
 # ggvolc — significance column (sig_col)
 # ===========================================================================
 
-test_that("ggvolc accepts sig_col = 'padj'", {
-  df <- make_deseq2_df()
-  p <- ggvolc(df, sig_col = "padj")
+test_that("ggvolc defaults to sig_col = 'padj'", {
+  p <- ggvolc(make_deseq2_df())
   expect_s3_class(p, "gg")
   expect_equal(p$labels$y, "-log10(padj)")
 })
 
-test_that("ggvolc default sig_col yields a pvalue y-axis", {
-  p <- ggvolc(make_deseq2_df())
+test_that("ggvolc accepts sig_col = 'pvalue'", {
+  p <- ggvolc(make_deseq2_df(), sig_col = "pvalue")
   expect_equal(p$labels$y, "-log10(pvalue)")
 })
 
-test_that("ggvolc errors when sig_col is unavailable", {
+test_that("ggvolc falls back to pvalue when padj is absent and not requested", {
   df <- make_edger_df()
-  df$FDR <- NULL                       # remove the column that maps to padj
+  df$FDR <- NULL                       # no column maps to padj
+  expect_message(p <- ggvolc(df), "pvalue")
+  expect_equal(p$labels$y, "-log10(pvalue)")
+})
+
+test_that("ggvolc errors when sig_col = 'padj' is requested but unavailable", {
+  df <- make_edger_df()
+  df$FDR <- NULL
   expect_error(ggvolc(df, sig_col = "padj"), "sig_col")
 })
 
@@ -296,11 +302,13 @@ test_that("ggvolc errors when sig_col is unavailable", {
 # ggvolc — infinite p-value robustness
 # ===========================================================================
 
-test_that("ggvolc handles pvalue == 0 without dropping genes", {
+test_that("ggvolc handles p == 0 (Inf) without dropping genes", {
   df <- make_deseq2_df()
   df$pvalue[1:3] <- 0
-  expect_message(p <- ggvolc(df), "capped")
+  df$padj[1:3]   <- 0
+  expect_message(p <- ggvolc(df), "capped")              # default sig_col = padj
   expect_s3_class(p, "gg")
+  expect_message(ggvolc(df, sig_col = "pvalue"), "capped")
 })
 
 

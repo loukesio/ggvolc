@@ -2,11 +2,13 @@
 
 ## Better significance handling, auto-labels & interactivity
 
-* **Call significance on the adjusted p-value.** `ggvolc()` gains a `sig_col`
-  argument (`"pvalue"` or `"padj"`). Choosing `"padj"` thresholds hits on the
-  FDR — the recommended cutoff in most DE workflows — and the y-axis and the
-  significance segment follow the choice so the plot stays internally
-  consistent. Default remains `"pvalue"` for backward compatibility.
+* **Significance on the adjusted p-value (FDR) by default.** `ggvolc()` gains a
+  `sig_col` argument (`"padj"` or `"pvalue"`) and now defaults to `"padj"`, so
+  hits are called on the FDR — the recommended cutoff in most DE workflows —
+  with the y-axis and the significance segment following the choice so the plot
+  stays internally consistent. Set `sig_col = "pvalue"` for the raw p-value.
+  When the default `"padj"` is used but the data has no adjusted-p column,
+  ggvolc falls back to the raw p-value automatically.
 * **Robust to `p == 0`.** DESeq2 and edgeR can report a p-value of exactly 0
   (floating-point underflow) for the strongest genes; `-log10(0)` is `Inf`,
   which ggplot2 silently drops — so the *most* significant genes used to vanish

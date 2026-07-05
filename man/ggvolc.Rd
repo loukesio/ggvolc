@@ -10,7 +10,7 @@ ggvolc(
   size_var = NULL,
   p_value = 0.05,
   fc = 1,
-  sig_col = c("pvalue", "padj"),
+  sig_col = c("padj", "pvalue"),
   label_top = NULL,
   label_dir = c("both", "up", "down", "each"),
   title = NULL,
@@ -39,10 +39,12 @@ Uses the same auto-detection as \code{data1}. Default is NULL.}
 genes. Default is 1.}
 
 \item{sig_col}{Column used to call significance and to build the y-axis.
-Either \code{"pvalue"} (raw p-value, the default) or \code{"padj"} (the
-adjusted p-value / FDR, which is the recommended cutoff for calling hits in
-most DE workflows). The y-axis and the significance segment follow this
-choice, so the plot stays internally consistent.}
+Either \code{"padj"} (the adjusted p-value / FDR, the default and the
+recommended cutoff for calling hits in most DE workflows) or
+\code{"pvalue"} (the raw p-value). The y-axis and the significance segment
+follow this choice, so the plot stays internally consistent. When the
+default \code{"padj"} is used but the data has no adjusted-p column, ggvolc
+falls back to the raw p-value.}
 
 \item{label_top}{Optional integer. When supplied, the \code{label_top} most
 significant genes (smallest \code{sig_col}, among significant genes) are
@@ -99,8 +101,9 @@ ggvolc(all_genes, attention_genes)
 # Add dashed lines to indicate significance thresholds
 ggvolc(all_genes, attention_genes, add_seg = TRUE)
 
-# Call significance on the adjusted p-value (FDR) instead of the raw p-value
-ggvolc(all_genes, sig_col = "padj")
+# Significance is called on the adjusted p-value (FDR) by default;
+# use the raw p-value instead with:
+ggvolc(all_genes, sig_col = "pvalue")
 
 # Automatically label the 10 most significant genes
 ggvolc(all_genes, label_top = 10)
