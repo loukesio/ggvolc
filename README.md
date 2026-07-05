@@ -11,14 +11,10 @@
 Install the package using the following commands <img align="right" src="logo/ggvolc_logo.png" width=400>
 
 ``` r
-# for now, you can install the developmental version of ltc
-# first you need to install the devtools package
-# in case you have not already installed
-install.packages("devtools")
-# and load it
-library(devtools)
+# you can install ggvolc from CRAN 
+install.packages("ggvolc")
 
-# then you can install the dev version of the ltc
+# if you want to install the developmenetal version please use
 devtools::install_github("loukesio/ggvolc")
 # and load it
 library(ggvolc)
