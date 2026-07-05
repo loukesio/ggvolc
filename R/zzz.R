@@ -37,5 +37,5 @@ Y8b d88P Y8b d88P
 # This code is to inform R that the listed names are intentionally global variables
 # to prevent 'no visible binding for global variable' warnings during R CMD check
 if (getRversion() >= "2.15.1") {
-  utils::globalVariables(c("log2FoldChange", "pvalue", "threshold","size_aes","genes" ,"x.start","x.end","y.start","y.end")) # Add other variables as needed
+  utils::globalVariables(c("log2FoldChange", "pvalue", "threshold","size_aes","genes" ,"x.start","x.end","y.start","y.end",".ggvolc_y",".ggvolc_tip")) # Add other variables as needed
 }

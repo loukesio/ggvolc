@@ -1,7 +1,7 @@
 Package: ggvolc
 Type: Package
 Title: Create Volcano Plots for Differential Gene Expression Data
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: person("Loukas", "Theodosiou",
     email = "theodosiou@evolbio.mpg.de",
     role = c("aut", "cre"),
@@ -26,7 +26,8 @@ Imports:
     grid
 RoxygenNote: 7.3.3
 Suggests:
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    ggiraph
 Config/testthat/edition: 3
 Depends:
     R (>= 3.5.0)

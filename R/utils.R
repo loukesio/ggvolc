@@ -117,3 +117,34 @@ detect_de_source <- function(cols) {
     call. = FALSE
   )
 }
+
+
+#' Compute -log10(p) with infinite values capped
+#'
+#' \code{-log10()} of a p-value of exactly 0 (which DESeq2 and edgeR can emit
+#' through floating-point underflow for the strongest genes) is \code{Inf}, and
+#' ggplot2 silently drops non-finite values. That would make the most
+#' significant genes disappear from the plot. This helper replaces the infinite
+#' values with a finite ceiling so those genes stay on the plot, near the top.
+#'
+#' @param p Numeric vector of p-values.
+#' @param ceiling Optional finite value used for capping. When \code{NULL} it is
+#'   set to 1.05 times the largest finite \code{-log10(p)}. Pass an explicit
+#'   value to keep two datasets (e.g. background and highlighted genes) on the
+#'   same scale.
+#' @return A list with \code{value} (the capped \code{-log10(p)} vector),
+#'   \code{ceiling} (the cap used), and \code{n_capped} (how many values were
+#'   replaced).
+#' @keywords internal
+neglog10_cap <- function(p, ceiling = NULL) {
+  nl <- -log10(p)
+  inf_idx <- is.infinite(nl)
+
+  if (is.null(ceiling)) {
+    finite_max <- suppressWarnings(max(nl[is.finite(nl)], na.rm = TRUE))
+    ceiling <- if (is.finite(finite_max) && finite_max > 0) finite_max * 1.05 else 1
+  }
+
+  nl[inf_idx] <- ceiling
+  list(value = nl, ceiling = ceiling, n_capped = sum(inf_idx, na.rm = TRUE))
+}

@@ -18,6 +18,24 @@
 #' @param p_value Threshold for statistical significance. Default is 0.05.
 #' @param fc Fold change threshold for determining upregulated or downregulated
 #'   genes. Default is 1.
+#' @param sig_col Column used to call significance and to build the y-axis.
+#'   Either \code{"pvalue"} (raw p-value, the default) or \code{"padj"} (the
+#'   adjusted p-value / FDR, which is the recommended cutoff for calling hits in
+#'   most DE workflows). The y-axis and the significance segment follow this
+#'   choice, so the plot stays internally consistent.
+#' @param label_top Optional integer. When supplied, the \code{label_top} most
+#'   significant genes (smallest \code{sig_col}, among significant genes) are
+#'   highlighted and labelled automatically, without building a separate
+#'   \code{data2}. Combined with \code{data2} if both are given. Default NULL.
+#' @param label_dir Direction to draw the \code{label_top} genes from. One of
+#'   \code{"both"} (top N over all significant genes, the default),
+#'   \code{"up"} (top N upregulated), \code{"down"} (top N downregulated), or
+#'   \code{"each"} (top N upregulated \emph{and} top N downregulated, i.e. up to
+#'   2N labels). Ignored when \code{label_top} is NULL.
+#' @param title Plot title. Default NULL (no title).
+#' @param interactive Logical. If TRUE, returns an interactive \pkg{ggiraph}
+#'   \code{girafe} widget where hovering a point reveals the gene name and its
+#'   statistics. Requires the optional \pkg{ggiraph} package. Default FALSE.
 #' @param not_sig_color Color for non-significant genes. Default is "#808080".
 #' @param down_reg_color Color for downregulated genes. Default is "#00798c".
 #' @param up_reg_color Color for upregulated genes. Default is "#d1495b".
@@ -33,7 +51,8 @@
 #' @importFrom ggplot2 theme_minimal
 #' @importFrom ggplot2 margin
 #'
-#' @return A ggplot2 object displaying the volcano plot.
+#' @return A ggplot2 object displaying the volcano plot, or, when
+#'   \code{interactive = TRUE}, a \pkg{ggiraph} \code{girafe} widget.
 #' @export
 #' @examples
 #' # Load example datasets included in the package
@@ -50,6 +69,21 @@
 #'
 #' # Add dashed lines to indicate significance thresholds
 #' ggvolc(all_genes, attention_genes, add_seg = TRUE)
+#'
+#' # Call significance on the adjusted p-value (FDR) instead of the raw p-value
+#' ggvolc(all_genes, sig_col = "padj")
+#'
+#' # Automatically label the 10 most significant genes
+#' ggvolc(all_genes, label_top = 10)
+#'
+#' # Label the top 10 upregulated genes only
+#' ggvolc(all_genes, label_top = 10, label_dir = "up")
+#'
+#' # Label the top 8 of each direction (up to 16 labels)
+#' ggvolc(all_genes, label_top = 8, label_dir = "each")
+#'
+#' # Give the plot a title
+#' ggvolc(all_genes, title = "Treated vs. control")
 #'
 #' # Customize colors for up- and down-regulated genes
 #' ggvolc(all_genes, attention_genes,
@@ -83,83 +117,172 @@
 #' )
 #' ggvolc(limma_df)
 #'
+#' \dontrun{
+#' # Interactive volcano (requires the ggiraph package): hover a point to
+#' # see the gene name and its statistics
+#' ggvolc(all_genes, attention_genes, interactive = TRUE)
+#' }
+#'
 ggvolc <- function(data1,
                    data2 = NULL,
                    size_var = NULL,  # Default value set to NULL
                    p_value = 0.05,
                    fc = 1,
+                   sig_col = c("pvalue", "padj"),
+                   label_top = NULL,
+                   label_dir = c("both", "up", "down", "each"),
+                   title = NULL,
+                   interactive = FALSE,
                    not_sig_color = "#808080",
                    down_reg_color = "#00798c",
                    up_reg_color = "#d1495b",
                    add_seg = FALSE){
 
-  # Validate input
-  if(!is.data.frame(data1)) stop("data1 must be a data frame")
-  if(!is.null(data2) && !is.data.frame(data2)) stop("data2 must be a data frame")
+  sig_col   <- match.arg(sig_col)
+  label_dir <- match.arg(label_dir)
 
-  # Standardize column names (DESeq2 / edgeR / limma)
+  # ---- Validate input ---------------------------------------------------
+  if (!is.data.frame(data1)) stop("data1 must be a data frame")
+  if (!is.null(data2) && !is.data.frame(data2)) stop("data2 must be a data frame")
+  if (!is.null(label_top) &&
+      (!is.numeric(label_top) || length(label_top) != 1 || label_top < 1)) {
+    stop("label_top must be a single positive number", call. = FALSE)
+  }
+  if (isTRUE(interactive) && !requireNamespace("ggiraph", quietly = TRUE)) {
+    stop("interactive = TRUE requires the 'ggiraph' package.\n",
+         "Install it with install.packages(\"ggiraph\").", call. = FALSE)
+  }
+
+  # ---- Standardize column names (DESeq2 / edgeR / limma) ----------------
   data1 <- standardize_de_columns(data1)
   if (!is.null(data2)) data2 <- standardize_de_columns(data2)
 
-  # Calculate the size aesthetic outside ggplot
-  if(is.null(size_var)) {
-    data1$size_aes <- 3  # Default size if size_var is NULL
-    if(!is.null(data2)) data2$size_aes <- 3
+  if (!sig_col %in% colnames(data1)) {
+    stop("sig_col = '", sig_col, "' is not available after column detection.\n",
+         "Columns present: ", paste(colnames(data1), collapse = ", "),
+         call. = FALSE)
+  }
+  if (!is.null(size_var) && !size_var %in% colnames(data1)) {
+    stop("size_var = '", size_var, "' is not a column in the data.", call. = FALSE)
+  }
+
+  # ---- y-axis: -log10(sig_col) with p == 0 (Inf) capped -----------------
+  y1 <- neglog10_cap(data1[[sig_col]])
+  ceiling <- y1$ceiling
+  if (y1$n_capped > 0) {
+    message(sprintf(
+      "ggvolc: %d gene(s) had %s == 0; -log10 was capped at %.1f so they stay on the plot.",
+      y1$n_capped, sig_col, ceiling))
+  }
+
+  # size legend range
+  if (is.null(size_var)) {
     size_aes_range <- c(3, 3)
   } else if (size_var == "pvalue") {
-    data1$size_aes <- abs(-log10(data1$pvalue))
-    if(!is.null(data2)) data2$size_aes <- abs(-log10(data2$pvalue))
     size_aes_range <- c(0, 6)
   } else {
-    data1$size_aes <- abs(data1[[size_var]])
-    if(!is.null(data2)) data2$size_aes <- abs(data2[[size_var]])
-    size_aes_range <- c(min(abs(data1[[size_var]])), max(abs(data1[[size_var]])))
+    size_aes_range <- c(min(abs(data1[[size_var]]), na.rm = TRUE),
+                        max(abs(data1[[size_var]]), na.rm = TRUE))
   }
 
-  dat1 <- data1 %>%
-    dplyr::mutate(threshold = factor(case_when(
-      pvalue < p_value & log2FoldChange > fc ~ "s_upregulated",
-      pvalue < p_value & log2FoldChange < -fc ~ "s_downregulated",
+  # closure that adds all derived columns to a standardized data frame
+  prep <- function(df) {
+    df$.ggvolc_y <- neglog10_cap(df[[sig_col]], ceiling = ceiling)$value
+    df$threshold <- factor(case_when(
+      df[[sig_col]] < p_value & df$log2FoldChange >  fc ~ "s_upregulated",
+      df[[sig_col]] < p_value & df$log2FoldChange < -fc ~ "s_downregulated",
       TRUE ~ "not_significant"
-    ), levels = c("not_significant", "s_downregulated", "s_upregulated")))
+    ), levels = c("not_significant", "s_downregulated", "s_upregulated"))
 
+    if (is.null(size_var)) {
+      df$size_aes <- 3
+    } else if (size_var == "pvalue") {
+      sp <- -log10(df$pvalue)
+      if (any(is.infinite(sp))) sp[is.infinite(sp)] <- ceiling
+      df$size_aes <- abs(sp)
+    } else {
+      df$size_aes <- abs(df[[size_var]])
+    }
 
-  if (is.null(data2)) {
-    dat1.2 <- dat1
-  } else {
-    dat1.2 <- dplyr::anti_join(dat1, data2, by="genes")
+    df$.ggvolc_tip <- sprintf(
+      "<b>%s</b><br/>log2FC: %.2f<br/>%s: %s",
+      df$genes, df$log2FoldChange, sig_col,
+      formatC(df[[sig_col]], format = "e", digits = 2))
+    df
   }
+
+  d1 <- prep(data1)
+
+  # ---- Build the highlighted / labelled set -----------------------------
+  att <- NULL
+  if (!is.null(data2)) att <- prep(data2)
+  if (!is.null(label_top)) {
+    # most significant `n` rows of a candidate pool
+    pick_top <- function(pool, n) {
+      pool <- pool[order(pool[[sig_col]]), , drop = FALSE]
+      pool[seq_len(min(n, nrow(pool))), , drop = FALSE]
+    }
+    up_pool   <- d1[d1$threshold == "s_upregulated",   , drop = FALSE]
+    down_pool <- d1[d1$threshold == "s_downregulated", , drop = FALSE]
+    all_pool  <- d1[d1$threshold != "not_significant",  , drop = FALSE]
+
+    topn <- switch(label_dir,
+      both = pick_top(all_pool,  label_top),
+      up   = pick_top(up_pool,   label_top),
+      down = pick_top(down_pool, label_top),
+      each = dplyr::bind_rows(pick_top(up_pool,   label_top),
+                              pick_top(down_pool, label_top))
+    )
+    att <- if (is.null(att)) topn else dplyr::bind_rows(att, topn)
+  }
+  if (!is.null(att) && nrow(att) > 0) {
+    att <- att[!duplicated(att$genes), , drop = FALSE]
+  } else {
+    att <- NULL
+  }
+
+  # background points = everything not in the highlighted set
+  bg <- if (is.null(att)) d1 else dplyr::anti_join(d1, att, by = "genes")
 
   color_mapping <- c("s_downregulated" = down_reg_color,
                      "not_significant" = not_sig_color,
-                     "s_upregulated" = up_reg_color)
+                     "s_upregulated"   = up_reg_color)
 
-  p <- ggplot2::ggplot(dplyr::arrange(dat1.2, threshold)) +
-    ggplot2::geom_point(aes(x = log2FoldChange, y = -log10(pvalue), color = threshold, size = size_aes),
-                        shape = 16, alpha = 0.5) +
+  # ---- Point geom (interactive or static) -------------------------------
+  geom_pt <- if (interactive) ggiraph::geom_point_interactive else ggplot2::geom_point
+
+  if (interactive) {
+    main_aes <- aes(x = log2FoldChange, y = .ggvolc_y, color = threshold,
+                    size = size_aes, tooltip = .ggvolc_tip, data_id = genes)
+  } else {
+    main_aes <- aes(x = log2FoldChange, y = .ggvolc_y, color = threshold,
+                    size = size_aes)
+  }
+
+  p <- ggplot2::ggplot(dplyr::arrange(bg, threshold)) +
+    geom_pt(mapping = main_aes, shape = 16, alpha = 0.5) +
     ggplot2::theme_bw() +
-    ggplot2::labs(title = "Exploring data with ggvolc",
+    ggplot2::labs(title = title,
                   x = "log2FoldChange",
-                  y = "-log10(pvalue)") +
+                  y = paste0("-log10(", sig_col, ")")) +
     ggplot2::scale_color_manual(
       values = color_mapping,
       name = "Genes",
       breaks = c("s_downregulated", "not_significant", "s_upregulated"),
       labels = c("Downregulated", "non-significant", "Upregulated")
     )  +
-    ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(size = 5, alpha=1)))
+    ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(size = 5, alpha = 1)))
 
-  if (!is.null(data2)) {
-    data2 <- data2 %>%
-      dplyr::mutate(threshold = factor(case_when(
-        pvalue < p_value & log2FoldChange > fc ~ "s_upregulated",
-        pvalue < p_value & log2FoldChange < -fc ~ "s_downregulated",
-        TRUE ~ "not_significant"
-      ),levels = c("not_significant", "s_downregulated", "s_upregulated")))
+  if (!is.null(att)) {
+    if (interactive) {
+      att_aes <- aes(x = log2FoldChange, y = .ggvolc_y, fill = threshold,
+                     size = size_aes, tooltip = .ggvolc_tip, data_id = genes)
+    } else {
+      att_aes <- aes(x = log2FoldChange, y = .ggvolc_y, fill = threshold,
+                     size = size_aes)
+    }
 
-    p <- p + ggplot2::geom_point(data = data2, aes(x = log2FoldChange, y = -log10(pvalue),
-                                                   fill = threshold, size = size_aes),
-                                 shape = 21, color = "black") +
+    p <- p + geom_pt(data = att, mapping = att_aes, shape = 21, color = "black") +
       ggplot2::scale_fill_manual(
         values = color_mapping,
         name = "Genes",
@@ -168,13 +291,12 @@ ggvolc <- function(data1,
         guide = "none"
       )
 
-    p <- p + ggrepel::geom_text_repel(data = data2,
-                                      aes(x = log2FoldChange, y = -log10(pvalue),
-                                          label = genes), color = "#333333", fontface="bold",
+    p <- p + ggrepel::geom_text_repel(data = att,
+                                      aes(x = log2FoldChange, y = .ggvolc_y,
+                                          label = genes), color = "#333333", fontface = "bold",
                                       segment.curvature = -0.4,
                                       segment.alpha = 0.5)
   }
-
 
   if (is.null(size_var)) {
     p <- p + scale_size_continuous(guide = "none")  # No legend for size when size_var is NULL
@@ -206,13 +328,12 @@ ggvolc <- function(data1,
     )
 
   if (add_seg) {
+    y_top <- 0.85 * max(d1$.ggvolc_y, na.rm = TRUE)
     expression_limits <- data.frame(
-      x.start = c(-fc, fc, min(data1$log2FoldChange, na.rm = TRUE)),
-      x.end = c(-fc, fc, max(data1$log2FoldChange, na.rm = TRUE)),
+      x.start = c(-fc, fc, min(d1$log2FoldChange, na.rm = TRUE)),
+      x.end   = c(-fc, fc, max(d1$log2FoldChange, na.rm = TRUE)),
       y.start = c(0, 0, -log10(p_value)),
-      y.end = c(0.85 * max(-log10(data1$pvalue), na.rm = TRUE),
-                0.85 * max(-log10(data1$pvalue), na.rm = TRUE),
-                -log10(p_value))
+      y.end   = c(y_top, y_top, -log10(p_value))
     )
 
     p <- p + ggplot2::geom_segment(data = expression_limits,
@@ -221,5 +342,17 @@ ggvolc <- function(data1,
                                    linetype = "dashed")
   }
 
-    return(p)
+  if (interactive) {
+    return(ggiraph::girafe(
+      ggobj = p,
+      options = list(
+        ggiraph::opts_hover(css = "stroke:#333333;stroke-width:1.5px;"),
+        ggiraph::opts_tooltip(
+          css = paste0("background:#333333;color:#ffffff;padding:6px 8px;",
+                       "border-radius:4px;font-size:12px;"))
+      )
+    ))
   }
+
+  return(p)
+}

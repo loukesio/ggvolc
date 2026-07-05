@@ -157,4 +157,50 @@ ggvolc(edger_res, top, add_seg = TRUE) %>%
   genes_table(top)
 ```
 
+### 8. Call significance on the adjusted p-value (FDR)
+
+By default the significance colouring uses the raw p-value. In most DE workflows
+you want to call hits on the **adjusted** p-value (FDR) instead — set
+`sig_col = "padj"` and the y-axis and the significance line follow along, so the
+plot stays consistent.
+
+```r
+ggvolc(all_genes, sig_col = "padj", add_seg = TRUE)
+```
+
+`ggvolc()` is also robust to p-values of exactly `0` (which DESeq2/edgeR can emit
+for the strongest genes): instead of silently dropping them, their `-log10`
+value is capped so they stay pinned near the top of the plot.
+
+### 9. Automatically label the top genes
+
+No need to build a separate data frame — `label_top` highlights and labels the N
+most significant genes for you, and `label_dir` lets you pick the direction.
+
+```r
+# top 10 overall
+ggvolc(all_genes, label_top = 10, add_seg = TRUE, title = "Top 10 hits")
+
+# top 12 upregulated only
+ggvolc(all_genes, label_top = 12, label_dir = "up")
+
+# top 20 downregulated only
+ggvolc(all_genes, label_top = 20, label_dir = "down")
+
+# top 10 of each direction (up to 20 labels)
+ggvolc(all_genes, label_top = 10, label_dir = "each")
+```
+
+`label_dir` accepts `"both"` (default), `"up"`, `"down"`, or `"each"`.
+
+### 10. Make it interactive
+
+Set `interactive = TRUE` to get an [`ggiraph`](https://davidgohel.github.io/ggiraph/)
+widget — hover any point to see the gene name and its statistics. `ggiraph` is an
+optional dependency (install it with `install.packages("ggiraph")`).
+
+```r
+ggvolc(all_genes, attention_genes, interactive = TRUE)
+```
+
 

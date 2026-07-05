@@ -10,6 +10,11 @@ ggvolc(
   size_var = NULL,
   p_value = 0.05,
   fc = 1,
+  sig_col = c("pvalue", "padj"),
+  label_top = NULL,
+  label_dir = c("both", "up", "down", "each"),
+  title = NULL,
+  interactive = FALSE,
   not_sig_color = "#808080",
   down_reg_color = "#00798c",
   up_reg_color = "#d1495b",
@@ -33,6 +38,29 @@ Uses the same auto-detection as \code{data1}. Default is NULL.}
 \item{fc}{Fold change threshold for determining upregulated or downregulated
 genes. Default is 1.}
 
+\item{sig_col}{Column used to call significance and to build the y-axis.
+Either \code{"pvalue"} (raw p-value, the default) or \code{"padj"} (the
+adjusted p-value / FDR, which is the recommended cutoff for calling hits in
+most DE workflows). The y-axis and the significance segment follow this
+choice, so the plot stays internally consistent.}
+
+\item{label_top}{Optional integer. When supplied, the \code{label_top} most
+significant genes (smallest \code{sig_col}, among significant genes) are
+highlighted and labelled automatically, without building a separate
+\code{data2}. Combined with \code{data2} if both are given. Default NULL.}
+
+\item{label_dir}{Direction to draw the \code{label_top} genes from. One of
+\code{"both"} (top N over all significant genes, the default),
+\code{"up"} (top N upregulated), \code{"down"} (top N downregulated), or
+\code{"each"} (top N upregulated \emph{and} top N downregulated, i.e. up to
+2N labels). Ignored when \code{label_top} is NULL.}
+
+\item{title}{Plot title. Default NULL (no title).}
+
+\item{interactive}{Logical. If TRUE, returns an interactive \pkg{ggiraph}
+\code{girafe} widget where hovering a point reveals the gene name and its
+statistics. Requires the optional \pkg{ggiraph} package. Default FALSE.}
+
 \item{not_sig_color}{Color for non-significant genes. Default is "#808080".}
 
 \item{down_reg_color}{Color for downregulated genes. Default is "#00798c".}
@@ -43,7 +71,8 @@ genes. Default is 1.}
 indicating the p-value and fold change thresholds. Default is FALSE.}
 }
 \value{
-A ggplot2 object displaying the volcano plot.
+A ggplot2 object displaying the volcano plot, or, when
+  \code{interactive = TRUE}, a \pkg{ggiraph} \code{girafe} widget.
 }
 \description{
 This function creates a volcano plot using ggplot2 based on provided datasets.
@@ -69,6 +98,21 @@ ggvolc(all_genes, attention_genes)
 
 # Add dashed lines to indicate significance thresholds
 ggvolc(all_genes, attention_genes, add_seg = TRUE)
+
+# Call significance on the adjusted p-value (FDR) instead of the raw p-value
+ggvolc(all_genes, sig_col = "padj")
+
+# Automatically label the 10 most significant genes
+ggvolc(all_genes, label_top = 10)
+
+# Label the top 10 upregulated genes only
+ggvolc(all_genes, label_top = 10, label_dir = "up")
+
+# Label the top 8 of each direction (up to 16 labels)
+ggvolc(all_genes, label_top = 8, label_dir = "each")
+
+# Give the plot a title
+ggvolc(all_genes, title = "Treated vs. control")
 
 # Customize colors for up- and down-regulated genes
 ggvolc(all_genes, attention_genes,
@@ -101,5 +145,11 @@ limma_df <- data.frame(
   adj.P.Val = 10^-runif(50, 0, 5)
 )
 ggvolc(limma_df)
+
+\dontrun{
+# Interactive volcano (requires the ggiraph package): hover a point to
+# see the gene name and its statistics
+ggvolc(all_genes, attention_genes, interactive = TRUE)
+}
 
 }

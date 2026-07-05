@@ -1,3 +1,32 @@
+# ggvolc 0.3.0
+
+## Better significance handling, auto-labels & interactivity
+
+* **Call significance on the adjusted p-value.** `ggvolc()` gains a `sig_col`
+  argument (`"pvalue"` or `"padj"`). Choosing `"padj"` thresholds hits on the
+  FDR — the recommended cutoff in most DE workflows — and the y-axis and the
+  significance segment follow the choice so the plot stays internally
+  consistent. Default remains `"pvalue"` for backward compatibility.
+* **Robust to `p == 0`.** DESeq2 and edgeR can report a p-value of exactly 0
+  (floating-point underflow) for the strongest genes; `-log10(0)` is `Inf`,
+  which ggplot2 silently drops — so the *most* significant genes used to vanish
+  from the plot. Those values are now capped to a finite ceiling (just above the
+  most significant real gene) and a message reports how many were adjusted.
+* **`label_top = N`.** Automatically highlight and label the `N` most
+  significant genes without building a separate `data2`. Combines with an
+  explicit `data2` when both are supplied.
+* **`label_dir`.** Choose the direction the labelled genes are drawn from:
+  `"both"` (default), `"up"`, `"down"`, or `"each"` (top N upregulated *and*
+  top N downregulated). Pairs with `label_top`, e.g. `label_top = 10,
+  label_dir = "each"`.
+* **`title` argument.** The plot title is now configurable and defaults to
+  `NULL` (no title), replacing the previous hardcoded placeholder title.
+* **Interactive volcano plots.** `ggvolc(..., interactive = TRUE)` returns a
+  `ggiraph` `girafe` widget where hovering a point reveals the gene name and its
+  statistics. `ggiraph` is an optional (`Suggests`) dependency, so the core
+  package still installs without it.
+* New internal helper: `neglog10_cap()`.
+
 # ggvolc 0.2.0
 
 ## Multi-pipeline support & gt tables
