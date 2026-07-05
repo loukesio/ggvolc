@@ -54,9 +54,9 @@
 <p>Install the package using the following commands <img align="right" src="logo/ggvolc_logo.png" width="400"></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># for now, you can install the developmental version of ltc</span></span>
-<span><span class="co"># first you need to install the devtools package </span></span>
+<span><span class="co"># first you need to install the devtools package</span></span>
 <span><span class="co"># in case you have not already installed</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span> </span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span><span class="co"># and load it</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
 <span></span>
@@ -70,7 +70,7 @@
 </h3>
 <p>Load the library and explore the example datasets!</p>
 <pre class="console"><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://loukesio.github.io/ggvolc/">ggvolc</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Welcome to ggvolc version 0.2.0 !</span></span>
+<span><span class="co">#&gt; Welcome to ggvolc version 0.3.0 !</span></span>
 <span><span class="co">#&gt;</span></span>
 <span><span class="co">#&gt;                                 888</span></span>
 <span><span class="co">#&gt;                                 888</span></span>
@@ -84,80 +84,85 @@
 <span><span class="co">#&gt; Y8b d88P Y8b d88P</span></span>
 <span><span class="co">#&gt;  "Y88P"   "Y88P"</span></span>
 <span><span class="co">#&gt;</span></span></code></pre>
-<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">all_genes</span><span class="op">)</span>     <span class="co"># data.frame that contains the output of differentially expressed genes</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">all_genes</span>,<span class="fl">5</span><span class="op">)</span>   <span class="co"># have a look at the first 5 rows</span></span>
-<span></span>
-<span><span class="co">#&gt;       genes   baseMean log2FoldChange     lfcSE       stat       pvalue</span></span>
-<span><span class="co">#&gt; 1      GCR1  7201.5782       2.244064 0.2004959  11.192564 4.434241e-29</span></span>
-<span><span class="co">#&gt; 2     OPI10  1009.4171      -2.257454 0.2096469 -10.767889 4.880607e-27</span></span>
-<span><span class="co">#&gt; 3      AGA2   249.1173       3.829474 0.3623263  10.569132 4.143136e-26</span></span>
-<span><span class="co">#&gt; 4 FIM1_1376  5237.5035       2.550409 0.2560379   9.961059 2.256459e-23</span></span>
-<span><span class="co">#&gt; 5      HMG1 10838.1037       2.214300 0.2229065   9.933763 2.968371e-23</span></span>
-<span><span class="co">#&gt;           padj</span></span>
-<span><span class="co">#&gt; 1 2.153711e-25</span></span>
-<span><span class="co">#&gt; 2 1.185255e-23</span></span>
-<span><span class="co">#&gt; 3 6.707736e-23</span></span>
-<span><span class="co">#&gt; 4 2.739905e-20</span></span>
-<span><span class="co">#&gt; 5 2.883475e-20</span></span>
-<span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">attention_genes</span><span class="op">)</span>     <span class="co"># here is a data.frame with genes that I want to mention to the volcano plot</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">attention_genes</span>,<span class="fl">5</span><span class="op">)</span>   <span class="co"># have a look at the first five rows</span></span>
-<span><span class="co">#&gt;     genes   baseMean log2FoldChange     lfcSE      stat       pvalue</span></span>
-<span><span class="co">#&gt; 1   THI13   480.5194       1.585811 0.5219706  3.038122 2.380572e-03</span></span>
-<span><span class="co">#&gt; 2    FBP1 22710.8428      -2.366733 0.3533032 -6.698871 2.100354e-11</span></span>
-<span><span class="co">#&gt; 3    TRA1  4491.1343      -1.410696 0.4384316 -3.217595 1.292700e-03</span></span>
-<span><span class="co">#&gt; 4 YDR222W   591.2289      -4.045918 0.9133881 -4.429572 9.442026e-06</span></span>
-<span><span class="co">#&gt; 5    BRL1  4434.7712       2.375919 0.5037264  4.716686 2.397176e-06</span></span>
-<span><span class="co">#&gt;           padj</span></span>
-<span><span class="co">#&gt; 1 1.371582e-02</span></span>
-<span><span class="co">#&gt; 2 3.290780e-09</span></span>
-<span><span class="co">#&gt; 3 8.565681e-03</span></span>
-<span><span class="co">#&gt; 4 1.819838e-04</span></span>
-<span><span class="co">#&gt; 5 5.850796e-05</span></span></code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">data</span>(all_genes)     <span class="co"># data.frame that contains the output of differentially expressed genes</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">head</span>(all_genes,<span class="dv">5</span>)   <span class="co"># have a look at the first 5 rows</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;       genes   baseMean log2FoldChange     lfcSE       stat       pvalue</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; 1      GCR1  7201.5782       2.244064 0.2004959  11.192564 4.434241e-29</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; 2     OPI10  1009.4171      -2.257454 0.2096469 -10.767889 4.880607e-27</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; 3      AGA2   249.1173       3.829474 0.3623263  10.569132 4.143136e-26</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; 4 FIM1_1376  5237.5035       2.550409 0.2560379   9.961059 2.256459e-23</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; 5      HMG1 10838.1037       2.214300 0.2229065   9.933763 2.968371e-23</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;           padj</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; 1 2.153711e-25</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; 2 1.185255e-23</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; 3 6.707736e-23</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; 4 2.739905e-20</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; 5 2.883475e-20</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="fu">data</span>(attention_genes)     <span class="co"># here is a data.frame with genes that I want to mention to the volcano plot</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="fu">head</span>(attention_genes,<span class="dv">5</span>)   <span class="co"># have a look at the first five rows</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt;     genes   baseMean log2FoldChange     lfcSE      stat       pvalue</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; 1   THI13   480.5194       1.585811 0.5219706  3.038122 2.380572e-03</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; 2    FBP1 22710.8428      -2.366733 0.3533032 -6.698871 2.100354e-11</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; 3    TRA1  4491.1343      -1.410696 0.4384316 -3.217595 1.292700e-03</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; 4 YDR222W   591.2289      -4.045918 0.9133881 -4.429572 9.442026e-06</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; 5    BRL1  4434.7712       2.375919 0.5037264  4.716686 2.397176e-06</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt;           padj</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; 1 1.371582e-02</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; 2 3.290780e-09</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; 3 8.565681e-03</span></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; 4 1.819838e-04</span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co">#&gt; 5 5.850796e-05</span></span></code></pre></div>
 <p><sup>Created on 2023-08-11 with <a href="https://reprex.tidyverse.org" class="external-link">reprex v2.0.2</a></sup></p>
 </div>
 <div class="section level3">
 <h3 id="id_1-plot-a-simple-volcano-plot">1. Plot a simple volcano plot!<a class="anchor" aria-label="anchor" href="#id_1-plot-a-simple-volcano-plot"></a>
 </h3>
-<p>Install the package using the following commands</p>
-<pre><code><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span><span class="op">)</span></span></code></pre>
-<p><img align="center" src="logo/plot1_basic.png" width="750"></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot1-basic-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_2-add-the-genes-of-attention">2. Add the genes of attention.<a class="anchor" aria-label="anchor" href="#id_2-add-the-genes-of-attention"></a>
 </h3>
-<pre><code><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span><span class="op">)</span></span></code></pre>
-<p><img align="center" src="logo/plot2_AttentionGenes.png" width="750"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot2-attention-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_3-add-segments-to-indicate-areas-of-significance">3. Add segments to indicate areas of significance.<a class="anchor" aria-label="anchor" href="#id_3-add-segments-to-indicate-areas-of-significance"></a>
 </h3>
-<pre><code><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>title<span class="op">=</span><span class="st">"Add segments of significance"</span><span class="op">)</span></span></code></pre>
-<p><img align="center" src="logo/plot3_Segments.png" width="750"></p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title<span class="op">=</span><span class="st">"Add segments of significance"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot3-segments-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_4-indicate-the-size-of-point-based-on-the-log2foldchange-column">4. Indicate the size of point based on the log2FoldChange column.<a class="anchor" aria-label="anchor" href="#id_4-indicate-the-size-of-point-based-on-the-log2foldchange-column"></a>
 </h3>
-<pre><code><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, size_var <span class="op">=</span> <span class="st">"log2FoldChange"</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre>
-<p><img align="center" src="logo/plot4_scale_Log2foldChange.png" width="750"></p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, size_var <span class="op">=</span> <span class="st">"log2FoldChange"</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot4-size-log2fc-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_5-indicate-the-size-of-the-point-based-on-the-pvalue">5. Indicate the size of the point based on the pvalue.<a class="anchor" aria-label="anchor" href="#id_5-indicate-the-size-of-the-point-based-on-the-pvalue"></a>
 </h3>
-<pre><code><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, size_var <span class="op">=</span> <span class="st">"pvalue"</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre>
-<p><img align="center" src="logo/plot5_scalePvalue.png" width="750"></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, size_var <span class="op">=</span> <span class="st">"pvalue"</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot5-size-pvalue-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_6-add-a-table-with-the-genes-of-interest">6. Add a table with the genes of interest.<a class="anchor" aria-label="anchor" href="#id_6-add-a-table-with-the-genes-of-interest"></a>
 </h3>
-<pre><code><span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span>title<span class="op">=</span><span class="st">"Add a table with the genes of interest"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">plot</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="reference/genes_table.html">genes_table</a></span><span class="op">(</span><span class="va">attention_genes</span><span class="op">)</span></span></code></pre>
-<p><img align="center" src="logo/plot6_adding_table.png" width="750"></p>
+<span>  <span class="fu"><a href="reference/genes_table.html">genes_table</a></span><span class="op">(</span><span class="va">attention_genes</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot6-table-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
 <p>The gene table is rendered with <a href="https://gt.rstudio.com" class="external-link"><code>gt</code></a> and composed with <a href="https://patchwork.data-imaginist.com" class="external-link"><code>patchwork</code></a>, so the result is a single object you can style further or save with <code><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggplot2::ggsave()</a></code>.</p>
 </div>
 <div class="section level3">
@@ -166,11 +171,11 @@
 <p><code><a href="reference/ggvolc.html">ggvolc()</a></code> and <code><a href="reference/genes_table.html">genes_table()</a></code> accept the output of all three major differential-expression pipelines directly — column names are auto-detected and mapped internally, so no manual renaming is needed. Gene identifiers held in row names (as edgeR/limma often do) are promoted to a <code>genes</code> column automatically.</p>
 <table class="table">
 <colgroup>
-<col width="17%">
+<col width="28%">
 <col width="23%">
-<col width="16%">
-<col width="21%">
-<col width="21%">
+<col width="14%">
+<col width="17%">
+<col width="15%">
 </colgroup>
 <thead><tr>
 <th>Pipeline</th>
@@ -206,20 +211,27 @@
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># edgeR: pass topTags()$table straight in</span></span>
 <span><span class="va">edger_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">edgeR</span><span class="fu">::</span><span class="fu">topTags</span><span class="op">(</span><span class="va">qlf</span>, n <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">edger_res</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># highlight the top hits and add a gt table</span></span>
-<span><span class="va">top</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">edger_res</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">edger_res</span><span class="op">$</span><span class="va">PValue</span><span class="op">)</span>, <span class="op">]</span>, <span class="fl">8</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">edger_res</span>, <span class="va">top</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="reference/genes_table.html">genes_table</a></span><span class="op">(</span><span class="va">top</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">edger_res</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># a topTags()-style edgeR table (built here for illustration)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">edger_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  genes  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"gene"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">200</span><span class="op">)</span>,</span>
+<span>  logFC  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">0</span>, <span class="fl">2.5</span><span class="op">)</span>,</span>
+<span>  logCPM <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">2</span>, <span class="fl">14</span><span class="op">)</span>,</span>
+<span>  PValue <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">0</span>, <span class="fl">8</span><span class="op">)</span>,</span>
+<span>  FDR    <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">0</span>, <span class="fl">6</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">edger_res</span>, label_top <span class="op">=</span> <span class="fl">8</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot7-edger-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_8-significance-on-the-adjusted-p-value-fdr--the-default">8. Significance on the adjusted p-value (FDR) — the default<a class="anchor" aria-label="anchor" href="#id_8-significance-on-the-adjusted-p-value-fdr--the-default"></a>
 </h3>
 <p><code><a href="reference/ggvolc.html">ggvolc()</a></code> calls significance on the <strong>adjusted</strong> p-value (FDR) by default — the right cutoff for most DE workflows — and the y-axis and the significance line follow along, so the plot stays consistent. Prefer the raw p-value? Set <code>sig_col = "pvalue"</code>.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>                      <span class="co"># FDR (padj) by default</span></span>
-<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, sig_col <span class="op">=</span> <span class="st">"pvalue"</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="co"># raw p-value</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>   <span class="co"># significance on padj (FDR) by default</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot8-fdr-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
 <p>If your table has no adjusted-p column, ggvolc automatically falls back to the raw p-value.</p>
 <p><code><a href="reference/ggvolc.html">ggvolc()</a></code> is also robust to p-values of exactly <code>0</code> (which DESeq2/edgeR can emit for the strongest genes): instead of silently dropping them, their <code>-log10</code> value is capped so they stay pinned near the top of the plot.</p>
 </div>
@@ -227,26 +239,27 @@
 <h3 id="id_9-automatically-label-the-top-genes">9. Automatically label the top genes<a class="anchor" aria-label="anchor" href="#id_9-automatically-label-the-top-genes"></a>
 </h3>
 <p>No need to build a separate data frame — <code>label_top</code> highlights and labels the N most significant genes for you, and <code>label_dir</code> lets you pick the direction.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># top 10 overall</span></span>
-<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">10</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span>, title <span class="op">=</span> <span class="st">"Top 10 hits"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># top 12 upregulated only</span></span>
-<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">12</span>, label_dir <span class="op">=</span> <span class="st">"up"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># top 20 downregulated only</span></span>
-<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">20</span>, label_dir <span class="op">=</span> <span class="st">"down"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># top 10 of each direction (up to 20 labels)</span></span>
-<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">10</span>, label_dir <span class="op">=</span> <span class="st">"each"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">10</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span>, title <span class="op">=</span> <span class="st">"Top 10 hits"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot9-top-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># top 8 up- and top 8 down-regulated</span></span>
+<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">8</span>, label_dir <span class="op">=</span> <span class="st">"each"</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Top 8 up + 8 down"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot9-each-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
 <p><code>label_dir</code> accepts <code>"both"</code> (default), <code>"up"</code>, <code>"down"</code>, or <code>"each"</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="id_10-make-it-interactive">10. Make it interactive<a class="anchor" aria-label="anchor" href="#id_10-make-it-interactive"></a>
 </h3>
 <p>Set <code>interactive = TRUE</code> to get an <a href="https://davidgohel.github.io/ggiraph/" class="external-link"><code>ggiraph</code></a> widget — hover any point to see the gene name and its statistics. <code>ggiraph</code> is an optional dependency (install it with <code>install.packages("ggiraph")</code>).</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, interactive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<blockquote>
+<p>The volcano below is a static preview. Hover-to-inspect works when you run the code in R or view the <a href="https://loukesio.github.io/ggvolc/articles/ggvolc.html">live version on the package website</a>.</p>
+</blockquote>
+<p><img src="reference/figures/README-plot10-interactive-preview-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
 </div>
 </div>
 

@@ -6,9 +6,9 @@ Install the package using the following commands
 ``` r
 
 # for now, you can install the developmental version of ltc
-# first you need to install the devtools package 
+# first you need to install the devtools package
 # in case you have not already installed
-install.packages("devtools") 
+install.packages("devtools")
 # and load it
 library(devtools)
 
@@ -26,7 +26,7 @@ Load the library and explore the example datasets!
 
 ``` console
 library(ggvolc)
-#> Welcome to ggvolc version 0.2.0 !
+#> Welcome to ggvolc version 0.3.0 !
 #>
 #>                                 888
 #>                                 888
@@ -42,82 +42,100 @@ library(ggvolc)
 #>
 ```
 
-    data(all_genes)     # data.frame that contains the output of differentially expressed genes
-    head(all_genes,5)   # have a look at the first 5 rows
+``` R
+data(all_genes)     # data.frame that contains the output of differentially expressed genes
+head(all_genes,5)   # have a look at the first 5 rows
 
-    #>       genes   baseMean log2FoldChange     lfcSE       stat       pvalue
-    #> 1      GCR1  7201.5782       2.244064 0.2004959  11.192564 4.434241e-29
-    #> 2     OPI10  1009.4171      -2.257454 0.2096469 -10.767889 4.880607e-27
-    #> 3      AGA2   249.1173       3.829474 0.3623263  10.569132 4.143136e-26
-    #> 4 FIM1_1376  5237.5035       2.550409 0.2560379   9.961059 2.256459e-23
-    #> 5      HMG1 10838.1037       2.214300 0.2229065   9.933763 2.968371e-23
-    #>           padj
-    #> 1 2.153711e-25
-    #> 2 1.185255e-23
-    #> 3 6.707736e-23
-    #> 4 2.739905e-20
-    #> 5 2.883475e-20
+#>       genes   baseMean log2FoldChange     lfcSE       stat       pvalue
+#> 1      GCR1  7201.5782       2.244064 0.2004959  11.192564 4.434241e-29
+#> 2     OPI10  1009.4171      -2.257454 0.2096469 -10.767889 4.880607e-27
+#> 3      AGA2   249.1173       3.829474 0.3623263  10.569132 4.143136e-26
+#> 4 FIM1_1376  5237.5035       2.550409 0.2560379   9.961059 2.256459e-23
+#> 5      HMG1 10838.1037       2.214300 0.2229065   9.933763 2.968371e-23
+#>           padj
+#> 1 2.153711e-25
+#> 2 1.185255e-23
+#> 3 6.707736e-23
+#> 4 2.739905e-20
+#> 5 2.883475e-20
 
 
-    data(attention_genes)     # here is a data.frame with genes that I want to mention to the volcano plot
-    head(attention_genes,5)   # have a look at the first five rows
-    #>     genes   baseMean log2FoldChange     lfcSE      stat       pvalue
-    #> 1   THI13   480.5194       1.585811 0.5219706  3.038122 2.380572e-03
-    #> 2    FBP1 22710.8428      -2.366733 0.3533032 -6.698871 2.100354e-11
-    #> 3    TRA1  4491.1343      -1.410696 0.4384316 -3.217595 1.292700e-03
-    #> 4 YDR222W   591.2289      -4.045918 0.9133881 -4.429572 9.442026e-06
-    #> 5    BRL1  4434.7712       2.375919 0.5037264  4.716686 2.397176e-06
-    #>           padj
-    #> 1 1.371582e-02
-    #> 2 3.290780e-09
-    #> 3 8.565681e-03
-    #> 4 1.819838e-04
-    #> 5 5.850796e-05
+data(attention_genes)     # here is a data.frame with genes that I want to mention to the volcano plot
+head(attention_genes,5)   # have a look at the first five rows
+#>     genes   baseMean log2FoldChange     lfcSE      stat       pvalue
+#> 1   THI13   480.5194       1.585811 0.5219706  3.038122 2.380572e-03
+#> 2    FBP1 22710.8428      -2.366733 0.3533032 -6.698871 2.100354e-11
+#> 3    TRA1  4491.1343      -1.410696 0.4384316 -3.217595 1.292700e-03
+#> 4 YDR222W   591.2289      -4.045918 0.9133881 -4.429572 9.442026e-06
+#> 5    BRL1  4434.7712       2.375919 0.5037264  4.716686 2.397176e-06
+#>           padj
+#> 1 1.371582e-02
+#> 2 3.290780e-09
+#> 3 8.565681e-03
+#> 4 1.819838e-04
+#> 5 5.850796e-05
+```
 
 ^(Created on 2023-08-11 with [reprex v2.0.2](https://reprex.tidyverse.org))
 
 ### 1. Plot a simple volcano plot!
 
-Install the package using the following commands
+``` r
 
-    ggvolc(all_genes)
+ggvolc(all_genes)
+```
 
-![](logo/plot1_basic.png)
+![](reference/figures/README-plot1-basic-1.png)
 
 ### 2. Add the genes of attention.
 
-    ggvolc(all_genes, attention_genes)
+``` r
 
-![](logo/plot2_AttentionGenes.png)
+ggvolc(all_genes, attention_genes)
+```
+
+![](reference/figures/README-plot2-attention-1.png)
 
 ### 3. Add segments to indicate areas of significance.
 
-    ggvolc(all_genes, attention_genes, add_seg = TRUE) +
-      labs(title="Add segments of significance")
+``` r
 
-![](logo/plot3_Segments.png)
+ggvolc(all_genes, attention_genes, add_seg = TRUE) +
+  labs(title="Add segments of significance")
+```
+
+![](reference/figures/README-plot3-segments-1.png)
 
 ### 4. Indicate the size of point based on the log2FoldChange column.
 
-    ggvolc(all_genes, attention_genes, size_var = "log2FoldChange", add_seg = TRUE)
+``` r
 
-![](logo/plot4_scale_Log2foldChange.png)
+ggvolc(all_genes, attention_genes, size_var = "log2FoldChange", add_seg = TRUE)
+```
+
+![](reference/figures/README-plot4-size-log2fc-1.png)
 
 ### 5. Indicate the size of the point based on the pvalue.
 
-    ggvolc(all_genes, attention_genes, size_var = "pvalue", add_seg = TRUE)
+``` r
 
-![](logo/plot5_scalePvalue.png)
+ggvolc(all_genes, attention_genes, size_var = "pvalue", add_seg = TRUE)
+```
+
+![](reference/figures/README-plot5-size-pvalue-1.png)
 
 ### 6. Add a table with the genes of interest.
 
-    plot <- ggvolc(all_genes, attention_genes, add_seg = TRUE) +
-      labs(title="Add a table with the genes of interest")
+``` r
 
-    plot %>%
-      genes_table(attention_genes)
+plot <- ggvolc(all_genes, attention_genes, add_seg = TRUE) +
+  labs(title="Add a table with the genes of interest")
 
-![](logo/plot6_adding_table.png)
+plot %>%
+  genes_table(attention_genes)
+```
+
+![](reference/figures/README-plot6-table-1.png)
 
 The gene table is rendered with [`gt`](https://gt.rstudio.com) and
 composed with [`patchwork`](https://patchwork.data-imaginist.com), so
@@ -144,12 +162,23 @@ edgeR/limma often do) are promoted to a `genes` column automatically.
 # edgeR: pass topTags()$table straight in
 edger_res <- as.data.frame(edgeR::topTags(qlf, n = Inf))
 ggvolc(edger_res)
-
-# highlight the top hits and add a gt table
-top <- head(edger_res[order(edger_res$PValue), ], 8)
-ggvolc(edger_res, top, add_seg = TRUE) %>%
-  genes_table(top)
 ```
+
+``` r
+
+# a topTags()-style edgeR table (built here for illustration)
+set.seed(1)
+edger_res <- data.frame(
+  genes  = paste0("gene", 1:200),
+  logFC  = rnorm(200, 0, 2.5),
+  logCPM = runif(200, 2, 14),
+  PValue = 10^-runif(200, 0, 8),
+  FDR    = 10^-runif(200, 0, 6)
+)
+ggvolc(edger_res, label_top = 8, add_seg = TRUE)
+```
+
+![](reference/figures/README-plot7-edger-1.png)
 
 ### 8. Significance on the adjusted p-value (FDR) — the default
 
@@ -161,9 +190,10 @@ Set `sig_col = "pvalue"`.
 
 ``` r
 
-ggvolc(all_genes, add_seg = TRUE)                      # FDR (padj) by default
-ggvolc(all_genes, sig_col = "pvalue", add_seg = TRUE)  # raw p-value
+ggvolc(all_genes, add_seg = TRUE)   # significance on padj (FDR) by default
 ```
+
+![](reference/figures/README-plot8-fdr-1.png)
 
 If your table has no adjusted-p column, ggvolc automatically falls back
 to the raw p-value.
@@ -183,16 +213,18 @@ pick the direction.
 
 # top 10 overall
 ggvolc(all_genes, label_top = 10, add_seg = TRUE, title = "Top 10 hits")
-
-# top 12 upregulated only
-ggvolc(all_genes, label_top = 12, label_dir = "up")
-
-# top 20 downregulated only
-ggvolc(all_genes, label_top = 20, label_dir = "down")
-
-# top 10 of each direction (up to 20 labels)
-ggvolc(all_genes, label_top = 10, label_dir = "each")
 ```
+
+![](reference/figures/README-plot9-top-1.png)
+
+``` r
+
+# top 8 up- and top 8 down-regulated
+ggvolc(all_genes, label_top = 8, label_dir = "each", add_seg = TRUE,
+       title = "Top 8 up + 8 down")
+```
+
+![](reference/figures/README-plot9-each-1.png)
 
 `label_dir` accepts `"both"` (default), `"up"`, `"down"`, or `"each"`.
 
@@ -207,3 +239,9 @@ dependency (install it with `install.packages("ggiraph")`).
 
 ggvolc(all_genes, attention_genes, interactive = TRUE)
 ```
+
+> The volcano below is a static preview. Hover-to-inspect works when you
+> run the code in R or view the [live version on the package
+> website](https://loukesio.github.io/ggvolc/articles/ggvolc.html).
+
+![](reference/figures/README-plot10-interactive-preview-1.png)

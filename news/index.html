@@ -50,6 +50,9 @@
 <li>
 <strong>Interactive volcano plots.</strong> <code>ggvolc(..., interactive = TRUE)</code> returns a <code>ggiraph</code> <code>girafe</code> widget where hovering a point reveals the gene name and its statistics. <code>ggiraph</code> is an optional (<code>Suggests</code>) dependency, so the core package still installs without it.</li>
 <li>New internal helper: <code><a href="../reference/neglog10_cap.html">neglog10_cap()</a></code>.</li>
+<li>The README is now generated from <code>README.Rmd</code> (via <code>devtools::build_readme()</code>) so every example plot is rendered from live code and kept in sync with the package.</li>
+<li>
+<code>DESCRIPTION</code> now declares <code>R (&gt;= 4.1.0)</code>, matching the native pipe (<code>|&gt;</code>) used internally (previously mis-declared as <code>&gt;= 3.5.0</code>).</li>
 </ul></div>
 </div>
     <div class="section level2">
