@@ -169,6 +169,14 @@
 <span>  <span class="fu"><a href="reference/genes_table.html">genes_table</a></span><span class="op">(</span><span class="va">attention_genes</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot6-table-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
 <p>The gene table is rendered with <a href="https://gt.rstudio.com" class="external-link"><code>gt</code></a> and composed with <a href="https://patchwork.data-imaginist.com" class="external-link"><code>patchwork</code></a>, so the result is a single object you can style further or save with <code><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggplot2::ggsave()</a></code>.</p>
+<p>Instead of curating your own set of genes, you can let <code><a href="reference/genes_table.html">genes_table()</a></code> pick the most significant ones automatically with <code>top_n</code>. Pass the full DE table and it selects the top genes by <code>sig_col</code> (defaults to <code>padj</code>, falling back to <code>pvalue</code>). Use <code>dir = "each"</code> to take the top N up- <em>and</em> down-regulated genes.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">plot_top</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">10</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Top 10 most significant genes"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">plot_top</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="reference/genes_table.html">genes_table</a></span><span class="op">(</span><span class="va">all_genes</span>, top_n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot6b-topn-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_7-works-with-deseq2-edger-and-limma-out-of-the-box">7. Works with DESeq2, edgeR, and limma out of the box<a class="anchor" aria-label="anchor" href="#id_7-works-with-deseq2-edger-and-limma-out-of-the-box"></a>
@@ -214,11 +222,11 @@
 </tbody>
 </table>
 <p>The package ships <code>edger_genes</code>, an example <code>topTags()</code>-style table, so you can see this directly. In your own analysis you would pass the real thing:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># edgeR: pass topTags()$table straight in</span></span>
 <span><span class="va">edger_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">edgeR</span><span class="fu">::</span><span class="fu">topTags</span><span class="op">(</span><span class="va">qlf</span>, n <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">edger_res</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">edger_genes</span><span class="op">)</span>          <span class="co"># an edgeR topTags()-style table (genes in the rownames)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">edger_genes</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt;           logFC  logCPM       PValue          FDR</span></span>
@@ -233,7 +241,7 @@
 <h3 id="id_8-significance-on-the-adjusted-p-value-fdr--the-default">8. Significance on the adjusted p-value (FDR) — the default<a class="anchor" aria-label="anchor" href="#id_8-significance-on-the-adjusted-p-value-fdr--the-default"></a>
 </h3>
 <p><code><a href="reference/ggvolc.html">ggvolc()</a></code> calls significance on the <strong>adjusted</strong> p-value (FDR) by default — the right cutoff for most DE workflows — and the y-axis and the significance line follow along, so the plot stays consistent. Prefer the raw p-value? Set <code>sig_col = "pvalue"</code>.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>   <span class="co"># significance on padj (FDR) by default</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot8-fdr-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
 <p>If your table has no adjusted-p column, ggvolc automatically falls back to the raw p-value.</p>
@@ -243,11 +251,11 @@
 <h3 id="id_9-automatically-label-the-top-genes">9. Automatically label the top genes<a class="anchor" aria-label="anchor" href="#id_9-automatically-label-the-top-genes"></a>
 </h3>
 <p>No need to build a separate data frame — <code>label_top</code> highlights and labels the N most significant genes for you, and <code>label_dir</code> lets you pick the direction.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># top 10 overall</span></span>
 <span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">10</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span>, title <span class="op">=</span> <span class="st">"Top 10 hits"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot9-top-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># top 8 up- and top 8 down-regulated</span></span>
 <span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">8</span>, label_dir <span class="op">=</span> <span class="st">"each"</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Top 8 up + 8 down"</span><span class="op">)</span></span></code></pre></div>
@@ -258,7 +266,7 @@
 <h3 id="id_10-make-it-interactive">10. Make it interactive<a class="anchor" aria-label="anchor" href="#id_10-make-it-interactive"></a>
 </h3>
 <p>Set <code>interactive = TRUE</code> to get an <a href="https://davidgohel.github.io/ggiraph/" class="external-link"><code>ggiraph</code></a> widget — hover any point to see the gene name and its statistics. <code>ggiraph</code> is an optional dependency (install it with <code>install.packages("ggiraph")</code>).</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, interactive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <blockquote>
 <p><strong>Note:</strong> GitHub can’t run the widget, so the image below is a static preview. The live, hover-to-inspect version runs in RStudio and on the <a href="https://loukesio.github.io/ggvolc/articles/ggvolc.html">package website</a>.</p>

@@ -159,6 +159,24 @@ composed with [`patchwork`](https://patchwork.data-imaginist.com), so
 the result is a single object you can style further or save with
 [`ggplot2::ggsave()`](https://ggplot2.tidyverse.org/reference/ggsave.html).
 
+Instead of curating your own set of genes, you can let
+[`genes_table()`](https://loukesio.github.io/ggvolc/reference/genes_table.md)
+pick the most significant ones automatically with `top_n`. Pass the full
+DE table and it selects the top genes by `sig_col` (defaults to `padj`,
+falling back to `pvalue`). Use `dir = "each"` to take the top N up-
+*and* down-regulated genes.
+
+``` r
+
+plot_top <- ggvolc(all_genes, label_top = 10, add_seg = TRUE) +
+  labs(title = "Top 10 most significant genes")
+
+plot_top %>%
+  genes_table(all_genes, top_n = 10)
+```
+
+![](reference/figures/README-plot6b-topn-1.png)
+
 ### 7. Works with DESeq2, edgeR, and limma out of the box
 
 [`ggvolc()`](https://loukesio.github.io/ggvolc/reference/ggvolc.md) and

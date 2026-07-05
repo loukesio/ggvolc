@@ -49,7 +49,15 @@ significance and formatted numeric columns.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">genes_table</span><span class="op">(</span><span class="va">plot_obj</span>, <span class="va">data2</span>, p_value <span class="op">=</span> <span class="fl">0.05</span>, table_height <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">genes_table</span><span class="op">(</span></span>
+<span>  <span class="va">plot_obj</span>,</span>
+<span>  <span class="va">data2</span>,</span>
+<span>  top_n <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sig_col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"padj"</span>, <span class="st">"pvalue"</span><span class="op">)</span>,</span>
+<span>  dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"both"</span>, <span class="st">"up"</span>, <span class="st">"down"</span>, <span class="st">"each"</span><span class="op">)</span>,</span>
+<span>  p_value <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  table_height <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -65,12 +73,38 @@ significance and formatted numeric columns.</p>
 Columns are auto-detected in the same way as <code><a href="ggvolc.html">ggvolc</a></code> (DESeq2,
 edgeR, or limma conventions). Required columns after mapping:
 <code>genes</code>, <code>log2FoldChange</code>, <code>pvalue</code>.
-Optional: <code>baseMean</code>, <code>padj</code>.</p></dd>
+Optional: <code>baseMean</code>, <code>padj</code>.
+When <code>top_n</code> is supplied you can pass the full DE table here (e.g.
+<code>all_genes</code>) and the most significant genes are selected automatically.</p></dd>
+
+
+<dt id="arg-top-n">top_n<a class="anchor" aria-label="anchor" href="#arg-top-n"></a></dt>
+<dd><p>Optional integer. When supplied, the <code>top_n</code> most
+significant genes (smallest <code>sig_col</code>, among genes with
+<code>sig_col &lt; p_value</code>) are selected from <code>data2</code> for the table.
+When <code>NULL</code> (default) every row of <code>data2</code> is shown, so passing a
+pre-filtered set such as <code>attention_genes</code> behaves as before.</p></dd>
+
+
+<dt id="arg-sig-col">sig_col<a class="anchor" aria-label="anchor" href="#arg-sig-col"></a></dt>
+<dd><p>Column used to rank significance when <code>top_n</code> is set.
+Either <code>"padj"</code> (adjusted p-value / FDR, the default) or
+<code>"pvalue"</code>. Falls back to <code>"pvalue"</code> when <code>"padj"</code> is the
+default but no adjusted-p column is present.</p></dd>
+
+
+<dt id="arg-dir">dir<a class="anchor" aria-label="anchor" href="#arg-dir"></a></dt>
+<dd><p>Direction to draw the <code>top_n</code> genes from. One of
+<code>"both"</code> (top N over all significant genes, the default),
+<code>"up"</code> (top N upregulated), <code>"down"</code> (top N downregulated), or
+<code>"each"</code> (top N up <em>and</em> top N down, up to <code>2 * top_n</code> rows).
+Ignored when <code>top_n</code> is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-p-value">p_value<a class="anchor" aria-label="anchor" href="#arg-p-value"></a></dt>
 <dd><p>Significance threshold used for color-coding the p-value
-column. Default is 0.05.</p></dd>
+column, and for filtering eligible genes when <code>top_n</code> is set.
+Default is 0.05.</p></dd>
 
 
 <dt id="arg-table-height">table_height<a class="anchor" aria-label="anchor" href="#arg-table-height"></a></dt>
@@ -94,6 +128,15 @@ Default is 1.</p></dd>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">genes_table</span><span class="op">(</span><span class="va">p</span>, <span class="va">attention_genes</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="genes_table-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Auto-select the 10 most significant genes from the full table</span></span></span>
+<span class="r-in"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">genes_table</span><span class="op">(</span><span class="va">p2</span>, <span class="va">all_genes</span>, top_n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="genes_table-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Top 8 of each direction (up to 16 rows)</span></span></span>
+<span class="r-in"><span><span class="fu">genes_table</span><span class="op">(</span><span class="va">p2</span>, <span class="va">all_genes</span>, top_n <span class="op">=</span> <span class="fl">8</span>, dir <span class="op">=</span> <span class="st">"each"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="genes_table-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

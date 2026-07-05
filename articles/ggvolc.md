@@ -140,6 +140,19 @@ genes_table(p, attention_genes)
 
 ![](ggvolc_files/figure-html/unnamed-chunk-9-1.png)
 
+To tabulate the most significant genes without curating them yourself,
+pass the full DE table and a `top_n`. Genes are ranked by `sig_col`
+(`padj` by default, falling back to `pvalue`); `dir = "each"` takes the
+top N up- and down-regulated genes.
+
+``` r
+
+p_top <- ggvolc(all_genes, label_top = 10, add_seg = TRUE)
+genes_table(p_top, all_genes, top_n = 10)
+```
+
+![](ggvolc_files/figure-html/unnamed-chunk-10-1.png)
+
 ## Works with DESeq2, edgeR, and limma
 
 Column names from all three pipelines are detected and mapped
@@ -162,7 +175,7 @@ head(edger_genes, 3)
 ggvolc(edger_genes, label_top = 8, add_seg = TRUE, title = "edgeR input")
 ```
 
-![](ggvolc_files/figure-html/unnamed-chunk-10-1.png)
+![](ggvolc_files/figure-html/unnamed-chunk-11-1.png)
 
 | Pipeline             | Fold change      | p-value   | adjusted p  | expression |
 |----------------------|------------------|-----------|-------------|------------|
