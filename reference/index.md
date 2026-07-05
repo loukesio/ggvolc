@@ -15,3 +15,5 @@ Build and compose volcano plots.
   : Gene Expression Analysis Dataset
 - [`attention_genes`](https://loukesio.github.io/ggvolc/reference/attention_genes.md)
   : Attention Genes Dataset
+- [`edger_genes`](https://loukesio.github.io/ggvolc/reference/edger_genes.md)
+  : edgeR-style Differential Expression Dataset

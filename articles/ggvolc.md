@@ -147,19 +147,19 @@ automatically, so you can pass their output straight in. Gene
 identifiers held in the row names (as edgeR and limma often do) are
 promoted to a `genes` column for you.
 
+The package ships `edger_genes`, an example `topTags()`-style table with
+the gene identifiers in the row names, so you can try this right away:
+
 ``` r
 
-# an edgeR topTags()-style table
-set.seed(1)
-edger <- data.frame(
-  genes  = paste0("gene", 1:200),
-  logFC  = rnorm(200, 0, 2.5),
-  logCPM = runif(200, 2, 14),
-  PValue = 10^-runif(200, 0, 8),
-  FDR    = 10^-runif(200, 0, 6)
-)
+data(edger_genes)
+head(edger_genes, 3)
+#>           logFC  logCPM       PValue          FDR
+#> GCR1   2.244064 12.8143 4.434241e-29 2.153711e-25
+#> OPI10 -2.257454  9.9807 4.880607e-27 1.185255e-23
+#> AGA2   3.829474  7.9665 4.143136e-26 6.707736e-23
 
-ggvolc(edger, label_top = 8, add_seg = TRUE, title = "edgeR input")
+ggvolc(edger_genes, label_top = 8, add_seg = TRUE, title = "edgeR input")
 ```
 
 ![](ggvolc_files/figure-html/unnamed-chunk-10-1.png)

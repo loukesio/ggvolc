@@ -68,7 +68,7 @@
 <div class="section level3">
 <h3 id="how-do-i-start">How do I start?<a class="anchor" aria-label="anchor" href="#how-do-i-start"></a>
 </h3>
-<p>Load the library and explore the example datasets!</p>
+<p><code>ggvolc</code> turns the results of a differential-expression analysis — from <strong>DESeq2</strong>, <strong>edgeR</strong>, or <strong>limma</strong> — into a clean, publication-ready volcano plot. From there you can highlight genes, auto-label the top hits, attach a <code>gt</code> table, or make the whole thing interactive. Start by loading the library and exploring the two example datasets that ship with the package:</p>
 <pre class="console"><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://loukesio.github.io/ggvolc/">ggvolc</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Welcome to ggvolc version 0.3.0 !</span></span>
 <span><span class="co">#&gt;</span></span>
@@ -120,6 +120,7 @@
 <div class="section level3">
 <h3 id="id_1-plot-a-simple-volcano-plot">1. Plot a simple volcano plot!<a class="anchor" aria-label="anchor" href="#id_1-plot-a-simple-volcano-plot"></a>
 </h3>
+<p>Pass a single data frame and every gene is coloured by significance — down, up, or not significant.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot1-basic-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
@@ -127,6 +128,7 @@
 <div class="section level3">
 <h3 id="id_2-add-the-genes-of-attention">2. Add the genes of attention.<a class="anchor" aria-label="anchor" href="#id_2-add-the-genes-of-attention"></a>
 </h3>
+<p>Supply a second data frame to outline and label the genes you care about.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot2-attention-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
@@ -134,6 +136,7 @@
 <div class="section level3">
 <h3 id="id_3-add-segments-to-indicate-areas-of-significance">3. Add segments to indicate areas of significance.<a class="anchor" aria-label="anchor" href="#id_3-add-segments-to-indicate-areas-of-significance"></a>
 </h3>
+<p>Turn on <code>add_seg</code> to draw the fold-change and significance thresholds.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span>title<span class="op">=</span><span class="st">"Add segments of significance"</span><span class="op">)</span></span></code></pre></div>
@@ -142,6 +145,7 @@
 <div class="section level3">
 <h3 id="id_4-indicate-the-size-of-point-based-on-the-log2foldchange-column">4. Indicate the size of point based on the log2FoldChange column.<a class="anchor" aria-label="anchor" href="#id_4-indicate-the-size-of-point-based-on-the-log2foldchange-column"></a>
 </h3>
+<p>Scale point size by effect size with <code>size_var = "log2FoldChange"</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, size_var <span class="op">=</span> <span class="st">"log2FoldChange"</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot4-size-log2fc-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
@@ -149,6 +153,7 @@
 <div class="section level3">
 <h3 id="id_5-indicate-the-size-of-the-point-based-on-the-pvalue">5. Indicate the size of the point based on the pvalue.<a class="anchor" aria-label="anchor" href="#id_5-indicate-the-size-of-the-point-based-on-the-pvalue"></a>
 </h3>
+<p>Or scale it by significance with <code>size_var = "pvalue"</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, size_var <span class="op">=</span> <span class="st">"pvalue"</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot5-size-pvalue-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
@@ -208,21 +213,20 @@
 </tr>
 </tbody>
 </table>
+<p>The package ships <code>edger_genes</code>, an example <code>topTags()</code>-style table, so you can see this directly. In your own analysis you would pass the real thing:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># edgeR: pass topTags()$table straight in</span></span>
 <span><span class="va">edger_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">edgeR</span><span class="fu">::</span><span class="fu">topTags</span><span class="op">(</span><span class="va">qlf</span>, n <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">edger_res</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># a topTags()-style edgeR table (built here for illustration)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">edger_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  genes  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"gene"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">200</span><span class="op">)</span>,</span>
-<span>  logFC  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">0</span>, <span class="fl">2.5</span><span class="op">)</span>,</span>
-<span>  logCPM <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">2</span>, <span class="fl">14</span><span class="op">)</span>,</span>
-<span>  PValue <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">0</span>, <span class="fl">8</span><span class="op">)</span>,</span>
-<span>  FDR    <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">0</span>, <span class="fl">6</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">edger_res</span>, label_top <span class="op">=</span> <span class="fl">8</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">edger_genes</span><span class="op">)</span>          <span class="co"># an edgeR topTags()-style table (genes in the rownames)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">edger_genes</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="co">#&gt;           logFC  logCPM       PValue          FDR</span></span>
+<span><span class="co">#&gt; GCR1   2.244064 12.8143 4.434241e-29 2.153711e-25</span></span>
+<span><span class="co">#&gt; OPI10 -2.257454  9.9807 4.880607e-27 1.185255e-23</span></span>
+<span><span class="co">#&gt; AGA2   3.829474  7.9665 4.143136e-26 6.707736e-23</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">edger_genes</span>, label_top <span class="op">=</span> <span class="fl">8</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span>, title <span class="op">=</span> <span class="st">"edgeR input"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot7-edger-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
@@ -257,10 +261,19 @@
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, interactive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <blockquote>
-<p>The volcano below is a static preview. Hover-to-inspect works when you run the code in R or view the <a href="https://loukesio.github.io/ggvolc/articles/ggvolc.html">live version on the package website</a>.</p>
+<p><strong>Note:</strong> GitHub can’t run the widget, so the image below is a static preview. The live, hover-to-inspect version runs in RStudio and on the <a href="https://loukesio.github.io/ggvolc/articles/ggvolc.html">package website</a>.</p>
 </blockquote>
 <p><img src="reference/figures/README-plot10-interactive-preview-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
 </div>
+</div>
+<div class="section level2">
+<h2 id="learn-more">Learn more<a class="anchor" aria-label="anchor" href="#learn-more"></a>
+</h2>
+<ul>
+<li>📖 <a href="https://loukesio.github.io/ggvolc/"><strong>Package website</strong></a> — full function reference and a getting-started article with every example (including the live interactive volcano).</li>
+<li>🐳 <a href="https://github.com/loukesio/ggvolc/pkgs/container/ggvolc" class="external-link"><strong>Docker image</strong></a> — <code>docker pull ghcr.io/loukesio/ggvolc:latest</code> for a ready-to-run RStudio environment with <code>ggvolc</code> pre-installed.</li>
+<li>🐛 <a href="https://github.com/loukesio/ggvolc/issues" class="external-link"><strong>Issues &amp; questions</strong></a> — bug reports and feature requests are welcome.</li>
+</ul>
 </div>
 
   </main><aside class="col-md-3"><div class="links">
