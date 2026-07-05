@@ -2,34 +2,42 @@
 % Please edit documentation in R/gene_table.R
 \name{genes_table}
 \alias{genes_table}
-\title{Combine a ggplot Object with a Table of Genes}
+\title{Combine a Volcano Plot with a gt Table of Genes}
 \usage{
-genes_table(plot_obj, data2)
+genes_table(plot_obj, data2, p_value = 0.05, table_height = 1)
 }
 \arguments{
-\item{plot_obj}{A ggplot object, typically the output of a plotting function.}
+\item{plot_obj}{A ggplot object, typically the output of \code{\link{ggvolc}}.}
 
-\item{data2}{A data frame containing gene details. It should have columns named
-"genes", "baseMean", "log2FoldChange", "pvalue", and "padj".}
+\item{data2}{A data frame containing gene details.
+Columns are auto-detected in the same way as \code{\link{ggvolc}} (DESeq2,
+edgeR, or limma conventions). Required columns after mapping:
+\code{genes}, \code{log2FoldChange}, \code{pvalue}.
+Optional: \code{baseMean}, \code{padj}.}
+
+\item{p_value}{Significance threshold used for color-coding the p-value
+column. Default is 0.05.}
+
+\item{table_height}{Relative height of the table panel (plot panel is always 3).
+Default is 1.}
 }
 \value{
-A gtable object showing the ggplot stacked above a table of gene details.
+A \code{patchwork} object that can be further composed or saved with
+  \code{ggplot2::ggsave()}.
 }
 \description{
-This function takes a ggplot object and a data frame of gene details and
-produces a combined plot where the ggplot object is stacked above a table of
-gene details.
+Takes a ggplot object (typically from \code{\link{ggvolc}}) and a data frame
+of gene details and produces a combined layout using \pkg{patchwork}.
+The gene table is rendered as a polished \pkg{gt} table with color-coded
+significance and formatted numeric columns.
 }
 \examples{
 # Load example datasets
 data(all_genes)
 data(attention_genes)
 
-# Create a volcano plot highlighting genes of interest
-plot <- ggvolc(all_genes, attention_genes, add_seg = TRUE)
-
-# Combine the plot with a table showing gene statistics
-# The table includes: gene names, baseMean, log2FoldChange, pvalue, and padj
-genes_table(plot, attention_genes)
+# Create a volcano plot and combine it with a gt gene table
+p <- ggvolc(all_genes, attention_genes, add_seg = TRUE)
+genes_table(p, attention_genes)
 
 }

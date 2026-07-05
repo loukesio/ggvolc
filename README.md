@@ -28,7 +28,7 @@ Load the library and explore the example datasets!
 
 ```console
 library(ggvolc)
-#> Welcome to ggvolc version 0.1.0 !
+#> Welcome to ggvolc version 0.2.0 !
 #> 
 #>                                 888
 #>                                 888
@@ -128,5 +128,33 @@ plot %>%
 ```
 
 <img align="center" src="logo/plot6_adding_table.png" width=750>
+
+The gene table is rendered with [`gt`](https://gt.rstudio.com) and composed with
+[`patchwork`](https://patchwork.data-imaginist.com), so the result is a single
+object you can style further or save with `ggplot2::ggsave()`.
+
+### 7. Works with DESeq2, edgeR, and limma out of the box
+
+`ggvolc()` and `genes_table()` accept the output of all three major
+differential-expression pipelines directly — column names are auto-detected and
+mapped internally, so no manual renaming is needed. Gene identifiers held in row
+names (as edgeR/limma often do) are promoted to a `genes` column automatically.
+
+| Pipeline | Fold change | p-value | adjusted p | expression |
+|----------|-------------|---------|------------|------------|
+| DESeq2 (`results()`)   | `log2FoldChange` | `pvalue`  | `padj`      | `baseMean` |
+| edgeR (`topTags()`)    | `logFC`          | `PValue`  | `FDR`       | `logCPM`   |
+| limma (`topTable()`)   | `logFC`          | `P.Value` | `adj.P.Val` | `AveExpr`  |
+
+```r
+# edgeR: pass topTags()$table straight in
+edger_res <- as.data.frame(edgeR::topTags(qlf, n = Inf))
+ggvolc(edger_res)
+
+# highlight the top hits and add a gt table
+top <- head(edger_res[order(edger_res$PValue), ], 8)
+ggvolc(edger_res, top, add_seg = TRUE) %>%
+  genes_table(top)
+```
 
 

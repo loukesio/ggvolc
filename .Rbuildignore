@@ -39,3 +39,6 @@
 ^docker-compose\.yml$
 ^DOCKER\.md$
 ^workspace$
+^Rplots\.pdf$
+^ggvolc-.*\.tar\.gz$
+^\.Rhistory$

@@ -55,8 +55,10 @@ genes_table <- function(plot_obj, data2, p_value = 0.05, table_height = 1) {
       decimals = 2
     ) |>
     gt::fmt_scientific(
-      columns = "pvalue",
-      decimals = 2
+      columns   = "pvalue",
+      decimals  = 2,
+      exp_style = "e"   # grid-safe: patchwork renders the table as a graphic,
+                        # where gt's superscript x10^n markup is not interpreted
     ) |>
     gt::tab_style(
       style     = gt::cell_text(weight = "bold"),
@@ -80,7 +82,7 @@ genes_table <- function(plot_obj, data2, p_value = 0.05, table_height = 1) {
   if ("padj" %in% show_cols) {
     tbl <- tbl |>
       gt::cols_label(padj = "p-adj") |>
-      gt::fmt_scientific(columns = "padj", decimals = 2) |>
+      gt::fmt_scientific(columns = "padj", decimals = 2, exp_style = "e") |>
       gt::tab_style(
         style     = gt::cell_fill(color = "#fce4ec"),
         locations = gt::cells_body(

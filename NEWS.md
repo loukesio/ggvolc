@@ -14,6 +14,9 @@
   - Replaces `gridExtra::grid.arrange` with `patchwork::wrap_table()`
   - Gene table rendered as a `gt` table with formatted numerics,
     color-coded p-values, and directional log2FC coloring
+  - p-value / adjusted-p columns use grid-safe scientific notation
+    (`1.0e-08`) so exponents render correctly once the table is composed
+    into the plot graphic by `patchwork`
   - Returns a proper `patchwork` object (composable, `ggsave()`-able)
 * New internal helpers: `standardize_de_columns()`, `detect_de_source()`
 * Added `testthat` test suite covering all three DE formats, column
