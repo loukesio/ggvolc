@@ -5,7 +5,7 @@ FROM rocker/tidyverse:4.5
 # Metadata
 LABEL maintainer="Loukas Theodosiou <theodosiou@evolbio.mpg.de>" \
       description="Docker image for ggvolc: Create volcano plots for differential gene expression data" \
-      version="0.1.0"
+      version="0.3.0"
 
 # Set working directory
 WORKDIR /home/rstudio
@@ -15,22 +15,29 @@ WORKDIR /home/rstudio
 #     libxml2-dev \
 #     && rm -rf /var/lib/apt/lists/*
 
-# Install ggvolc dependencies from CRAN
-# These will be automatically installed when installing ggvolc, but we install them
-# explicitly here to take advantage of Docker layer caching
+# Install ggvolc dependencies from CRAN.
+# We install them explicitly here to take advantage of Docker layer caching.
+# dplyr and ggplot2 already ship with rocker/tidyverse, so --skipinstalled
+# leaves them untouched. gt + patchwork are required Imports (they replaced
+# gridExtra in 0.2.0); ggiraph is an optional Suggest that enables the
+# interactive volcano plots (interactive = TRUE) inside the container.
 RUN install2.r --error --skipinstalled \
     dplyr \
     ggplot2 \
     ggrepel \
     ggtext \
-    gridExtra \
+    gt \
+    patchwork \
+    ggiraph \
     && rm -rf /tmp/downloaded_packages
 
 # Copy the package source code into the container
 COPY . /home/rstudio/ggvolc
 
-# Build and install the ggvolc package from source
-RUN R CMD build /home/rstudio/ggvolc \
+# Build and install the ggvolc package from source.
+# --no-build-vignettes keeps the image build independent of the full vignette
+# toolchain (and fast); the rendered vignette is available on the pkgdown site.
+RUN R CMD build --no-build-vignettes /home/rstudio/ggvolc \
     && R CMD INSTALL ggvolc_*.tar.gz \
     && rm ggvolc_*.tar.gz
 

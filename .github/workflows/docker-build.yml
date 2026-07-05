@@ -70,7 +70,7 @@ jobs:
       - name: Test Docker image - Check dependencies
         run: |
           docker run --rm ggvolc:test R -e "
-          required_pkgs <- c('dplyr', 'ggplot2', 'ggrepel', 'ggtext', 'gridExtra', 'grid')
+          required_pkgs <- c('dplyr', 'ggplot2', 'ggrepel', 'ggtext', 'gt', 'patchwork', 'grid')
           installed <- sapply(required_pkgs, requireNamespace, quietly = TRUE)
           if(all(installed)) {
             cat('✓ All dependencies installed\n')
