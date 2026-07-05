@@ -13,3 +13,4 @@ reference:
   contents:
   - all_genes
   - attention_genes
+  - edger_genes
