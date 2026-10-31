@@ -30,8 +30,8 @@
   `data2` genes are highlighted in every panel. Panels are titled with clean bold
   labels (restyle with `+ theme(strip.background = ...)`).
 * **`highlight`** colors named gene sets (pathways, GO terms) with their own
-  legend entries, outlined, while the other genes fade to light tints of the
-  palette; choose colors with `highlight_colors`.
+  legend entries, in colors matching the default palette; choose colors with
+  `highlight_colors`.
 * **`show_counts = TRUE`** prints the number of down- and upregulated genes in
   the top corners.
 * **`flip = TRUE`** swaps the axes: log2 fold change on the y-axis,

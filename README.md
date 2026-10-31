@@ -327,8 +327,8 @@ ggvolc(all_genes, label_top = 6, show_counts = TRUE, add_seg = TRUE)
 ### 13. Color gene sets
 
 Pass a named list of gene sets (a pathway, a GO term, your own list) to
-`highlight`. Each set gets its own color and legend entry, and the other genes
-fade to light tints of the palette so the sets stand out.
+`highlight`. Each set gets its own color and legend entry; by default the
+colors come from the same ltc palette as the up/down colors.
 
 ``` r
 genes <- all_genes$genes

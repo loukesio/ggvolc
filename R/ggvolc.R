@@ -60,10 +60,9 @@
 #'   Genes in a set are drawn in the set's color, whatever their significance,
 #'   and each set gets a legend entry. A gene in several sets takes the first.
 #' @param highlight_colors Optional colors for the \code{highlight} sets, in
-#'   order or named by set. Defaults to hues chosen to stand apart from the
-#'   up/down colors (purple, amber, green, ...). While sets are highlighted,
-#'   the other genes are drawn in faint tints of the palette so the sets stand
-#'   out.
+#'   order or named by set. Defaults to the remaining colors of the ltc
+#'   \emph{minou} palette that the default up/down colors come from (mustard,
+#'   navy, sage, ...), so they match the plot.
 #' @param flip Logical. If TRUE, swap the axes: log2 fold change on the y-axis
 #'   and significance on the x-axis. Handy when comparing contrasts side by
 #'   side, because the fold-change axis then lines up across the panels.
@@ -408,7 +407,6 @@ ggvolc <- function(data1,
   color_breaks <- c("s_downregulated", "not_significant", "s_upregulated")
   color_labels <- c("Downregulated", "non-significant", "Upregulated")
   fill_mapping <- color_mapping   # labelled genes keep the full-strength colors
-  bg_alpha <- 0.5
 
   # ---- Gene sets: their own color and legend entry ----------------------
   bg$.ggvolc_col <- as.character(bg$threshold)
@@ -428,9 +426,7 @@ ggvolc <- function(data1,
     set_pts <- bg[!is.na(member), , drop = FALSE]
     set_pts$.ggvolc_col <- member[!is.na(member)]
     bg <- bg[is.na(member), , drop = FALSE]
-    # quiet the background so the sets stand out: faint tints of the palette
-    color_mapping <- c(tint(color_mapping, 0.7), set_cols)
-    bg_alpha <- 0.35
+    color_mapping <- c(color_mapping, set_cols)
     color_breaks  <- c(color_breaks, set_names)
     color_labels  <- c(color_labels, set_names)
   }
@@ -448,15 +444,9 @@ ggvolc <- function(data1,
 
   sig_lab <- paste0("-log10(", sig_col, ")")
   p <- ggplot2::ggplot(dplyr::arrange(bg, threshold)) +
-    geom_pt(mapping = main_aes, shape = 16, alpha = bg_alpha) +
+    geom_pt(mapping = main_aes, shape = 16, alpha = 0.5) +
     (if (!is.null(set_pts))
-      geom_pt(data = set_pts, mapping = main_aes, shape = 16, alpha = 0.9)) +
-    # thin dark ring around gene-set points
-    (if (!is.null(set_pts))
-      ggplot2::geom_point(data = set_pts,
-                          aes(x = .ggvolc_px, y = .ggvolc_py, size = size_aes),
-                          shape = 21, fill = NA, color = "#333333", stroke = 0.4,
-                          inherit.aes = FALSE)) +
+      geom_pt(data = set_pts, mapping = main_aes, shape = 16, alpha = 0.5)) +
     ggplot2::theme_bw() +
     ggplot2::labs(title = title,
                   x = if (flip) sig_lab else "log2FoldChange",

@@ -123,9 +123,10 @@ readable_on_white <- function(col, min_ratio = 4.5) {
 #' @keywords internal
 #' @noRd
 highlight_set_colors <- function(set_names, highlight_colors = NULL) {
-  # distinct from the red/teal/blue up-down presets
-  default <- c("#6A3D9A", "#E6A100", "#33A02C", "#E7298A", "#B15928",
-               "#1F1F1F", "#A6761D", "#666666")
+  # the rest of the ltc "minou" palette (the default up/down colors are its
+  # teal and red), then a few more hues in the same muted style
+  default <- c("#edae49", "#2e4057", "#66a182", "#8d5a97", "#c47e3a",
+               "#5b8fa8", "#a3a35a", "#7a6c5d")
   if (is.null(highlight_colors)) {
     if (length(set_names) > length(default)) {
       stop("More than ", length(default), " highlight sets: please supply ",
@@ -145,13 +146,3 @@ highlight_set_colors <- function(set_names, highlight_colors = NULL) {
   stats::setNames(highlight_colors[seq_along(set_names)], set_names)
 }
 
-
-#' Mix colors with white
-#' @param amount 0 = unchanged, 1 = white.
-#' @keywords internal
-#' @noRd
-tint <- function(col, amount = 0.7) {
-  rgb <- grDevices::col2rgb(col) / 255
-  out <- rgb + (1 - rgb) * amount
-  stats::setNames(grDevices::rgb(out[1, ], out[2, ], out[3, ]), names(col))
-}
