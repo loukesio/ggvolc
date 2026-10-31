@@ -356,20 +356,34 @@ ggvolc(all_genes, label_top = 6, show_counts = TRUE, add_seg = TRUE)
 ### 13. Color gene sets
 
 Pass a named list of gene sets (a pathway, a GO term, your own list) to
-`highlight`. Each set gets its own color and legend entry.
+`highlight`. Each set gets its own color and legend entry; by default
+the colors come from the same ltc palette as the up/down colors.
 
 ``` r
 
-ribosome <- all_genes$genes[1:15]       # stand-ins for real gene sets
-stress   <- all_genes$genes[200:260]
+genes <- all_genes$genes
+ribosomal  <- grep("^RP[LS][0-9]", genes, value = TRUE)          # ribosomal proteins
+heat_shock <- grep("^HSP[0-9]|^SSA[0-9]", genes, value = TRUE)   # heat-shock proteins
 
-ggvolc(all_genes, highlight = list(Ribosome = ribosome, Stress = stress))
+ggvolc(all_genes, highlight = list(Ribosomal = ribosomal, `Heat shock` = heat_shock))
 ```
 
 ![](reference/figures/README-plot13-sets-1.png)
 
-Choose the colors with `highlight_colors`. `data2` also accepts a plain
-vector of gene names: `ggvolc(all_genes, c("GCR1", "HMG1"))`.
+Choose the colors with `highlight_colors` and the transparency with
+`highlight_alpha`, either one value for all sets or one per set:
+
+``` r
+
+ggvolc(all_genes,
+       highlight = list(Ribosomal = ribosomal, `Heat shock` = heat_shock),
+       highlight_alpha = c(Ribosomal = 0.5, `Heat shock` = 1))
+```
+
+![](reference/figures/README-plot13-sets-alpha-1.png)
+
+`data2` also accepts a plain vector of gene names:
+`ggvolc(all_genes, c("GCR1", "HMG1"))`.
 
 ### 14. Compare contrasts side by side
 
@@ -400,7 +414,22 @@ ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE, add_seg = TRUE)
 The fold-change axis is shared, so effect sizes compare directly, while
 each panel uses its own height for significance; the counts in the
 corners show the response peaking at 30 minutes and fading by 180. Use
-`facet_scales = "fixed"` to share the y-axis as well.
+`facet_scales = "fixed"` to share the significance axis as well.
+
+Prefer the fold change on the y-axis? `flip = TRUE` swaps the axes, so
+the fold-change axis lines up across the panels and you can follow genes
+from one time point to the next:
+
+``` r
+
+ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE, add_seg = TRUE,
+       flip = TRUE)
+```
+
+![](reference/figures/README-plot14-flip-1.png)
+
+With `flip = TRUE` the significance (x) axis is free per panel by
+default; `facet_scales = "fixed"` shares it.
 
 Genes that DESeq2 leaves without an adjusted p-value (low-count or
 outlier genes) are left out of the plot, with a message saying how many.

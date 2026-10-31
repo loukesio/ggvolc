@@ -62,7 +62,9 @@ It is particularly useful for visualizing differential gene expression data.</p>
 <span>  show_counts <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  highlight <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  highlight_colors <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  facet_scales <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"free_y"</span>, <span class="st">"fixed"</span>, <span class="st">"free_x"</span>, <span class="st">"free"</span><span class="op">)</span>,</span>
+<span>  highlight_alpha <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  flip <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  facet_scales <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  coef <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -170,16 +172,31 @@ and each set gets a legend entry. A gene in several sets takes the first.</p></d
 
 <dt id="arg-highlight-colors">highlight_colors<a class="anchor" aria-label="anchor" href="#arg-highlight-colors"></a></dt>
 <dd><p>Optional colors for the <code>highlight</code> sets, in
-order or named by set. Defaults to colorblind-friendly Okabe-Ito hues.</p></dd>
+order or named by set. Defaults to the remaining colors of the ltc
+<em>minou</em> palette that the default up/down colors come from (mustard,
+navy, sage, ...), so they match the plot.</p></dd>
+
+
+<dt id="arg-highlight-alpha">highlight_alpha<a class="anchor" aria-label="anchor" href="#arg-highlight-alpha"></a></dt>
+<dd><p>Transparency of the <code>highlight</code> points, from 0
+(invisible) to 1 (solid): one value for all sets, or one per set (in
+order or named by set). Default 0.5, the same as all other points.</p></dd>
+
+
+<dt id="arg-flip">flip<a class="anchor" aria-label="anchor" href="#arg-flip"></a></dt>
+<dd><p>Logical. If TRUE, swap the axes: log2 fold change on the y-axis
+and significance on the x-axis. Handy when comparing contrasts side by
+side, because the fold-change axis then lines up across the panels.
+Default FALSE.</p></dd>
 
 
 <dt id="arg-facet-scales">facet_scales<a class="anchor" aria-label="anchor" href="#arg-facet-scales"></a></dt>
 <dd><p>When comparing contrasts, which axes each panel may set
-for itself. The default <code>"free_y"</code> keeps the fold-change (x) axis
-shared, so effect sizes stay comparable, while each panel uses its full
-height for significance, so a weaker contrast is not squashed by a
-stronger one. Use <code>"fixed"</code> to share both axes, or <code>"free_x"</code>
-/ <code>"free"</code>.</p></dd>
+for itself: <code>"fixed"</code>, <code>"free_y"</code>, <code>"free_x"</code> or
+<code>"free"</code>. The default (<code>NULL</code>) frees only the significance axis
+(<code>"free_y"</code>, or <code>"free_x"</code> when <code>flip = TRUE</code>), so the
+fold-change axis stays shared and comparable while a weaker contrast is
+not squashed by a stronger one. Use <code>"fixed"</code> to share both axes.</p></dd>
 
 
 <dt id="arg-coef">coef<a class="anchor" aria-label="anchor" href="#arg-coef"></a></dt>
@@ -250,33 +267,44 @@ pipelines are detected and mapped automatically.</p>
 <span class="r-in"><span>                                   Set_B <span class="op">=</span> <span class="va">all_genes</span><span class="op">$</span><span class="va">genes</span><span class="op">[</span><span class="fl">100</span><span class="op">:</span><span class="fl">130</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="ggvolc-10.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ... each set with its own transparency</span></span></span>
+<span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">all_genes</span>, highlight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Set_A <span class="op">=</span> <span class="va">all_genes</span><span class="op">$</span><span class="va">genes</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>                                   Set_B <span class="op">=</span> <span class="va">all_genes</span><span class="op">$</span><span class="va">genes</span><span class="op">[</span><span class="fl">100</span><span class="op">:</span><span class="fl">130</span><span class="op">]</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>       highlight_alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Set_A <span class="op">=</span> <span class="fl">1</span>, Set_B <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="ggvolc-11.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Compare contrasts side by side: a real stress time course</span></span></span>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">stress_timecourse</span>, label_top <span class="op">=</span> <span class="fl">5</span>, show_counts <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ggvolc: left out 384 gene(s) with NA padj or log2FoldChange (e.g. genes DESeq2 filtered as low-count or outliers).</span>
-<span class="r-plt img"><img src="ggvolc-11.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="ggvolc-12.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Share the y-axis too, to compare significance between panels</span></span></span>
+<span class="r-in"><span><span class="co"># Share the significance axis too</span></span></span>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">stress_timecourse</span>, label_top <span class="op">=</span> <span class="fl">5</span>, facet_scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ggvolc: left out 384 gene(s) with NA padj or log2FoldChange (e.g. genes DESeq2 filtered as low-count or outliers).</span>
-<span class="r-plt img"><img src="ggvolc-12.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="ggvolc-13.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fold change on the y-axis, significance on the x-axis</span></span></span>
+<span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">stress_timecourse</span>, label_top <span class="op">=</span> <span class="fl">5</span>, flip <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ggvolc: left out 384 gene(s) with NA padj or log2FoldChange (e.g. genes DESeq2 filtered as low-count or outliers).</span>
+<span class="r-plt img"><img src="ggvolc-14.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Colorblind-safe colors, or any preset from ggvolc_palettes()</span></span></span>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">10</span>, palette <span class="op">=</span> <span class="st">"okabe_ito"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="ggvolc-13.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="ggvolc-15.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Customize colors for up- and down-regulated genes</span></span></span>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>,</span></span>
 <span class="r-in"><span>       up_reg_color <span class="op">=</span> <span class="st">"#E63946"</span>,</span></span>
 <span class="r-in"><span>       down_reg_color <span class="op">=</span> <span class="st">"#457B9D"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="ggvolc-14.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="ggvolc-16.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Scale point size by p-value instead of default</span></span></span>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, size_var <span class="op">=</span> <span class="st">"pvalue"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="ggvolc-15.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="ggvolc-17.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Adjust significance thresholds (p-value and fold change)</span></span></span>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">all_genes</span>, p_value <span class="op">=</span> <span class="fl">0.01</span>, fc <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="ggvolc-16.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="ggvolc-18.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># edgeR-style input works directly</span></span></span>
 <span class="r-in"><span><span class="va">edger_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
@@ -287,7 +315,7 @@ pipelines are detected and mapped automatically.</p>
 <span class="r-in"><span>  FDR <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">edger_df</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="ggvolc-17.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="ggvolc-19.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># limma-style input works too</span></span></span>
 <span class="r-in"><span><span class="va">limma_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
@@ -299,7 +327,7 @@ pipelines are detected and mapped automatically.</p>
 <span class="r-in"><span>  adj.P.Val <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">limma_df</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="ggvolc-18.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="ggvolc-20.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>

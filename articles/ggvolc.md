@@ -241,8 +241,9 @@ ggvolc(all_genes, show_counts = TRUE)
 
 
 # color named gene sets
-ggvolc(all_genes, highlight = list(Set_A = all_genes$genes[1:15],
-                                   Set_B = all_genes$genes[200:260]))
+ribosomal  <- grep("^RP[LS][0-9]", all_genes$genes, value = TRUE)
+heat_shock <- grep("^HSP[0-9]|^SSA[0-9]", all_genes$genes, value = TRUE)
+ggvolc(all_genes, highlight = list(Ribosomal = ribosomal, `Heat shock` = heat_shock))
 ```
 
 ![](ggvolc_files/figure-html/unnamed-chunk-13-2.png)
@@ -258,6 +259,16 @@ ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE)
 
 ![](ggvolc_files/figure-html/unnamed-chunk-14-1.png)
 
+`flip = TRUE` puts the fold change on the y-axis instead, which lines it
+up across the panels:
+
+``` r
+
+ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE, flip = TRUE)
+```
+
+![](ggvolc_files/figure-html/unnamed-chunk-15-1.png)
+
 Each panel compares one time point with 0 minutes. The x-axis (fold
 change) is shared; each panel uses its own y-axis height, and
 `facet_scales = "fixed"` shares that too.
@@ -270,7 +281,7 @@ A named vector sets the colors directly, and `up_reg_color`,
 ggvolc(all_genes, palette = c(down = "navy", up = "firebrick"))
 ```
 
-![](ggvolc_files/figure-html/unnamed-chunk-15-1.png)
+![](ggvolc_files/figure-html/unnamed-chunk-16-1.png)
 
 ## An interactive volcano
 

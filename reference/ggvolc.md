@@ -26,7 +26,9 @@ ggvolc(
   show_counts = FALSE,
   highlight = NULL,
   highlight_colors = NULL,
-  facet_scales = c("free_y", "fixed", "free_x", "free"),
+  highlight_alpha = 0.5,
+  flip = FALSE,
+  facet_scales = NULL,
   coef = NULL
 )
 ```
@@ -134,15 +136,31 @@ ggvolc(
 - highlight_colors:
 
   Optional colors for the `highlight` sets, in order or named by set.
-  Defaults to colorblind-friendly Okabe-Ito hues.
+  Defaults to the remaining colors of the ltc *minou* palette that the
+  default up/down colors come from (mustard, navy, sage, ...), so they
+  match the plot.
+
+- highlight_alpha:
+
+  Transparency of the `highlight` points, from 0 (invisible) to 1
+  (solid): one value for all sets, or one per set (in order or named by
+  set). Default 0.5, the same as all other points.
+
+- flip:
+
+  Logical. If TRUE, swap the axes: log2 fold change on the y-axis and
+  significance on the x-axis. Handy when comparing contrasts side by
+  side, because the fold-change axis then lines up across the panels.
+  Default FALSE.
 
 - facet_scales:
 
-  When comparing contrasts, which axes each panel may set for itself.
-  The default `"free_y"` keeps the fold-change (x) axis shared, so
-  effect sizes stay comparable, while each panel uses its full height
-  for significance, so a weaker contrast is not squashed by a stronger
-  one. Use `"fixed"` to share both axes, or `"free_x"` / `"free"`.
+  When comparing contrasts, which axes each panel may set for itself:
+  `"fixed"`, `"free_y"`, `"free_x"` or `"free"`. The default (`NULL`)
+  frees only the significance axis (`"free_y"`, or `"free_x"` when
+  `flip = TRUE`), so the fold-change axis stays shared and comparable
+  while a weaker contrast is not squashed by a stronger one. Use
+  `"fixed"` to share both axes.
 
 - coef:
 
@@ -215,13 +233,24 @@ ggvolc(all_genes, highlight = list(Set_A = all_genes$genes[1:15],
                                    Set_B = all_genes$genes[100:130]))
 
 
+# ... each set with its own transparency
+ggvolc(all_genes, highlight = list(Set_A = all_genes$genes[1:15],
+                                   Set_B = all_genes$genes[100:130]),
+       highlight_alpha = c(Set_A = 1, Set_B = 0.5))
+
+
 # Compare contrasts side by side: a real stress time course
 ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE)
 #> ggvolc: left out 384 gene(s) with NA padj or log2FoldChange (e.g. genes DESeq2 filtered as low-count or outliers).
 
 
-# Share the y-axis too, to compare significance between panels
+# Share the significance axis too
 ggvolc(stress_timecourse, label_top = 5, facet_scales = "fixed")
+#> ggvolc: left out 384 gene(s) with NA padj or log2FoldChange (e.g. genes DESeq2 filtered as low-count or outliers).
+
+
+# Fold change on the y-axis, significance on the x-axis
+ggvolc(stress_timecourse, label_top = 5, flip = TRUE)
 #> ggvolc: left out 384 gene(s) with NA padj or log2FoldChange (e.g. genes DESeq2 filtered as low-count or outliers).
 
 

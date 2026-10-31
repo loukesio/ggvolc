@@ -55,11 +55,13 @@
 <li>
 <strong>Compare contrasts.</strong> Pass a named list of results, e.g. <code>ggvolc(list("Day 1" = res1, "Day 7" = res7))</code>, to get one panel per contrast on shared axes. <code>label_top</code> and <code>show_counts</code> work per panel, and <code>data2</code> genes are highlighted in every panel. Panels are titled with clean bold labels (restyle with <code>+ theme(strip.background = ...)</code>).</li>
 <li>
-<strong><code>highlight</code></strong> colors named gene sets (pathways, GO terms) with their own legend entries; choose colors with <code>highlight_colors</code>.</li>
+<strong><code>highlight</code></strong> colors named gene sets (pathways, GO terms) with their own legend entries, in colors matching the default palette; choose colors with <code>highlight_colors</code> and per-set transparency with <code>highlight_alpha</code>.</li>
 <li>
 <strong><code>show_counts = TRUE</code></strong> prints the number of down- and upregulated genes in the top corners.</li>
 <li>
-<code>facet_scales</code> controls which axes compared panels share. The default <code>"free_y"</code> keeps the fold-change axis shared but lets each panel use its full height, so a weak contrast is not squashed by a strong one; <code>"fixed"</code> shares both.</li>
+<strong><code>flip = TRUE</code></strong> swaps the axes: log2 fold change on the y-axis, significance on the x-axis. When comparing contrasts side by side this lines the fold-change axis up across panels.</li>
+<li>
+<code>facet_scales</code> controls which axes compared panels share. By default only the significance axis is free (<code>"free_y"</code>, or <code>"free_x"</code> with <code>flip = TRUE</code>), so the fold-change axis stays comparable while a weak contrast is not squashed by a strong one; <code>"fixed"</code> shares both.</li>
 <li>New dataset <strong><code>stress_timecourse</code></strong>: real DESeq2 results (30, 60 and 180 min vs 0) from a fission yeast osmotic stress time course (Leong et al. 2014, via the Bioconductor package <em>fission</em>), for trying out contrast comparison.</li>
 <li>Genes with an <code>NA</code> p-value or fold change (e.g. those DESeq2 removes by independent filtering) are left out with a message, instead of triggering ggplot2’s “Removed rows” warning.</li>
 <li>

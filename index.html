@@ -120,7 +120,7 @@
 <p>Pass a single data frame and every gene is coloured by significance — down, up, or not significant.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot1-basic-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-plot1-basic-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_2-add-the-genes-of-attention">2. Add the genes of attention.<a class="anchor" aria-label="anchor" href="#id_2-add-the-genes-of-attention"></a>
@@ -128,7 +128,7 @@
 <p>Supply a second data frame to outline and label the genes you care about.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot2-attention-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-plot2-attention-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_3-add-segments-to-indicate-areas-of-significance">3. Add segments to indicate areas of significance.<a class="anchor" aria-label="anchor" href="#id_3-add-segments-to-indicate-areas-of-significance"></a>
@@ -137,7 +137,7 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span>title<span class="op">=</span><span class="st">"Add segments of significance"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot3-segments-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-plot3-segments-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_4-indicate-the-size-of-point-based-on-the-log2foldchange-column">4. Indicate the size of point based on the log2FoldChange column.<a class="anchor" aria-label="anchor" href="#id_4-indicate-the-size-of-point-based-on-the-log2foldchange-column"></a>
@@ -145,7 +145,7 @@
 <p>Scale point size by effect size with <code>size_var = "log2FoldChange"</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, size_var <span class="op">=</span> <span class="st">"log2FoldChange"</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot4-size-log2fc-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-plot4-size-log2fc-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_5-indicate-the-size-of-the-point-based-on-the-pvalue">5. Indicate the size of the point based on the pvalue.<a class="anchor" aria-label="anchor" href="#id_5-indicate-the-size-of-the-point-based-on-the-pvalue"></a>
@@ -153,7 +153,7 @@
 <p>Or scale it by significance with <code>size_var = "pvalue"</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, size_var <span class="op">=</span> <span class="st">"pvalue"</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot5-size-pvalue-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-plot5-size-pvalue-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_6-add-a-table-with-the-genes-of-interest">6. Add a table with the genes of interest.<a class="anchor" aria-label="anchor" href="#id_6-add-a-table-with-the-genes-of-interest"></a>
@@ -164,7 +164,7 @@
 <span></span>
 <span><span class="va">plot</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu"><a href="reference/genes_table.html">genes_table</a></span><span class="op">(</span><span class="va">attention_genes</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot6-table-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-plot6-table-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>The gene table is rendered with <a href="https://gt.rstudio.com" class="external-link"><code>gt</code></a> and composed with <a href="https://patchwork.data-imaginist.com" class="external-link"><code>patchwork</code></a>, so the result is a single object you can style further or save with <code><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggplot2::ggsave()</a></code>.</p>
 <p>Instead of curating your own set of genes, you can let <code><a href="reference/genes_table.html">genes_table()</a></code> pick the most significant ones automatically with <code>top_n</code>. Pass the full DE table and it selects the top genes by <code>sig_col</code> (defaults to <code>padj</code>, falling back to <code>pvalue</code>). Use <code>dir = "each"</code> to take the top N up- <em>and</em> down-regulated genes.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -173,7 +173,7 @@
 <span></span>
 <span><span class="va">plot_top</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu"><a href="reference/genes_table.html">genes_table</a></span><span class="op">(</span><span class="va">all_genes</span>, top_n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot6b-topn-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-plot6b-topn-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_7-works-with-deseq2-edger-and-limma-out-of-the-box">7. Works with DESeq2, edgeR, and limma out of the box<a class="anchor" aria-label="anchor" href="#id_7-works-with-deseq2-edger-and-limma-out-of-the-box"></a>
@@ -239,7 +239,7 @@
 <span><span class="co">#&gt; AGA2   3.829474  7.9665 4.143136e-26 6.707736e-23</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">edger_genes</span>, label_top <span class="op">=</span> <span class="fl">8</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span>, title <span class="op">=</span> <span class="st">"edgeR input"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot7-edger-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-plot7-edger-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_8-significance-on-the-adjusted-p-value-fdr--the-default">8. Significance on the adjusted p-value (FDR) — the default<a class="anchor" aria-label="anchor" href="#id_8-significance-on-the-adjusted-p-value-fdr--the-default"></a>
@@ -247,7 +247,7 @@
 <p><code><a href="reference/ggvolc.html">ggvolc()</a></code> calls significance on the <strong>adjusted</strong> p-value (FDR) by default — the right cutoff for most DE workflows — and the y-axis and the significance line follow along, so the plot stays consistent. Prefer the raw p-value? Set <code>sig_col = "pvalue"</code>.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>   <span class="co"># significance on padj (FDR) by default</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot8-fdr-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-plot8-fdr-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>If your table has no adjusted-p column, ggvolc automatically falls back to the raw p-value.</p>
 <p><code><a href="reference/ggvolc.html">ggvolc()</a></code> is also robust to p-values of exactly <code>0</code> (which DESeq2/edgeR can emit for the strongest genes): instead of silently dropping them, their <code>-log10</code> value is capped so they stay pinned near the top of the plot.</p>
 </div>
@@ -258,12 +258,12 @@
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># top 10 overall</span></span>
 <span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">10</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span>, title <span class="op">=</span> <span class="st">"Top 10 hits"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot9-top-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-plot9-top-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># top 8 up- and top 8 down-regulated</span></span>
 <span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">8</span>, label_dir <span class="op">=</span> <span class="st">"each"</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Top 8 up + 8 down"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot9-each-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-plot9-each-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p><code>label_dir</code> accepts <code>"both"</code> (default), <code>"up"</code>, <code>"down"</code>, or <code>"each"</code>.</p>
 </div>
 <div class="section level3">
@@ -275,7 +275,7 @@
 <blockquote>
 <p><strong>Note:</strong> GitHub can’t run the widget, so the image below is a static preview. The live, hover-to-inspect version runs in RStudio and on the <a href="https://loukesio.github.io/ggvolc/articles/ggvolc.html">package website</a>.</p>
 </blockquote>
-<p><img src="reference/figures/README-plot10-interactive-preview-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-plot10-interactive-preview-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_11-colorblind-safe-and-ltc-palettes">11. Colorblind-safe and ltc palettes<a class="anchor" aria-label="anchor" href="#id_11-colorblind-safe-and-ltc-palettes"></a>
@@ -295,11 +295,11 @@
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">8</span>, label_dir <span class="op">=</span> <span class="st">"each"</span>, palette <span class="op">=</span> <span class="st">"okabe_ito"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Colorblind-safe: Okabe-Ito"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot11-okabe-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-plot11-okabe-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">8</span>, label_dir <span class="op">=</span> <span class="st">"each"</span>, palette <span class="op">=</span> <span class="st">"pantone23"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"ltc: pantone23"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot11-ltc-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-plot11-ltc-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>Or pass your own colors, including any ltc palette:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>down <span class="op">=</span> <span class="st">"navy"</span>, up <span class="op">=</span> <span class="st">"firebrick"</span><span class="op">)</span><span class="op">)</span></span>
@@ -313,31 +313,44 @@
 </h3>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">6</span>, show_counts <span class="op">=</span> <span class="cn">TRUE</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot12-counts-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-plot12-counts-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="id_13-color-gene-sets">13. Color gene sets<a class="anchor" aria-label="anchor" href="#id_13-color-gene-sets"></a>
 </h3>
-<p>Pass a named list of gene sets (a pathway, a GO term, your own list) to <code>highlight</code>. Each set gets its own color and legend entry.</p>
+<p>Pass a named list of gene sets (a pathway, a GO term, your own list) to <code>highlight</code>. Each set gets its own color and legend entry; by default the colors come from the same ltc palette as the up/down colors.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ribosome</span> <span class="op">&lt;-</span> <span class="va">all_genes</span><span class="op">$</span><span class="va">genes</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">]</span>       <span class="co"># stand-ins for real gene sets</span></span>
-<span><span class="va">stress</span>   <span class="op">&lt;-</span> <span class="va">all_genes</span><span class="op">$</span><span class="va">genes</span><span class="op">[</span><span class="fl">200</span><span class="op">:</span><span class="fl">260</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="va">genes</span> <span class="op">&lt;-</span> <span class="va">all_genes</span><span class="op">$</span><span class="va">genes</span></span>
+<span><span class="va">ribosomal</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^RP[LS][0-9]"</span>, <span class="va">genes</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>          <span class="co"># ribosomal proteins</span></span>
+<span><span class="va">heat_shock</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^HSP[0-9]|^SSA[0-9]"</span>, <span class="va">genes</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>   <span class="co"># heat-shock proteins</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, highlight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Ribosome <span class="op">=</span> <span class="va">ribosome</span>, Stress <span class="op">=</span> <span class="va">stress</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot13-sets-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
-<p>Choose the colors with <code>highlight_colors</code>. <code>data2</code> also accepts a plain vector of gene names: <code>ggvolc(all_genes, c("GCR1", "HMG1"))</code>.</p>
+<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, highlight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Ribosomal <span class="op">=</span> <span class="va">ribosomal</span>, `Heat shock` <span class="op">=</span> <span class="va">heat_shock</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot13-sets-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p>Choose the colors with <code>highlight_colors</code> and the transparency with <code>highlight_alpha</code>, either one value for all sets or one per set:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>,</span>
+<span>       highlight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Ribosomal <span class="op">=</span> <span class="va">ribosomal</span>, `Heat shock` <span class="op">=</span> <span class="va">heat_shock</span><span class="op">)</span>,</span>
+<span>       highlight_alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Ribosomal <span class="op">=</span> <span class="fl">0.5</span>, `Heat shock` <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot13-sets-alpha-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p><code>data2</code> also accepts a plain vector of gene names: <code>ggvolc(all_genes, c("GCR1", "HMG1"))</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="id_14-compare-contrasts-side-by-side">14. Compare contrasts side by side<a class="anchor" aria-label="anchor" href="#id_14-compare-contrasts-side-by-side"></a>
 </h3>
 <p>Give <code><a href="reference/ggvolc.html">ggvolc()</a></code> a named list of results to get one panel per contrast on shared axes. <code>label_top</code> and <code>show_counts</code> are applied in each panel, and any mix of DESeq2, edgeR and limma results works.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Day 1"</span> <span class="op">=</span> <span class="va">res_day1</span>, <span class="st">"Day 7"</span> <span class="op">=</span> <span class="va">res_day7</span><span class="op">)</span>, label_top <span class="op">=</span> <span class="fl">5</span>, show_counts <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>The package ships <code>stress_timecourse</code>, real DESeq2 results from fission yeast under osmotic stress (<a href="https://doi.org/10.1038/ncomms4947" class="external-link">Leong et al. 2014</a>): 30, 60 and 180 minutes after stress, each compared with the unstressed cells at 0 minutes. In every panel the x-axis is the log2 fold change against 0 minutes and the y-axis is the significance of that change.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">stress_timecourse</span>, label_top <span class="op">=</span> <span class="fl">5</span>, show_counts <span class="op">=</span> <span class="cn">TRUE</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot14-contrasts-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
-<p>The fold-change axis is shared, so effect sizes compare directly, while each panel uses its own height for significance; the counts in the corners show the response peaking at 30 minutes and fading by 180. Use <code>facet_scales = "fixed"</code> to share the y-axis as well.</p>
+<p><img src="reference/figures/README-plot14-contrasts-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p>The fold-change axis is shared, so effect sizes compare directly, while each panel uses its own height for significance; the counts in the corners show the response peaking at 30 minutes and fading by 180. Use <code>facet_scales = "fixed"</code> to share the significance axis as well.</p>
+<p>Prefer the fold change on the y-axis? <code>flip = TRUE</code> swaps the axes, so the fold-change axis lines up across the panels and you can follow genes from one time point to the next:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">stress_timecourse</span>, label_top <span class="op">=</span> <span class="fl">5</span>, show_counts <span class="op">=</span> <span class="cn">TRUE</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>       flip <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot14-flip-1.png" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p>With <code>flip = TRUE</code> the significance (x) axis is free per panel by default; <code>facet_scales = "fixed"</code> shares it.</p>
 <p>Genes that DESeq2 leaves without an adjusted p-value (low-count or outlier genes) are left out of the plot, with a message saying how many.</p>
 </div>
 </div>

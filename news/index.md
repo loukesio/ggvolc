@@ -43,13 +43,18 @@
   with clean bold labels (restyle with
   `+ theme(strip.background = ...)`).
 - **`highlight`** colors named gene sets (pathways, GO terms) with their
-  own legend entries; choose colors with `highlight_colors`.
+  own legend entries, in colors matching the default palette; choose
+  colors with `highlight_colors` and per-set transparency with
+  `highlight_alpha`.
 - **`show_counts = TRUE`** prints the number of down- and upregulated
   genes in the top corners.
-- `facet_scales` controls which axes compared panels share. The default
-  `"free_y"` keeps the fold-change axis shared but lets each panel use
-  its full height, so a weak contrast is not squashed by a strong one;
-  `"fixed"` shares both.
+- **`flip = TRUE`** swaps the axes: log2 fold change on the y-axis,
+  significance on the x-axis. When comparing contrasts side by side this
+  lines the fold-change axis up across panels.
+- `facet_scales` controls which axes compared panels share. By default
+  only the significance axis is free (`"free_y"`, or `"free_x"` with
+  `flip = TRUE`), so the fold-change axis stays comparable while a weak
+  contrast is not squashed by a strong one; `"fixed"` shares both.
 - New dataset **`stress_timecourse`**: real DESeq2 results (30, 60 and
   180 min vs 0) from a fission yeast osmotic stress time course (Leong
   et al. 2014, via the Bioconductor package *fission*), for trying out
