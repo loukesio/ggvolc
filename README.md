@@ -92,7 +92,7 @@ or not significant.
 ggvolc(all_genes)
 ```
 
-<img src="man/figures/README-plot1-basic-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot1-basic-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 ### 2. Add the genes of attention.
 
@@ -102,7 +102,7 @@ Supply a second data frame to outline and label the genes you care about.
 ggvolc(all_genes, attention_genes)
 ```
 
-<img src="man/figures/README-plot2-attention-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot2-attention-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 ### 3. Add segments to indicate areas of significance.
 
@@ -113,7 +113,7 @@ ggvolc(all_genes, attention_genes, add_seg = TRUE) +
   labs(title="Add segments of significance")
 ```
 
-<img src="man/figures/README-plot3-segments-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot3-segments-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 ### 4. Indicate the size of point based on the log2FoldChange column.
 
@@ -123,7 +123,7 @@ Scale point size by effect size with `size_var = "log2FoldChange"`.
 ggvolc(all_genes, attention_genes, size_var = "log2FoldChange", add_seg = TRUE)
 ```
 
-<img src="man/figures/README-plot4-size-log2fc-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot4-size-log2fc-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 ### 5. Indicate the size of the point based on the pvalue.
 
@@ -133,7 +133,7 @@ Or scale it by significance with `size_var = "pvalue"`.
 ggvolc(all_genes, attention_genes, size_var = "pvalue", add_seg = TRUE)
 ```
 
-<img src="man/figures/README-plot5-size-pvalue-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot5-size-pvalue-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 ### 6. Add a table with the genes of interest.
 
@@ -145,7 +145,7 @@ plot %>%
   genes_table(attention_genes)
 ```
 
-<img src="man/figures/README-plot6-table-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot6-table-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 The gene table is rendered with [`gt`](https://gt.rstudio.com) and composed with
 [`patchwork`](https://patchwork.data-imaginist.com), so the result is a single
@@ -164,7 +164,7 @@ plot_top %>%
   genes_table(all_genes, top_n = 10)
 ```
 
-<img src="man/figures/README-plot6b-topn-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot6b-topn-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 ### 7. Works with DESeq2, edgeR, and limma out of the box
 
@@ -210,7 +210,7 @@ head(edger_genes, 3)
 ggvolc(edger_genes, label_top = 8, add_seg = TRUE, title = "edgeR input")
 ```
 
-<img src="man/figures/README-plot7-edger-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot7-edger-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 ### 8. Significance on the adjusted p-value (FDR) — the default
 
@@ -223,7 +223,7 @@ follow along, so the plot stays consistent. Prefer the raw p-value? Set
 ggvolc(all_genes, add_seg = TRUE)   # significance on padj (FDR) by default
 ```
 
-<img src="man/figures/README-plot8-fdr-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot8-fdr-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 If your table has no adjusted-p column, ggvolc automatically falls back to the
 raw p-value.
@@ -242,7 +242,7 @@ most significant genes for you, and `label_dir` lets you pick the direction.
 ggvolc(all_genes, label_top = 10, add_seg = TRUE, title = "Top 10 hits")
 ```
 
-<img src="man/figures/README-plot9-top-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot9-top-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 ``` r
 # top 8 up- and top 8 down-regulated
@@ -250,7 +250,7 @@ ggvolc(all_genes, label_top = 8, label_dir = "each", add_seg = TRUE,
        title = "Top 8 up + 8 down")
 ```
 
-<img src="man/figures/README-plot9-each-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot9-each-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 `label_dir` accepts `"both"` (default), `"up"`, `"down"`, or `"each"`.
 
@@ -268,7 +268,7 @@ ggvolc(all_genes, attention_genes, interactive = TRUE)
 > The live, hover-to-inspect version runs in RStudio and on the
 > [package website](https://loukesio.github.io/ggvolc/articles/ggvolc.html).
 
-<img src="man/figures/README-plot10-interactive-preview-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot10-interactive-preview-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 ### 11. Colorblind-safe and ltc palettes
 
@@ -294,14 +294,14 @@ ggvolc(all_genes, label_top = 8, label_dir = "each", palette = "okabe_ito",
        title = "Colorblind-safe: Okabe-Ito")
 ```
 
-<img src="man/figures/README-plot11-okabe-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot11-okabe-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 ``` r
 ggvolc(all_genes, label_top = 8, label_dir = "each", palette = "pantone23",
        title = "ltc: pantone23")
 ```
 
-<img src="man/figures/README-plot11-ltc-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot11-ltc-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 Or pass your own colors, including any ltc palette:
 
@@ -322,21 +322,23 @@ readable as table text.
 ggvolc(all_genes, label_top = 6, show_counts = TRUE, add_seg = TRUE)
 ```
 
-<img src="man/figures/README-plot12-counts-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot12-counts-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 ### 13. Color gene sets
 
 Pass a named list of gene sets (a pathway, a GO term, your own list) to
-`highlight`. Each set gets its own color and legend entry.
+`highlight`. Each set gets its own color and legend entry, and the other genes
+fade to light tints of the palette so the sets stand out.
 
 ``` r
-ribosome <- all_genes$genes[1:15]       # stand-ins for real gene sets
-stress   <- all_genes$genes[200:260]
+genes <- all_genes$genes
+ribosomal  <- grep("^RP[LS][0-9]", genes, value = TRUE)          # ribosomal proteins
+heat_shock <- grep("^HSP[0-9]|^SSA[0-9]", genes, value = TRUE)   # heat-shock proteins
 
-ggvolc(all_genes, highlight = list(Ribosome = ribosome, Stress = stress))
+ggvolc(all_genes, highlight = list(Ribosomal = ribosomal, `Heat shock` = heat_shock))
 ```
 
-<img src="man/figures/README-plot13-sets-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot13-sets-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 Choose the colors with `highlight_colors`. `data2` also accepts a plain vector
 of gene names: `ggvolc(all_genes, c("GCR1", "HMG1"))`.
@@ -361,7 +363,7 @@ and the y-axis is the significance of that change.
 ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE, add_seg = TRUE)
 ```
 
-<img src="man/figures/README-plot14-contrasts-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot14-contrasts-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 The fold-change axis is shared, so effect sizes compare directly, while each
 panel uses its own height for significance; the counts in the corners show the
@@ -377,7 +379,7 @@ ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE, add_seg = TRUE,
        flip = TRUE)
 ```
 
-<img src="man/figures/README-plot14-flip-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot14-flip-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
 With `flip = TRUE` the significance (x) axis is free per panel by default;
 `facet_scales = "fixed"` shares it.

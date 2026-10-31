@@ -123,9 +123,9 @@ readable_on_white <- function(col, min_ratio = 4.5) {
 #' @keywords internal
 #' @noRd
 highlight_set_colors <- function(set_names, highlight_colors = NULL) {
-  # Okabe-Ito hues not used by the up/down presets
-  default <- c("#E69F00", "#56B4E9", "#009E73", "#CC79A7", "#F0E442",
-               "#000000", "#882255", "#44AA99")
+  # distinct from the red/teal/blue up-down presets
+  default <- c("#6A3D9A", "#E6A100", "#33A02C", "#E7298A", "#B15928",
+               "#1F1F1F", "#A6761D", "#666666")
   if (is.null(highlight_colors)) {
     if (length(set_names) > length(default)) {
       stop("More than ", length(default), " highlight sets: please supply ",
@@ -143,4 +143,15 @@ highlight_set_colors <- function(set_names, highlight_colors = NULL) {
     stop("highlight_colors needs one color per highlight set.", call. = FALSE)
   }
   stats::setNames(highlight_colors[seq_along(set_names)], set_names)
+}
+
+
+#' Mix colors with white
+#' @param amount 0 = unchanged, 1 = white.
+#' @keywords internal
+#' @noRd
+tint <- function(col, amount = 0.7) {
+  rgb <- grDevices::col2rgb(col) / 255
+  out <- rgb + (1 - rgb) * amount
+  stats::setNames(grDevices::rgb(out[1, ], out[2, ], out[3, ]), names(col))
 }

@@ -97,7 +97,10 @@ Genes in a set are drawn in the set's color, whatever their significance,
 and each set gets a legend entry. A gene in several sets takes the first.}
 
 \item{highlight_colors}{Optional colors for the \code{highlight} sets, in
-order or named by set. Defaults to colorblind-friendly Okabe-Ito hues.}
+order or named by set. Defaults to hues chosen to stand apart from the
+up/down colors (purple, amber, green, ...). While sets are highlighted,
+the other genes are drawn in faint tints of the palette so the sets stand
+out.}
 
 \item{flip}{Logical. If TRUE, swap the axes: log2 fold change on the y-axis
 and significance on the x-axis. Handy when comparing contrasts side by

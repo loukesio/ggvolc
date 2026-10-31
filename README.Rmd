@@ -13,9 +13,9 @@ knitr::opts_chunk$set(
   comment    = "#>",
   fig.path   = "man/figures/README-",
   fig.align  = "center",
-  out.width  = "750px",
-  fig.width  = 8,
-  fig.height = 6,
+  out.width  = "100%",
+  fig.width  = 7,
+  fig.height = 5.5,
   dpi        = 140,
   message    = FALSE,
   warning    = FALSE
@@ -314,13 +314,15 @@ ggvolc(all_genes, label_top = 6, show_counts = TRUE, add_seg = TRUE)
 ### 13. Color gene sets
 
 Pass a named list of gene sets (a pathway, a GO term, your own list) to
-`highlight`. Each set gets its own color and legend entry.
+`highlight`. Each set gets its own color and legend entry, and the other genes
+fade to light tints of the palette so the sets stand out.
 
 ```{r plot13-sets}
-ribosome <- all_genes$genes[1:15]       # stand-ins for real gene sets
-stress   <- all_genes$genes[200:260]
+genes <- all_genes$genes
+ribosomal  <- grep("^RP[LS][0-9]", genes, value = TRUE)          # ribosomal proteins
+heat_shock <- grep("^HSP[0-9]|^SSA[0-9]", genes, value = TRUE)   # heat-shock proteins
 
-ggvolc(all_genes, highlight = list(Ribosome = ribosome, Stress = stress))
+ggvolc(all_genes, highlight = list(Ribosomal = ribosomal, `Heat shock` = heat_shock))
 ```
 
 Choose the colors with `highlight_colors`. `data2` also accepts a plain vector
@@ -342,7 +344,7 @@ under osmotic stress ([Leong et al. 2014](https://doi.org/10.1038/ncomms4947)):
 0 minutes. In every panel the x-axis is the log2 fold change against 0 minutes
 and the y-axis is the significance of that change.
 
-```{r plot14-contrasts, fig.width = 12, fig.height = 5}
+```{r plot14-contrasts, fig.width = 10, fig.height = 5}
 ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE, add_seg = TRUE)
 ```
 
@@ -355,7 +357,7 @@ Prefer the fold change on the y-axis? `flip = TRUE` swaps the axes, so the
 fold-change axis lines up across the panels and you can follow genes from one
 time point to the next:
 
-```{r plot14-flip, fig.width = 12, fig.height = 5}
+```{r plot14-flip, fig.width = 10, fig.height = 5}
 ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE, add_seg = TRUE,
        flip = TRUE)
 ```
