@@ -61,9 +61,12 @@
 #'   and each set gets a legend entry. A gene in several sets takes the first.
 #' @param highlight_colors Optional colors for the \code{highlight} sets, in
 #'   order or named by set. Defaults to colorblind-friendly Okabe-Ito hues.
-#' @param facet_scales When comparing contrasts, whether the panels share their
-#'   axes: \code{"fixed"} (default, best for comparing panels),
-#'   \code{"free_y"}, \code{"free_x"}, or \code{"free"}.
+#' @param facet_scales When comparing contrasts, which axes each panel may set
+#'   for itself. The default \code{"free_y"} keeps the fold-change (x) axis
+#'   shared, so effect sizes stay comparable, while each panel uses its full
+#'   height for significance, so a weaker contrast is not squashed by a
+#'   stronger one. Use \code{"fixed"} to share both axes, or \code{"free_x"}
+#'   / \code{"free"}.
 #' @param coef For a multi-coefficient limma fit, the coefficient to plot; for
 #'   a \code{DESeqDataSet}, the result \code{name}. See \code{\link{de_table}}.
 #'
@@ -122,8 +125,8 @@
 #' # Compare contrasts side by side: a real stress time course
 #' ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE)
 #'
-#' # Let each panel use its own y-axis
-#' ggvolc(stress_timecourse, label_top = 5, facet_scales = "free_y")
+#' # Share the y-axis too, to compare significance between panels
+#' ggvolc(stress_timecourse, label_top = 5, facet_scales = "fixed")
 #'
 #' # Colorblind-safe colors, or any preset from ggvolc_palettes()
 #' ggvolc(all_genes, label_top = 10, palette = "okabe_ito")
@@ -191,7 +194,7 @@ ggvolc <- function(data1,
                    show_counts = FALSE,
                    highlight = NULL,
                    highlight_colors = NULL,
-                   facet_scales = c("fixed", "free_y", "free_x", "free"),
+                   facet_scales = c("free_y", "fixed", "free_x", "free"),
                    coef = NULL){
 
   sig_col_explicit <- !missing(sig_col)
@@ -490,13 +493,26 @@ ggvolc <- function(data1,
     )
 
   if (add_seg) {
-    y_top <- 0.85 * max(d1$.ggvolc_y, na.rm = TRUE)
-    expression_limits <- data.frame(
-      x.start = c(-fc, fc, min(d1$log2FoldChange, na.rm = TRUE)),
-      x.end   = c(-fc, fc, max(d1$log2FoldChange, na.rm = TRUE)),
-      y.start = c(0, 0, -log10(p_value)),
-      y.end   = c(y_top, y_top, -log10(p_value))
-    )
+    seg_of <- function(g) {
+      y_top <- 0.85 * max(g$.ggvolc_y, na.rm = TRUE)
+      data.frame(
+        x.start = c(-fc, fc, min(g$log2FoldChange, na.rm = TRUE)),
+        x.end   = c(-fc, fc, max(g$log2FoldChange, na.rm = TRUE)),
+        y.start = c(0, 0, -log10(p_value)),
+        y.end   = c(y_top, y_top, -log10(p_value))
+      )
+    }
+    # with a free y-axis the lines follow each panel's own height
+    if (multi && facet_scales %in% c("free_y", "free")) {
+      parts <- split(d1, d1$.contrast)
+      expression_limits <- do.call(rbind, lapply(names(parts), function(n) {
+        s <- seg_of(parts[[n]])
+        s$.contrast <- factor(n, levels = levels(d1$.contrast))
+        s
+      }))
+    } else {
+      expression_limits <- seg_of(d1)
+    }
 
     p <- p + ggplot2::geom_segment(data = expression_limits,
                                    aes(x = x.start, xend = x.end,
@@ -533,9 +549,9 @@ ggvolc <- function(data1,
     p <- p +
       ggplot2::facet_wrap(ggplot2::vars(.contrast), scales = facet_scales) +
       ggplot2::theme(
-        strip.background = ggplot2::element_rect(fill = "grey95", color = "#333333",
-                                                 linewidth = 1),
-        strip.text = ggplot2::element_text(size = 13, face = "bold", color = "#333333"))
+        strip.background = ggplot2::element_blank(),
+        strip.text = ggplot2::element_text(size = 14, face = "bold", color = "#333333",
+                                           margin = margin(t = 0, r = 0, b = 6, l = 0)))
   }
 
   # remembered so genes_table() can color the table to match

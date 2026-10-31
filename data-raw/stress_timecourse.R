@@ -42,9 +42,9 @@ one_contrast <- function(t) {
 }
 
 stress_timecourse <- list(
-  "30 min"  = one_contrast("30"),
-  "60 min"  = one_contrast("60"),
-  "180 min" = one_contrast("180")
+  "30 min vs 0 min"  = one_contrast("30"),
+  "60 min vs 0 min"  = one_contrast("60"),
+  "180 min vs 0 min" = one_contrast("180")
 )
 
 usethis::use_data(stress_timecourse, overwrite = TRUE, compress = "xz")
