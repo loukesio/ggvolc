@@ -11,7 +11,7 @@ genes_table(
   sig_col = c("padj", "pvalue"),
   dir = c("both", "up", "down", "each"),
   p_value = 0.05,
-  table_height = 1,
+  table_height = NULL,
   palette = NULL,
   coef = NULL
 )
@@ -49,8 +49,9 @@ Ignored when \code{top_n} is \code{NULL}.}
 column, and for filtering eligible genes when \code{top_n} is set.
 Default is 0.05.}
 
-\item{table_height}{Relative height of the table panel (plot panel is always 3).
-Default is 1.}
+\item{table_height}{Optional relative height of the table panel (the plot
+panel is 3). By default (\code{NULL}) the table takes exactly the height
+its rows need and the plot fills the rest.}
 
 \item{palette}{Colors for the log2FC column. Default NULL takes the colors
 of \code{plot_obj} when it came from \code{\link{ggvolc}}; otherwise a

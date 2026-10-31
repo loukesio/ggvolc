@@ -5,8 +5,9 @@
 \alias{stress_timecourse}
 \title{Fission Yeast Stress Time Course (three contrasts)}
 \format{
-A named list of three data frames, \code{"30 min"}, \code{"60 min"},
-  and \code{"180 min"}, each with 6535 rows and the columns:
+A named list of three data frames, \code{"30 min vs 0 min"},
+  \code{"60 min vs 0 min"}, and \code{"180 min vs 0 min"}, each with 6535
+  rows and the columns:
 \describe{
   \item{genes}{Character. Gene symbol, or the systematic ID when no symbol exists.}
   \item{baseMean}{Numeric. Mean of normalized counts across all samples.}

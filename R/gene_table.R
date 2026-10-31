@@ -31,8 +31,9 @@
 #' @param p_value Significance threshold used for color-coding the p-value
 #'   column, and for filtering eligible genes when \code{top_n} is set.
 #'   Default is 0.05.
-#' @param table_height Relative height of the table panel (plot panel is always 3).
-#'   Default is 1.
+#' @param table_height Optional relative height of the table panel (the plot
+#'   panel is 3). By default (\code{NULL}) the table takes exactly the height
+#'   its rows need and the plot fills the rest.
 #' @param palette Colors for the log2FC column. Default NULL takes the colors
 #'   of \code{plot_obj} when it came from \code{\link{ggvolc}}; otherwise a
 #'   preset name or named vector as in \code{\link{ggvolc}}.
@@ -64,7 +65,7 @@ genes_table <- function(plot_obj, data2,
                         sig_col      = c("padj", "pvalue"),
                         dir          = c("both", "up", "down", "each"),
                         p_value      = 0.05,
-                        table_height = 1,
+                        table_height = NULL,
                         palette      = NULL,
                         coef         = NULL) {
 
@@ -128,8 +129,8 @@ genes_table <- function(plot_obj, data2,
       locations = gt::cells_column_labels()
     ) |>
     gt::tab_options(
-      table.font.size   = "12px",
-      data_row.padding   = gt::px(4),
+      table.font.size   = "14px",
+      data_row.padding   = gt::px(5),
       column_labels.padding = gt::px(6),
       table.border.top.style    = "solid",
       table.border.bottom.style = "solid"
@@ -190,8 +191,36 @@ genes_table <- function(plot_obj, data2,
   }
 
   # Compose with patchwork
-  combined <- plot_obj + patchwork::wrap_table(tbl) +
-    patchwork::plot_layout(ncol = 1, heights = c(3, table_height))
+  # Render the table as a grid object whose columns stretch to share the
+  # width of the plot panel (gt's own percentage widths are not honoured once
+  # composed by patchwork), placed in the panel area so its edges line up
+  # with the plot's axes, and only as tall as its rows need.
+  gtab <- stretch_gtable(gt::as_gtable(tbl))
+  heights <- if (is.null(table_height)) {
+    grid::unit(c(1, grid::convertHeight(sum(gtab$heights), "cm", valueOnly = TRUE)),
+               c("null", "cm"))
+  } else {
+    c(3, table_height)
+  }
+  combined <- plot_obj +
+    patchwork::wrap_elements(panel = gtab) +
+    patchwork::plot_layout(ncol = 1, heights = heights)
 
   combined
+}
+
+
+#' Let a gt gtable fill the width it is drawn in
+#'
+#' \code{gt::as_gtable()} centres the table between two flexible padding
+#' columns. This gives the table columns equal flexible widths instead and
+#' drops the padding, so the table spans the full width of its viewport.
+#' @keywords internal
+#' @noRd
+stretch_gtable <- function(gtab) {
+  n <- length(gtab$widths)
+  if (n < 3) return(gtab)
+  gtab$widths[2:(n - 1)] <- grid::unit(1, "null")
+  gtab$widths[c(1, n)]   <- grid::unit(0, "pt")
+  gtab
 }

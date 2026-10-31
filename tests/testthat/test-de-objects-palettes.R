@@ -172,7 +172,7 @@ test_that("contrast lists need unique names", {
 # ---- stress_timecourse & NA handling ------------------------------------
 
 test_that("stress_timecourse plots as three panels", {
-  expect_named(stress_timecourse, c("30 min", "60 min", "180 min"))
+  expect_named(stress_timecourse, c("30 min vs 0 min", "60 min vs 0 min", "180 min vs 0 min"))
   p <- suppressMessages(ggvolc(stress_timecourse, label_top = 3, facet_scales = "free_y"))
   expect_s3_class(p$facet, "FacetWrap")
   lab <- Filter(function(l) inherits(l$geom, "GeomTextRepel"), p$layers)[[1]]
@@ -180,9 +180,31 @@ test_that("stress_timecourse plots as three panels", {
 })
 
 test_that("genes with NA padj are left out with a message, not a warning", {
-  d <- stress_timecourse[["30 min"]]
+  d <- stress_timecourse[["30 min vs 0 min"]]
   n_na <- sum(is.na(d$padj))
   expect_gt(n_na, 0)
   expect_message(p <- ggvolc(d), paste("left out", n_na))
   expect_no_warning(ggplot2::ggplot_build(p))
+})
+
+# ---- table layout -------------------------------------------------------
+
+test_that("the gene table stretches to the plot panel and fits its rows", {
+  gtab <- stretch_gtable(gt::as_gtable(gt::gt(head(all_genes[, 1:3]))))
+  n <- length(gtab$widths)
+  expect_true(all(grid::unitType(gtab$widths[2:(n - 1)]) == "null"))
+  expect_true(all(grid::convertWidth(gtab$widths[c(1, n)], "pt", valueOnly = TRUE) == 0))
+
+  g <- genes_table(ggvolc(all_genes), all_genes, top_n = 5)
+  expect_equal(grid::unitType(g$patches$layout$heights), c("null", "cm"))
+  expect_s3_class(genes_table(ggvolc(all_genes), all_genes, top_n = 5,
+                              table_height = 1), "patchwork")
+})
+
+test_that("threshold lines follow each panel with a free y-axis", {
+  p <- suppressMessages(ggvolc(stress_timecourse, add_seg = TRUE))
+  seg <- Filter(function(l) inherits(l$geom, "GeomSegment"), p$layers)[[1]]$data
+  expect_equal(nlevels(droplevels(seg$.contrast)), 3)
+  tops <- tapply(seg$y.end, seg$.contrast, max)
+  expect_gt(tops[[1]], tops[[3]])
 })

@@ -153,7 +153,7 @@ ggvolc(all_genes, attention_genes, size_var = "pvalue", add_seg = TRUE)
 
 ### 6. Add a table with the genes of interest.
 
-```{r plot6-table, fig.height = 8}
+```{r plot6-table, fig.height = 8.5}
 plot <- ggvolc(all_genes, attention_genes, add_seg = TRUE) +
   labs(title="Add a table with the genes of interest")
 
@@ -170,7 +170,7 @@ most significant ones automatically with `top_n`. Pass the full DE table and it
 selects the top genes by `sig_col` (defaults to `padj`, falling back to
 `pvalue`). Use `dir = "each"` to take the top N up- *and* down-regulated genes.
 
-```{r plot6b-topn, fig.height = 8}
+```{r plot6b-topn, fig.height = 9}
 plot_top <- ggvolc(all_genes, label_top = 10, add_seg = TRUE) +
   labs(title = "Top 10 most significant genes")
 
@@ -338,14 +338,18 @@ ggvolc(list("Day 1" = res_day1, "Day 7" = res_day7), label_top = 5, show_counts 
 
 The package ships `stress_timecourse`, real DESeq2 results from fission yeast
 under osmotic stress ([Leong et al. 2014](https://doi.org/10.1038/ncomms4947)):
-30, 60 and 180 minutes, each compared with time 0. With shared axes you can see
-the response peak at 30 minutes and fade by 180:
+30, 60 and 180 minutes after stress, each compared with the unstressed cells at
+0 minutes. In every panel the x-axis is the log2 fold change against 0 minutes
+and the y-axis is the significance of that change.
 
 ```{r plot14-contrasts, fig.width = 12, fig.height = 5}
 ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE, add_seg = TRUE)
 ```
 
-Use `facet_scales = "free_y"` to give each panel its own y-axis.
+The fold-change axis is shared, so effect sizes compare directly, while each
+panel uses its own height for significance; the counts in the corners show the
+response peaking at 30 minutes and fading by 180. Use `facet_scales = "fixed"`
+to share the y-axis as well.
 
 Genes that DESeq2 leaves without an adjusted p-value (low-count or outlier
 genes) are left out of the plot, with a message saying how many.
