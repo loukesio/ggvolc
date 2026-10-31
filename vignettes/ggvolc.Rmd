@@ -195,6 +195,13 @@ real DESeq2 results from a fission yeast stress time course (Leong et al. 2014):
 ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE)
 ```
 
+`flip = TRUE` puts the fold change on the y-axis instead, which lines it up
+across the panels:
+
+```{r, fig.width = 10, fig.height = 4.5}
+ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE, flip = TRUE)
+```
+
 Each panel compares one time point with 0 minutes. The x-axis (fold change) is
 shared; each panel uses its own y-axis height, and `facet_scales = "fixed"`
 shares that too.

@@ -61,12 +61,16 @@
 #'   and each set gets a legend entry. A gene in several sets takes the first.
 #' @param highlight_colors Optional colors for the \code{highlight} sets, in
 #'   order or named by set. Defaults to colorblind-friendly Okabe-Ito hues.
+#' @param flip Logical. If TRUE, swap the axes: log2 fold change on the y-axis
+#'   and significance on the x-axis. Handy when comparing contrasts side by
+#'   side, because the fold-change axis then lines up across the panels.
+#'   Default FALSE.
 #' @param facet_scales When comparing contrasts, which axes each panel may set
-#'   for itself. The default \code{"free_y"} keeps the fold-change (x) axis
-#'   shared, so effect sizes stay comparable, while each panel uses its full
-#'   height for significance, so a weaker contrast is not squashed by a
-#'   stronger one. Use \code{"fixed"} to share both axes, or \code{"free_x"}
-#'   / \code{"free"}.
+#'   for itself: \code{"fixed"}, \code{"free_y"}, \code{"free_x"} or
+#'   \code{"free"}. The default (\code{NULL}) frees only the significance axis
+#'   (\code{"free_y"}, or \code{"free_x"} when \code{flip = TRUE}), so the
+#'   fold-change axis stays shared and comparable while a weaker contrast is
+#'   not squashed by a stronger one. Use \code{"fixed"} to share both axes.
 #' @param coef For a multi-coefficient limma fit, the coefficient to plot; for
 #'   a \code{DESeqDataSet}, the result \code{name}. See \code{\link{de_table}}.
 #'
@@ -125,8 +129,11 @@
 #' # Compare contrasts side by side: a real stress time course
 #' ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE)
 #'
-#' # Share the y-axis too, to compare significance between panels
+#' # Share the significance axis too
 #' ggvolc(stress_timecourse, label_top = 5, facet_scales = "fixed")
+#'
+#' # Fold change on the y-axis, significance on the x-axis
+#' ggvolc(stress_timecourse, label_top = 5, flip = TRUE)
 #'
 #' # Colorblind-safe colors, or any preset from ggvolc_palettes()
 #' ggvolc(all_genes, label_top = 10, palette = "okabe_ito")
@@ -194,13 +201,20 @@ ggvolc <- function(data1,
                    show_counts = FALSE,
                    highlight = NULL,
                    highlight_colors = NULL,
-                   facet_scales = c("free_y", "fixed", "free_x", "free"),
+                   flip = FALSE,
+                   facet_scales = NULL,
                    coef = NULL){
 
   sig_col_explicit <- !missing(sig_col)
   sig_col   <- match.arg(sig_col)
   label_dir <- match.arg(label_dir)
-  facet_scales <- match.arg(facet_scales)
+  if (!is.logical(flip) || length(flip) != 1 || is.na(flip)) {
+    stop("flip must be TRUE or FALSE", call. = FALSE)
+  }
+  # by default the significance axis is free and the fold-change axis shared
+  if (is.null(facet_scales)) facet_scales <- if (flip) "free_x" else "free_y"
+  facet_scales <- match.arg(facet_scales, c("free_y", "fixed", "free_x", "free"))
+  sig_axis_free <- facet_scales %in% c("free", if (flip) "free_x" else "free_y")
 
   # ---- Colors: palette preset, then explicit overrides ------------------
   cols <- resolve_palette(palette)
@@ -314,6 +328,9 @@ ggvolc <- function(data1,
   # closure that adds all derived columns to a standardized data frame
   prep <- function(df) {
     df$.ggvolc_y <- neglog10_cap(df[[sig_col]], ceiling = ceiling)$value
+    # drawing coordinates (swapped when flip = TRUE)
+    df$.ggvolc_px <- if (flip) df$.ggvolc_y else df$log2FoldChange
+    df$.ggvolc_py <- if (flip) df$log2FoldChange else df$.ggvolc_y
     df$threshold <- factor(case_when(
       df[[sig_col]] < p_value & df$log2FoldChange >  fc ~ "s_upregulated",
       df[[sig_col]] < p_value & df$log2FoldChange < -fc ~ "s_downregulated",
@@ -415,21 +432,22 @@ ggvolc <- function(data1,
   geom_pt <- if (interactive) ggiraph::geom_point_interactive else ggplot2::geom_point
 
   if (interactive) {
-    main_aes <- aes(x = log2FoldChange, y = .ggvolc_y, color = .ggvolc_col,
+    main_aes <- aes(x = .ggvolc_px, y = .ggvolc_py, color = .ggvolc_col,
                     size = size_aes, tooltip = .ggvolc_tip, data_id = genes)
   } else {
-    main_aes <- aes(x = log2FoldChange, y = .ggvolc_y, color = .ggvolc_col,
+    main_aes <- aes(x = .ggvolc_px, y = .ggvolc_py, color = .ggvolc_col,
                     size = size_aes)
   }
 
+  sig_lab <- paste0("-log10(", sig_col, ")")
   p <- ggplot2::ggplot(dplyr::arrange(bg, threshold)) +
     geom_pt(mapping = main_aes, shape = 16, alpha = 0.5) +
     (if (!is.null(set_pts))
       geom_pt(data = set_pts, mapping = main_aes, shape = 16, alpha = 0.9)) +
     ggplot2::theme_bw() +
     ggplot2::labs(title = title,
-                  x = "log2FoldChange",
-                  y = paste0("-log10(", sig_col, ")")) +
+                  x = if (flip) sig_lab else "log2FoldChange",
+                  y = if (flip) "log2FoldChange" else sig_lab) +
     ggplot2::scale_color_manual(
       values = color_mapping,
       name = "Genes",
@@ -440,10 +458,10 @@ ggvolc <- function(data1,
 
   if (!is.null(att)) {
     if (interactive) {
-      att_aes <- aes(x = log2FoldChange, y = .ggvolc_y, fill = threshold,
+      att_aes <- aes(x = .ggvolc_px, y = .ggvolc_py, fill = threshold,
                      size = size_aes, tooltip = .ggvolc_tip, data_id = genes)
     } else {
-      att_aes <- aes(x = log2FoldChange, y = .ggvolc_y, fill = threshold,
+      att_aes <- aes(x = .ggvolc_px, y = .ggvolc_py, fill = threshold,
                      size = size_aes)
     }
 
@@ -457,7 +475,7 @@ ggvolc <- function(data1,
       )
 
     p <- p + ggrepel::geom_text_repel(data = att,
-                                      aes(x = log2FoldChange, y = .ggvolc_y,
+                                      aes(x = .ggvolc_px, y = .ggvolc_py,
                                           label = genes), color = "#333333", fontface = "bold",
                                       segment.curvature = -0.4,
                                       segment.alpha = 0.5)
@@ -502,8 +520,8 @@ ggvolc <- function(data1,
         y.end   = c(y_top, y_top, -log10(p_value))
       )
     }
-    # with a free y-axis the lines follow each panel's own height
-    if (multi && facet_scales %in% c("free_y", "free")) {
+    # with a free significance axis the lines follow each panel's own range
+    if (multi && sig_axis_free) {
       parts <- split(d1, d1$.contrast)
       expression_limits <- do.call(rbind, lapply(names(parts), function(n) {
         s <- seg_of(parts[[n]])
@@ -512,6 +530,10 @@ ggvolc <- function(data1,
       }))
     } else {
       expression_limits <- seg_of(d1)
+    }
+    if (flip) {
+      expression_limits[c("x.start", "x.end", "y.start", "y.end")] <-
+        expression_limits[c("y.start", "y.end", "x.start", "x.end")]
     }
 
     p <- p + ggplot2::geom_segment(data = expression_limits,
@@ -533,16 +555,23 @@ ggvolc <- function(data1,
     counts$down_lab <- paste(counts$n_down, "down")
     counts$up_lab   <- paste(counts$n_up, "up")
 
+    # normal: down top-left, up top-right
+    # flipped: up top-left, down bottom-left (the low-significance side)
     p <- p +
-      ggplot2::geom_text(data = counts, aes(x = -Inf, y = Inf, label = down_lab),
-                         hjust = -0.15, vjust = 1.6, size = 4.2, fontface = "bold",
+      ggplot2::geom_text(data = counts,
+                         aes(x = -Inf, y = if (flip) -Inf else Inf, label = down_lab),
+                         hjust = -0.15, vjust = if (flip) -0.8 else 1.6,
+                         size = 4.2, fontface = "bold",
                          color = readable_on_white(cols[["down"]]),
                          inherit.aes = FALSE) +
-      ggplot2::geom_text(data = counts, aes(x = Inf, y = Inf, label = up_lab),
-                         hjust = 1.15, vjust = 1.6, size = 4.2, fontface = "bold",
+      ggplot2::geom_text(data = counts,
+                         aes(x = if (flip) -Inf else Inf, y = Inf, label = up_lab),
+                         hjust = if (flip) -0.15 else 1.15, vjust = 1.6,
+                         size = 4.2, fontface = "bold",
                          color = readable_on_white(cols[["up"]]),
                          inherit.aes = FALSE) +
-      ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0.05, 0.12)))
+      ggplot2::scale_y_continuous(expand = ggplot2::expansion(
+        mult = if (flip) c(0.12, 0.12) else c(0.05, 0.12)))
   }
 
   if (multi) {

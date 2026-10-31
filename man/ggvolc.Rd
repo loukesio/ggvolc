@@ -23,7 +23,8 @@ ggvolc(
   show_counts = FALSE,
   highlight = NULL,
   highlight_colors = NULL,
-  facet_scales = c("free_y", "fixed", "free_x", "free"),
+  flip = FALSE,
+  facet_scales = NULL,
   coef = NULL
 )
 }
@@ -98,12 +99,17 @@ and each set gets a legend entry. A gene in several sets takes the first.}
 \item{highlight_colors}{Optional colors for the \code{highlight} sets, in
 order or named by set. Defaults to colorblind-friendly Okabe-Ito hues.}
 
+\item{flip}{Logical. If TRUE, swap the axes: log2 fold change on the y-axis
+and significance on the x-axis. Handy when comparing contrasts side by
+side, because the fold-change axis then lines up across the panels.
+Default FALSE.}
+
 \item{facet_scales}{When comparing contrasts, which axes each panel may set
-for itself. The default \code{"free_y"} keeps the fold-change (x) axis
-shared, so effect sizes stay comparable, while each panel uses its full
-height for significance, so a weaker contrast is not squashed by a
-stronger one. Use \code{"fixed"} to share both axes, or \code{"free_x"}
-/ \code{"free"}.}
+for itself: \code{"fixed"}, \code{"free_y"}, \code{"free_x"} or
+\code{"free"}. The default (\code{NULL}) frees only the significance axis
+(\code{"free_y"}, or \code{"free_x"} when \code{flip = TRUE}), so the
+fold-change axis stays shared and comparable while a weaker contrast is
+not squashed by a stronger one. Use \code{"fixed"} to share both axes.}
 
 \item{coef}{For a multi-coefficient limma fit, the coefficient to plot; for
 a \code{DESeqDataSet}, the result \code{name}. See \code{\link{de_table}}.}
@@ -164,8 +170,11 @@ ggvolc(all_genes, highlight = list(Set_A = all_genes$genes[1:15],
 # Compare contrasts side by side: a real stress time course
 ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE)
 
-# Share the y-axis too, to compare significance between panels
+# Share the significance axis too
 ggvolc(stress_timecourse, label_top = 5, facet_scales = "fixed")
+
+# Fold change on the y-axis, significance on the x-axis
+ggvolc(stress_timecourse, label_top = 5, flip = TRUE)
 
 # Colorblind-safe colors, or any preset from ggvolc_palettes()
 ggvolc(all_genes, label_top = 10, palette = "okabe_ito")

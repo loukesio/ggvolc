@@ -366,7 +366,21 @@ ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE, add_seg = TRUE)
 The fold-change axis is shared, so effect sizes compare directly, while each
 panel uses its own height for significance; the counts in the corners show the
 response peaking at 30 minutes and fading by 180. Use `facet_scales = "fixed"`
-to share the y-axis as well.
+to share the significance axis as well.
+
+Prefer the fold change on the y-axis? `flip = TRUE` swaps the axes, so the
+fold-change axis lines up across the panels and you can follow genes from one
+time point to the next:
+
+``` r
+ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE, add_seg = TRUE,
+       flip = TRUE)
+```
+
+<img src="man/figures/README-plot14-flip-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+
+With `flip = TRUE` the significance (x) axis is free per panel by default;
+`facet_scales = "fixed"` shares it.
 
 Genes that DESeq2 leaves without an adjusted p-value (low-count or outlier
 genes) are left out of the plot, with a message saying how many.

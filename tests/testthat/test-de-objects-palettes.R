@@ -208,3 +208,28 @@ test_that("threshold lines follow each panel with a free y-axis", {
   tops <- tapply(seg$y.end, seg$.contrast, max)
   expect_gt(tops[[1]], tops[[3]])
 })
+
+# ---- flip ---------------------------------------------------------------
+
+test_that("flip puts log2FC on the y-axis and significance on the x-axis", {
+  p <- ggvolc(all_genes, label_top = 3, add_seg = TRUE, show_counts = TRUE, flip = TRUE)
+  b <- ggplot2::ggplot_build(p)
+  expect_equal(p$labels$y, "log2FoldChange")
+  expect_equal(p$labels$x, "-log10(padj)")
+  pts <- b$data[[1]]
+  expect_true(all(pts$x >= 0))
+  expect_true(any(pts$y < 0))
+  seg <- Filter(function(l) inherits(l$geom, "GeomSegment"), p$layers)[[1]]$data
+  expect_equal(seg$y.start[1:2], c(-1, 1))      # fold-change thresholds now horizontal
+  expect_error(ggvolc(all_genes, flip = "yes"), "TRUE or FALSE")
+})
+
+test_that("flipped contrast panels free the significance (x) axis by default", {
+  p <- suppressMessages(ggvolc(stress_timecourse, flip = TRUE))
+  expect_true(p$facet$params$free$x)
+  expect_false(p$facet$params$free$y)
+  p2 <- suppressMessages(ggvolc(stress_timecourse))
+  expect_true(p2$facet$params$free$y)
+  p3 <- suppressMessages(ggvolc(stress_timecourse, flip = TRUE, facet_scales = "fixed"))
+  expect_false(p3$facet$params$free$x)
+})
