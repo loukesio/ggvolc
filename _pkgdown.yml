@@ -9,8 +9,14 @@ reference:
   contents:
   - ggvolc
   - genes_table
+- title: Input and colors
+  desc: Read DE result objects and choose color presets.
+  contents:
+  - de_table
+  - ggvolc_palettes
 - title: Example data
   contents:
   - all_genes
   - attention_genes
   - edger_genes
+  - stress_timecourse

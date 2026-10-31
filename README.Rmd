@@ -194,14 +194,25 @@ names (as edgeR/limma often do) are promoted to a `genes` column automatically.
 | edgeR (`topTags()`)    | `logFC`          | `PValue`  | `FDR`       | `logCPM`   |
 | limma (`topTable()`)   | `logFC`          | `P.Value` | `adj.P.Val` | `AveExpr`  |
 
-The package ships `edger_genes`, an example `topTags()`-style table, so you can
-see this directly. In your own analysis you would pass the real thing:
+You don't even need to convert to a table first: pass the **result objects**
+themselves and ggvolc extracts every gene for you.
 
 ```r
-# edgeR: pass topTags()$table straight in
-edger_res <- as.data.frame(edgeR::topTags(qlf, n = Inf))
-ggvolc(edger_res)
+# DESeq2
+ggvolc(DESeq2::results(dds))        # or just ggvolc(dds) after DESeq()
+
+# edgeR
+ggvolc(edgeR::glmQLFTest(fit, coef = 2))
+
+# limma: choose the coefficient for multi-coefficient fits
+ggvolc(limma::eBayes(fit), coef = "treatment")
 ```
+
+Supported: `DESeqResults` / `DESeqDataSet` (DESeq2), `TopTags` / `DGELRT` /
+`DGEExact` (edgeR), and `MArrayLM` (limma). `de_table()` does the conversion if
+you want the data frame yourself.
+
+The package also ships `edger_genes`, an example `topTags()`-style table:
 
 ```{r plot7-edger}
 data(edger_genes)          # an edgeR topTags()-style table (genes in the rownames)
@@ -263,6 +274,84 @@ ggvolc(all_genes, attention_genes, interactive = TRUE)
 ```{r plot10-interactive-preview, echo = FALSE}
 ggvolc(all_genes, attention_genes)
 ```
+
+### 11. Colorblind-safe and ltc palettes
+
+Pick a color preset with `palette`. `ggvolc_palettes()` lists them all, including
+colorblind-safe options and presets taken from the
+[ltc](https://github.com/loukesio/ltc) palettes (ltc does not need to be installed).
+
+```{r plot11-palettes-list}
+ggvolc_palettes()
+```
+
+```{r plot11-okabe}
+ggvolc(all_genes, label_top = 8, label_dir = "each", palette = "okabe_ito",
+       title = "Colorblind-safe: Okabe-Ito")
+```
+
+```{r plot11-ltc}
+ggvolc(all_genes, label_top = 8, label_dir = "each", palette = "pantone23",
+       title = "ltc: pantone23")
+```
+
+Or pass your own colors, including any ltc palette:
+
+```r
+ggvolc(all_genes, palette = c(down = "navy", up = "firebrick"))
+
+pal <- ltc::ltc("maya")
+ggvolc(all_genes, palette = c(down = pal[1], up = pal[4]))
+```
+
+`genes_table()` colors the log2FC column to match the plot automatically. Light
+colors (such as the gold of `pantone23`) are darkened just enough to stay
+readable as table text.
+
+### 12. Count the up- and downregulated genes
+
+```{r plot12-counts}
+ggvolc(all_genes, label_top = 6, show_counts = TRUE, add_seg = TRUE)
+```
+
+### 13. Color gene sets
+
+Pass a named list of gene sets (a pathway, a GO term, your own list) to
+`highlight`. Each set gets its own color and legend entry.
+
+```{r plot13-sets}
+ribosome <- all_genes$genes[1:15]       # stand-ins for real gene sets
+stress   <- all_genes$genes[200:260]
+
+ggvolc(all_genes, highlight = list(Ribosome = ribosome, Stress = stress))
+```
+
+Choose the colors with `highlight_colors`. `data2` also accepts a plain vector
+of gene names: `ggvolc(all_genes, c("GCR1", "HMG1"))`.
+
+### 14. Compare contrasts side by side
+
+Give `ggvolc()` a named list of results to get one panel per contrast on shared
+axes. `label_top` and `show_counts` are applied in each panel, and any mix of
+DESeq2, edgeR and limma results works.
+
+```r
+ggvolc(list("Day 1" = res_day1, "Day 7" = res_day7), label_top = 5, show_counts = TRUE)
+```
+
+The package ships `stress_timecourse`, real DESeq2 results from fission yeast
+under osmotic stress ([Leong et al. 2014](https://doi.org/10.1038/ncomms4947)):
+30, 60 and 180 minutes, each compared with time 0. With shared axes you can see
+the response peak at 30 minutes and fade by 180:
+
+```{r plot14-contrasts, fig.width = 12, fig.height = 5}
+ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE, add_seg = TRUE)
+```
+
+Use `facet_scales = "free_y"` to give each panel its own y-axis.
+
+Genes that DESeq2 leaves without an adjusted p-value (low-count or outlier
+genes) are left out of the plot, with a message saying how many.
 
 ## Learn more
 

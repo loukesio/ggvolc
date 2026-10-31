@@ -151,6 +151,59 @@ ggvolc(edger_genes, label_top = 8, add_seg = TRUE, title = "edgeR input")
 | edgeR (`topTags()`) | `logFC` | `PValue` | `FDR` | `logCPM` |
 | limma (`topTable()`) | `logFC` | `P.Value` | `adj.P.Val` | `AveExpr` |
 
+You can also skip the conversion and pass the result objects directly:
+`DESeqResults` or `DESeqDataSet` (DESeq2), `TopTags`, `DGELRT` or `DGEExact`
+(edgeR), and `MArrayLM` (limma, choose the coefficient with `coef`).
+
+```r
+ggvolc(DESeq2::results(dds))
+ggvolc(edgeR::glmQLFTest(fit, coef = 2))
+ggvolc(limma::eBayes(fit), coef = "treatment")
+```
+
+`de_table()` performs the same conversion if you want the data frame itself.
+
+## Colors and colorblind-safe palettes
+
+`palette` selects a color preset. `ggvolc_palettes()` lists them, including
+colorblind-safe options and presets from the ltc palettes.
+
+```{r}
+ggvolc_palettes()
+
+ggvolc(all_genes, label_top = 8, label_dir = "each", palette = "okabe_ito")
+```
+
+`genes_table()` reuses the plot's colors, darkening light ones so the table
+text stays readable.
+
+## Counts, gene sets, and several contrasts
+
+```{r}
+# number of up- and downregulated genes in the corners
+ggvolc(all_genes, show_counts = TRUE)
+
+# color named gene sets
+ggvolc(all_genes, highlight = list(Set_A = all_genes$genes[1:15],
+                                   Set_B = all_genes$genes[200:260]))
+```
+
+To compare contrasts, pass a named list of results. `stress_timecourse` holds
+real DESeq2 results from a fission yeast stress time course (Leong et al. 2014):
+
+```{r, fig.width = 10, fig.height = 4.5}
+ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE)
+```
+
+`facet_scales = "free_y"` gives each panel its own y-axis.
+
+A named vector sets the colors directly, and `up_reg_color`,
+`down_reg_color` and `not_sig_color` still override single colors:
+
+```{r}
+ggvolc(all_genes, palette = c(down = "navy", up = "firebrick"))
+```
+
 ## An interactive volcano
 
 With the optional [`ggiraph`](https://davidgohel.github.io/ggiraph/) package

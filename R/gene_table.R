@@ -6,7 +6,8 @@
 #' significance and formatted numeric columns.
 #'
 #' @param plot_obj A ggplot object, typically the output of \code{\link{ggvolc}}.
-#' @param data2 A data frame containing gene details.
+#' @param data2 Gene details: a data frame, or a DESeq2 / edgeR / limma
+#'   result object (see \code{\link{de_table}}).
 #'   Columns are auto-detected in the same way as \code{\link{ggvolc}} (DESeq2,
 #'   edgeR, or limma conventions). Required columns after mapping:
 #'   \code{genes}, \code{log2FoldChange}, \code{pvalue}.
@@ -32,6 +33,11 @@
 #'   Default is 0.05.
 #' @param table_height Relative height of the table panel (plot panel is always 3).
 #'   Default is 1.
+#' @param palette Colors for the log2FC column. Default NULL takes the colors
+#'   of \code{plot_obj} when it came from \code{\link{ggvolc}}; otherwise a
+#'   preset name or named vector as in \code{\link{ggvolc}}.
+#' @param coef Coefficient to extract when \code{data2} is a multi-coefficient
+#'   limma fit (see \code{\link{de_table}}).
 #'
 #' @return A \code{patchwork} object that can be further composed or saved with
 #'   \code{ggplot2::ggsave()}.
@@ -58,7 +64,9 @@ genes_table <- function(plot_obj, data2,
                         sig_col      = c("padj", "pvalue"),
                         dir          = c("both", "up", "down", "each"),
                         p_value      = 0.05,
-                        table_height = 1) {
+                        table_height = 1,
+                        palette      = NULL,
+                        coef         = NULL) {
 
   sig_col_explicit <- !missing(sig_col)
   sig_col <- match.arg(sig_col)
@@ -66,7 +74,7 @@ genes_table <- function(plot_obj, data2,
 
   # Check input
   if (!inherits(plot_obj, "gg")) stop("plot_obj must be a ggplot object", call. = FALSE)
-  if (!is.data.frame(data2))    stop("data2 must be a data frame", call. = FALSE)
+  data2 <- de_table(data2, coef = coef)
   if (!is.null(top_n) &&
       (!is.numeric(top_n) || length(top_n) != 1 || top_n < 1)) {
     stop("top_n must be a single positive number", call. = FALSE)
@@ -157,7 +165,10 @@ genes_table <- function(plot_obj, data2,
       )
     )
 
-  # Highlight direction via log2FC color
+  # Highlight direction via log2FC color, matching the plot's palette
+  cols <- if (!is.null(palette)) resolve_palette(palette)
+          else if (!is.null(attr(plot_obj, "ggvolc_colors"))) attr(plot_obj, "ggvolc_colors")
+          else resolve_palette("default")
   if (nrow(selected_data) > 0) {
     up_rows   <- which(selected_data$log2FoldChange > 0)
     down_rows <- which(selected_data$log2FoldChange < 0)
@@ -165,14 +176,14 @@ genes_table <- function(plot_obj, data2,
     if (length(up_rows) > 0) {
       tbl <- tbl |>
         gt::tab_style(
-          style     = gt::cell_text(color = "#d1495b"),
+          style     = gt::cell_text(color = readable_on_white(cols[["up"]])),
           locations = gt::cells_body(columns = "log2FoldChange", rows = up_rows)
         )
     }
     if (length(down_rows) > 0) {
       tbl <- tbl |>
         gt::tab_style(
-          style     = gt::cell_text(color = "#00798c"),
+          style     = gt::cell_text(color = readable_on_white(cols[["down"]])),
           locations = gt::cells_body(columns = "log2FoldChange", rows = down_rows)
         )
     }

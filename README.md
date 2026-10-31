@@ -34,7 +34,7 @@ you can highlight genes, auto-label the top hits, attach a `gt` table, or make t
 whole thing interactive. Start by loading the library and exploring the two example
 datasets that ship with the package:
 
-``` console
+```
 library(ggvolc)
 #> Welcome to ggvolc version 0.3.0 !
 #>
@@ -182,14 +182,25 @@ names (as edgeR/limma often do) are promoted to a `genes` column automatically.
 | edgeR (`topTags()`)  | `logFC`          | `PValue`  | `FDR`       | `logCPM`   |
 | limma (`topTable()`) | `logFC`          | `P.Value` | `adj.P.Val` | `AveExpr`  |
 
-The package ships `edger_genes`, an example `topTags()`-style table, so you can
-see this directly. In your own analysis you would pass the real thing:
+You don’t even need to convert to a table first: pass the **result objects**
+themselves and ggvolc extracts every gene for you.
 
 ``` r
-# edgeR: pass topTags()$table straight in
-edger_res <- as.data.frame(edgeR::topTags(qlf, n = Inf))
-ggvolc(edger_res)
+# DESeq2
+ggvolc(DESeq2::results(dds))        # or just ggvolc(dds) after DESeq()
+
+# edgeR
+ggvolc(edgeR::glmQLFTest(fit, coef = 2))
+
+# limma: choose the coefficient for multi-coefficient fits
+ggvolc(limma::eBayes(fit), coef = "treatment")
 ```
+
+Supported: `DESeqResults` / `DESeqDataSet` (DESeq2), `TopTags` / `DGELRT` /
+`DGEExact` (edgeR), and `MArrayLM` (limma). `de_table()` does the conversion if
+you want the data frame yourself.
+
+The package also ships `edger_genes`, an example `topTags()`-style table:
 
 ``` r
 data(edger_genes)          # an edgeR topTags()-style table (genes in the rownames)
@@ -261,6 +272,103 @@ ggvolc(all_genes, attention_genes, interactive = TRUE)
 > [package website](https://loukesio.github.io/ggvolc/articles/ggvolc.html).
 
 <img src="man/figures/README-plot10-interactive-preview-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+
+### 11. Colorblind-safe and ltc palettes
+
+Pick a color preset with `palette`. `ggvolc_palettes()` lists them all, including
+colorblind-safe options and presets taken from the
+[ltc](https://github.com/loukesio/ltc) palettes (ltc does not need to be installed).
+
+``` r
+ggvolc_palettes()
+#>     palette    down not_sig      up colorblind_safe             source
+#> 1   default #00798c #808080 #d1495b           FALSE         ltc: minou
+#> 2 okabe_ito #0072B2 #999999 #D55E00            TRUE Okabe & Ito (2008)
+#> 3      rdbu #0571b0 #999999 #ca0020            TRUE   ColorBrewer RdBu
+#> 4 pantone23 #1F2C43 #B8B8B8 #FFB000            TRUE     ltc: pantone23
+#> 5  seafarer #013D5A #BDBDBD #E4A25B            TRUE      ltc: seafarer
+#> 6  midnight #075056 #B0B0B0 #FF5B04           FALSE      ltc: midnight
+#> 7      maya #3d5a80 #A9A9A9 #ee6c4d           FALSE          ltc: maya
+#> 8     trio1 #0E7175 #B0B0B0 #FD7901           FALSE         ltc: trio1
+```
+
+``` r
+ggvolc(all_genes, label_top = 8, label_dir = "each", palette = "okabe_ito",
+       title = "Colorblind-safe: Okabe-Ito")
+```
+
+<img src="man/figures/README-plot11-okabe-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+
+``` r
+ggvolc(all_genes, label_top = 8, label_dir = "each", palette = "pantone23",
+       title = "ltc: pantone23")
+```
+
+<img src="man/figures/README-plot11-ltc-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+
+Or pass your own colors, including any ltc palette:
+
+``` r
+ggvolc(all_genes, palette = c(down = "navy", up = "firebrick"))
+
+pal <- ltc::ltc("maya")
+ggvolc(all_genes, palette = c(down = pal[1], up = pal[4]))
+```
+
+`genes_table()` colors the log2FC column to match the plot automatically. Light
+colors (such as the gold of `pantone23`) are darkened just enough to stay
+readable as table text.
+
+### 12. Count the up- and downregulated genes
+
+``` r
+ggvolc(all_genes, label_top = 6, show_counts = TRUE, add_seg = TRUE)
+```
+
+<img src="man/figures/README-plot12-counts-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+
+### 13. Color gene sets
+
+Pass a named list of gene sets (a pathway, a GO term, your own list) to
+`highlight`. Each set gets its own color and legend entry.
+
+``` r
+ribosome <- all_genes$genes[1:15]       # stand-ins for real gene sets
+stress   <- all_genes$genes[200:260]
+
+ggvolc(all_genes, highlight = list(Ribosome = ribosome, Stress = stress))
+```
+
+<img src="man/figures/README-plot13-sets-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+
+Choose the colors with `highlight_colors`. `data2` also accepts a plain vector
+of gene names: `ggvolc(all_genes, c("GCR1", "HMG1"))`.
+
+### 14. Compare contrasts side by side
+
+Give `ggvolc()` a named list of results to get one panel per contrast on shared
+axes. `label_top` and `show_counts` are applied in each panel, and any mix of
+DESeq2, edgeR and limma results works.
+
+``` r
+ggvolc(list("Day 1" = res_day1, "Day 7" = res_day7), label_top = 5, show_counts = TRUE)
+```
+
+The package ships `stress_timecourse`, real DESeq2 results from fission yeast
+under osmotic stress ([Leong et al. 2014](https://doi.org/10.1038/ncomms4947)):
+30, 60 and 180 minutes, each compared with time 0. With shared axes you can see
+the response peak at 30 minutes and fade by 180:
+
+``` r
+ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE, add_seg = TRUE)
+```
+
+<img src="man/figures/README-plot14-contrasts-1.png" alt="" width="750px" style="display: block; margin: auto;" />
+
+Use `facet_scales = "free_y"` to give each panel its own y-axis.
+
+Genes that DESeq2 leaves without an adjusted p-value (low-count or outlier
+genes) are left out of the plot, with a message saying how many.
 
 ## Learn more
 
