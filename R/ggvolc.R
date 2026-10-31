@@ -533,9 +533,9 @@ ggvolc <- function(data1,
     p <- p +
       ggplot2::facet_wrap(ggplot2::vars(.contrast), scales = facet_scales) +
       ggplot2::theme(
-        strip.background = ggplot2::element_rect(fill = "grey95", color = "#333333",
-                                                 linewidth = 1),
-        strip.text = ggplot2::element_text(size = 13, face = "bold", color = "#333333"))
+        strip.background = ggplot2::element_blank(),
+        strip.text = ggplot2::element_text(size = 14, face = "bold", color = "#333333",
+                                           margin = margin(t = 0, r = 0, b = 6, l = 0)))
   }
 
   # remembered so genes_table() can color the table to match

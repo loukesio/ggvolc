@@ -25,7 +25,8 @@
 * **Compare contrasts.** Pass a named list of results, e.g.
   `ggvolc(list("Day 1" = res1, "Day 7" = res7))`, to get one panel per
   contrast on shared axes. `label_top` and `show_counts` work per panel, and
-  `data2` genes are highlighted in every panel.
+  `data2` genes are highlighted in every panel. Panels are titled with clean bold
+  labels (restyle with `+ theme(strip.background = ...)`).
 * **`highlight`** colors named gene sets (pathways, GO terms) with their own
   legend entries; choose colors with `highlight_colors`.
 * **`show_counts = TRUE`** prints the number of down- and upregulated genes in
