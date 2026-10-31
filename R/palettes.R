@@ -123,9 +123,10 @@ readable_on_white <- function(col, min_ratio = 4.5) {
 #' @keywords internal
 #' @noRd
 highlight_set_colors <- function(set_names, highlight_colors = NULL) {
-  # Okabe-Ito hues not used by the up/down presets
-  default <- c("#E69F00", "#56B4E9", "#009E73", "#CC79A7", "#F0E442",
-               "#000000", "#882255", "#44AA99")
+  # the rest of the ltc "minou" palette (the default up/down colors are its
+  # teal and red), then a few more hues in the same muted style
+  default <- c("#edae49", "#2e4057", "#66a182", "#8d5a97", "#c47e3a",
+               "#5b8fa8", "#a3a35a", "#7a6c5d")
   if (is.null(highlight_colors)) {
     if (length(set_names) > length(default)) {
       stop("More than ", length(default), " highlight sets: please supply ",
@@ -143,4 +144,28 @@ highlight_set_colors <- function(set_names, highlight_colors = NULL) {
     stop("highlight_colors needs one color per highlight set.", call. = FALSE)
   }
   stats::setNames(highlight_colors[seq_along(set_names)], set_names)
+}
+
+
+
+#' Transparency for highlight gene sets
+#' @keywords internal
+#' @noRd
+highlight_set_alpha <- function(set_names, highlight_alpha = 0.5) {
+  a <- highlight_alpha
+  if (!is.numeric(a) || anyNA(a) || any(a < 0 | a > 1)) {
+    stop("highlight_alpha must be a number between 0 and 1, or one per set.",
+         call. = FALSE)
+  }
+  if (!is.null(names(a))) {
+    miss <- setdiff(set_names, names(a))
+    if (length(miss)) stop("highlight_alpha is missing: ",
+                           paste(miss, collapse = ", "), call. = FALSE)
+    return(a[set_names])
+  }
+  if (length(a) == 1) a <- rep(a, length(set_names))
+  if (length(a) != length(set_names)) {
+    stop("highlight_alpha needs one value, or one per highlight set.", call. = FALSE)
+  }
+  stats::setNames(a, set_names)
 }

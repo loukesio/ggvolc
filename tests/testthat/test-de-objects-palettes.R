@@ -133,9 +133,9 @@ test_that("highlight colors gene sets with their own legend entries", {
   sets <- list(A = all_genes$genes[1:10], B = all_genes$genes[50:60])
   p <- ggvolc(all_genes, highlight = sets, highlight_colors = c("red", "blue"))
   expect_s3_class(p, "ggplot")
-  set_layer <- p$layers[[2]]$data
-  expect_setequal(unique(set_layer$.ggvolc_col), c("A", "B"))
-  expect_equal(nrow(set_layer), 21)
+  set_rows <- rbind(p$layers[[2]]$data, p$layers[[3]]$data)
+  expect_setequal(unique(set_rows$.ggvolc_col), c("A", "B"))
+  expect_equal(nrow(set_rows), 21)
 })
 
 test_that("highlight validates input and warns on empty sets", {
@@ -207,4 +207,43 @@ test_that("threshold lines follow each panel with a free y-axis", {
   expect_equal(nlevels(droplevels(seg$.contrast)), 3)
   tops <- tapply(seg$y.end, seg$.contrast, max)
   expect_gt(tops[[1]], tops[[3]])
+})
+
+# ---- flip ---------------------------------------------------------------
+
+test_that("flip puts log2FC on the y-axis and significance on the x-axis", {
+  p <- ggvolc(all_genes, label_top = 3, add_seg = TRUE, show_counts = TRUE, flip = TRUE)
+  b <- ggplot2::ggplot_build(p)
+  expect_equal(p$labels$y, "log2FoldChange")
+  expect_equal(p$labels$x, "-log10(padj)")
+  pts <- b$data[[1]]
+  expect_true(all(pts$x >= 0))
+  expect_true(any(pts$y < 0))
+  seg <- Filter(function(l) inherits(l$geom, "GeomSegment"), p$layers)[[1]]$data
+  expect_equal(seg$y.start[1:2], c(-1, 1))      # fold-change thresholds now horizontal
+  expect_error(ggvolc(all_genes, flip = "yes"), "TRUE or FALSE")
+})
+
+test_that("flipped contrast panels free the significance (x) axis by default", {
+  p <- suppressMessages(ggvolc(stress_timecourse, flip = TRUE))
+  expect_true(p$facet$params$free$x)
+  expect_false(p$facet$params$free$y)
+  p2 <- suppressMessages(ggvolc(stress_timecourse))
+  expect_true(p2$facet$params$free$y)
+  p3 <- suppressMessages(ggvolc(stress_timecourse, flip = TRUE, facet_scales = "fixed"))
+  expect_false(p3$facet$params$free$x)
+})
+
+
+test_that("highlight_alpha sets the transparency per gene set", {
+  sets <- list(A = all_genes$genes[1:10], B = all_genes$genes[50:60])
+  alpha_of <- function(p) unname(vapply(p$layers[2:3], function(l) l$aes_params$alpha, 1))
+  expect_equal(alpha_of(ggvolc(all_genes, highlight = sets)), c(0.5, 0.5))
+  expect_equal(alpha_of(ggvolc(all_genes, highlight = sets,
+                               highlight_alpha = c(B = 0.2, A = 1))), c(1, 0.2))
+  expect_equal(alpha_of(ggvolc(all_genes, highlight = sets,
+                               highlight_alpha = 0.8)), c(0.8, 0.8))
+  expect_error(ggvolc(all_genes, highlight = sets, highlight_alpha = 2), "between 0 and 1")
+  expect_error(ggvolc(all_genes, highlight = sets, highlight_alpha = c(0.1, 0.2, 0.3)),
+               "one per highlight set")
 })

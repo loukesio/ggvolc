@@ -184,8 +184,9 @@ text stays readable.
 ggvolc(all_genes, show_counts = TRUE)
 
 # color named gene sets
-ggvolc(all_genes, highlight = list(Set_A = all_genes$genes[1:15],
-                                   Set_B = all_genes$genes[200:260]))
+ribosomal  <- grep("^RP[LS][0-9]", all_genes$genes, value = TRUE)
+heat_shock <- grep("^HSP[0-9]|^SSA[0-9]", all_genes$genes, value = TRUE)
+ggvolc(all_genes, highlight = list(Ribosomal = ribosomal, `Heat shock` = heat_shock))
 ```
 
 To compare contrasts, pass a named list of results. `stress_timecourse` holds
@@ -193,6 +194,13 @@ real DESeq2 results from a fission yeast stress time course (Leong et al. 2014):
 
 ```{r, fig.width = 10, fig.height = 4.5}
 ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE)
+```
+
+`flip = TRUE` puts the fold change on the y-axis instead, which lines it up
+across the panels:
+
+```{r, fig.width = 10, fig.height = 4.5}
+ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE, flip = TRUE)
 ```
 
 Each panel compares one time point with 0 minutes. The x-axis (fold change) is
