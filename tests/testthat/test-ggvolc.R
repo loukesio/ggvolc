@@ -201,9 +201,10 @@ test_that("ggvolc rejects non-dataframe input", {
   expect_error(ggvolc("not a df"), "data frame")
 })
 
-test_that("ggvolc rejects non-dataframe data2", {
+test_that("ggvolc treats character data2 as gene names and rejects other input", {
   df <- make_deseq2_df()
-  expect_error(ggvolc(df, data2 = "not a df"), "data frame")
+  expect_warning(ggvolc(df, data2 = "not_a_gene"), "none of the genes")
+  expect_error(ggvolc(df, data2 = 1:3), "Don't know how to read")
 })
 
 

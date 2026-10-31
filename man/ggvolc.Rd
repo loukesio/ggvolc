@@ -15,20 +15,31 @@ ggvolc(
   label_dir = c("both", "up", "down", "each"),
   title = NULL,
   interactive = FALSE,
-  not_sig_color = "#808080",
-  down_reg_color = "#00798c",
-  up_reg_color = "#d1495b",
-  add_seg = FALSE
+  palette = "default",
+  not_sig_color = NULL,
+  down_reg_color = NULL,
+  up_reg_color = NULL,
+  add_seg = FALSE,
+  show_counts = FALSE,
+  highlight = NULL,
+  highlight_colors = NULL,
+  facet_scales = c("fixed", "free_y", "free_x", "free"),
+  coef = NULL
 )
 }
 \arguments{
-\item{data1}{Data frame for the primary dataset. Accepts output from
-DESeq2 (\code{results()}), edgeR (\code{topTags()}), or limma
-(\code{topTable()}). Gene identifiers can live in a \code{genes} column
-or in the row names.}
+\item{data1}{The DE results to plot: a data frame, or a DESeq2
+(\code{DESeqResults}, \code{DESeqDataSet}), edgeR (\code{TopTags},
+\code{DGELRT}, \code{DGEExact}) or limma (\code{MArrayLM}) object.
+Gene identifiers can live in a \code{genes} column or in the row names.
+To compare contrasts, pass a \emph{named list} of results, e.g.
+\code{list("Day 1" = res1, "Day 7" = res7)}: each becomes a panel on
+shared axes, and \code{label_top} and \code{show_counts} work per panel.}
 
-\item{data2}{Data frame for the secondary dataset (genes of interest).
-Uses the same auto-detection as \code{data1}. Default is NULL.}
+\item{data2}{Genes to highlight and label: a data frame or DE object (same
+auto-detection as \code{data1}), or simply a character vector of gene
+names. With a list in \code{data1}, the genes are highlighted in every
+panel. Default is NULL.}
 
 \item{size_var}{Variable for determining the size of points. Options are
 \code{"log2FoldChange"} and \code{"pvalue"}. Default is NULL (fixed size).}
@@ -63,14 +74,36 @@ highlighted and labelled automatically, without building a separate
 \code{girafe} widget where hovering a point reveals the gene name and its
 statistics. Requires the optional \pkg{ggiraph} package. Default FALSE.}
 
-\item{not_sig_color}{Color for non-significant genes. Default is "#808080".}
+\item{palette}{Colors for the plot: a preset name (see
+\code{\link{ggvolc_palettes}}), such as \code{"default"},
+\code{"okabe_ito"} (colorblind-safe), or one of the ltc-derived presets,
+or a named vector such as \code{c(down = "navy", up = "firebrick")}.}
 
-\item{down_reg_color}{Color for downregulated genes. Default is "#00798c".}
-
-\item{up_reg_color}{Color for upregulated genes. Default is "#d1495b".}
+\item{not_sig_color, down_reg_color, up_reg_color}{Colors for
+non-significant, downregulated, and upregulated genes. When given, they
+override the matching color from \code{palette}. Default NULL.}
 
 \item{add_seg}{Logical. If TRUE, dashed lines will be added to the plot
 indicating the p-value and fold change thresholds. Default is FALSE.}
+
+\item{show_counts}{Logical. If TRUE, the number of significantly down- and
+upregulated genes is printed in the top corners of the plot (of each panel
+when comparing contrasts). Default FALSE.}
+
+\item{highlight}{Optional named list of gene sets to color, e.g.
+\code{list(Ribosome = c("RPL3", "RPS2"), Glycolysis = c("PFK1", "PYK1"))}.
+Genes in a set are drawn in the set's color, whatever their significance,
+and each set gets a legend entry. A gene in several sets takes the first.}
+
+\item{highlight_colors}{Optional colors for the \code{highlight} sets, in
+order or named by set. Defaults to colorblind-friendly Okabe-Ito hues.}
+
+\item{facet_scales}{When comparing contrasts, whether the panels share their
+axes: \code{"fixed"} (default, best for comparing panels),
+\code{"free_y"}, \code{"free_x"}, or \code{"free"}.}
+
+\item{coef}{For a multi-coefficient limma fit, the coefficient to plot; for
+a \code{DESeqDataSet}, the result \code{name}. See \code{\link{de_table}}.}
 }
 \value{
 A ggplot2 object displaying the volcano plot, or, when
@@ -81,9 +114,9 @@ This function creates a volcano plot using ggplot2 based on provided datasets.
 It is particularly useful for visualizing differential gene expression data.
 }
 \details{
-Column names from DESeq2, edgeR, and limma are automatically detected and
-mapped internally, so you can pass the output of any of the three pipelines
-directly.
+You can pass the result objects of DESeq2, edgeR, and limma directly
+(see \code{\link{de_table}}), or a data frame. Column names from all three
+pipelines are detected and mapped automatically.
 }
 \examples{
 # Load example datasets included in the package
@@ -98,6 +131,7 @@ ggvolc(all_genes)
 # These genes are shown with black borders and gene names
 ggvolc(all_genes, attention_genes)
 
+\donttest{
 # Add dashed lines to indicate significance thresholds
 ggvolc(all_genes, attention_genes, add_seg = TRUE)
 
@@ -116,6 +150,22 @@ ggvolc(all_genes, label_top = 8, label_dir = "each")
 
 # Give the plot a title
 ggvolc(all_genes, title = "Treated vs. control")
+
+# Show how many genes go up and down
+ggvolc(all_genes, show_counts = TRUE)
+
+# Color gene sets, e.g. a pathway
+ggvolc(all_genes, highlight = list(Set_A = all_genes$genes[1:15],
+                                   Set_B = all_genes$genes[100:130]))
+
+# Compare contrasts side by side: a real stress time course
+ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE)
+
+# Let each panel use its own y-axis
+ggvolc(stress_timecourse, label_top = 5, facet_scales = "free_y")
+
+# Colorblind-safe colors, or any preset from ggvolc_palettes()
+ggvolc(all_genes, label_top = 10, palette = "okabe_ito")
 
 # Customize colors for up- and down-regulated genes
 ggvolc(all_genes, attention_genes,
@@ -149,7 +199,14 @@ limma_df <- data.frame(
 )
 ggvolc(limma_df)
 
+}
+
 \dontrun{
+# DE objects work directly, no conversion needed
+ggvolc(DESeq2::results(dds))
+ggvolc(edgeR::glmQLFTest(qlf_fit, coef = 2))
+ggvolc(limma::eBayes(limma_fit), coef = "treatment")
+
 # Interactive volcano (requires the ggiraph package): hover a point to
 # see the gene name and its statistics
 ggvolc(all_genes, attention_genes, interactive = TRUE)

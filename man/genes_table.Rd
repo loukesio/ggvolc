@@ -11,13 +11,16 @@ genes_table(
   sig_col = c("padj", "pvalue"),
   dir = c("both", "up", "down", "each"),
   p_value = 0.05,
-  table_height = 1
+  table_height = 1,
+  palette = NULL,
+  coef = NULL
 )
 }
 \arguments{
 \item{plot_obj}{A ggplot object, typically the output of \code{\link{ggvolc}}.}
 
-\item{data2}{A data frame containing gene details.
+\item{data2}{Gene details: a data frame, or a DESeq2 / edgeR / limma
+result object (see \code{\link{de_table}}).
 Columns are auto-detected in the same way as \code{\link{ggvolc}} (DESeq2,
 edgeR, or limma conventions). Required columns after mapping:
 \code{genes}, \code{log2FoldChange}, \code{pvalue}.
@@ -48,6 +51,13 @@ Default is 0.05.}
 
 \item{table_height}{Relative height of the table panel (plot panel is always 3).
 Default is 1.}
+
+\item{palette}{Colors for the log2FC column. Default NULL takes the colors
+of \code{plot_obj} when it came from \code{\link{ggvolc}}; otherwise a
+preset name or named vector as in \code{\link{ggvolc}}.}
+
+\item{coef}{Coefficient to extract when \code{data2} is a multi-coefficient
+limma fit (see \code{\link{de_table}}).}
 }
 \value{
 A \code{patchwork} object that can be further composed or saved with
