@@ -31,7 +31,7 @@
   labels (restyle with `+ theme(strip.background = ...)`).
 * **`highlight`** colors named gene sets (pathways, GO terms) with their own
   legend entries, in colors matching the default palette; choose colors with
-  `highlight_colors`.
+  `highlight_colors` and per-set transparency with `highlight_alpha`.
 * **`show_counts = TRUE`** prints the number of down- and upregulated genes in
   the top corners.
 * **`flip = TRUE`** swaps the axes: log2 fold change on the y-axis,

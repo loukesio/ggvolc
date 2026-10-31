@@ -340,8 +340,18 @@ ggvolc(all_genes, highlight = list(Ribosomal = ribosomal, `Heat shock` = heat_sh
 
 <img src="man/figures/README-plot13-sets-1.png" alt="" width="100%" style="display: block; margin: auto;" />
 
-Choose the colors with `highlight_colors`. `data2` also accepts a plain vector
-of gene names: `ggvolc(all_genes, c("GCR1", "HMG1"))`.
+Choose the colors with `highlight_colors` and the transparency with
+`highlight_alpha`, either one value for all sets or one per set:
+
+``` r
+ggvolc(all_genes,
+       highlight = list(Ribosomal = ribosomal, `Heat shock` = heat_shock),
+       highlight_alpha = c(Ribosomal = 0.5, `Heat shock` = 1))
+```
+
+<img src="man/figures/README-plot13-sets-alpha-1.png" alt="" width="100%" style="display: block; margin: auto;" />
+
+`data2` also accepts a plain vector of gene names: `ggvolc(all_genes, c("GCR1", "HMG1"))`.
 
 ### 14. Compare contrasts side by side
 

@@ -23,6 +23,7 @@ ggvolc(
   show_counts = FALSE,
   highlight = NULL,
   highlight_colors = NULL,
+  highlight_alpha = 0.5,
   flip = FALSE,
   facet_scales = NULL,
   coef = NULL
@@ -101,6 +102,10 @@ order or named by set. Defaults to the remaining colors of the ltc
 \emph{minou} palette that the default up/down colors come from (mustard,
 navy, sage, ...), so they match the plot.}
 
+\item{highlight_alpha}{Transparency of the \code{highlight} points, from 0
+(invisible) to 1 (solid): one value for all sets, or one per set (in
+order or named by set). Default 0.5, the same as all other points.}
+
 \item{flip}{Logical. If TRUE, swap the axes: log2 fold change on the y-axis
 and significance on the x-axis. Handy when comparing contrasts side by
 side, because the fold-change axis then lines up across the panels.
@@ -168,6 +173,11 @@ ggvolc(all_genes, show_counts = TRUE)
 # Color gene sets, e.g. a pathway
 ggvolc(all_genes, highlight = list(Set_A = all_genes$genes[1:15],
                                    Set_B = all_genes$genes[100:130]))
+
+# ... each set with its own transparency
+ggvolc(all_genes, highlight = list(Set_A = all_genes$genes[1:15],
+                                   Set_B = all_genes$genes[100:130]),
+       highlight_alpha = c(Set_A = 1, Set_B = 0.5))
 
 # Compare contrasts side by side: a real stress time course
 ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE)

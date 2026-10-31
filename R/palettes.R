@@ -146,3 +146,26 @@ highlight_set_colors <- function(set_names, highlight_colors = NULL) {
   stats::setNames(highlight_colors[seq_along(set_names)], set_names)
 }
 
+
+
+#' Transparency for highlight gene sets
+#' @keywords internal
+#' @noRd
+highlight_set_alpha <- function(set_names, highlight_alpha = 0.5) {
+  a <- highlight_alpha
+  if (!is.numeric(a) || anyNA(a) || any(a < 0 | a > 1)) {
+    stop("highlight_alpha must be a number between 0 and 1, or one per set.",
+         call. = FALSE)
+  }
+  if (!is.null(names(a))) {
+    miss <- setdiff(set_names, names(a))
+    if (length(miss)) stop("highlight_alpha is missing: ",
+                           paste(miss, collapse = ", "), call. = FALSE)
+    return(a[set_names])
+  }
+  if (length(a) == 1) a <- rep(a, length(set_names))
+  if (length(a) != length(set_names)) {
+    stop("highlight_alpha needs one value, or one per highlight set.", call. = FALSE)
+  }
+  stats::setNames(a, set_names)
+}

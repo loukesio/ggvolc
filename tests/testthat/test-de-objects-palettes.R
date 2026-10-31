@@ -133,9 +133,9 @@ test_that("highlight colors gene sets with their own legend entries", {
   sets <- list(A = all_genes$genes[1:10], B = all_genes$genes[50:60])
   p <- ggvolc(all_genes, highlight = sets, highlight_colors = c("red", "blue"))
   expect_s3_class(p, "ggplot")
-  set_layer <- p$layers[[2]]$data
-  expect_setequal(unique(set_layer$.ggvolc_col), c("A", "B"))
-  expect_equal(nrow(set_layer), 21)
+  set_rows <- rbind(p$layers[[2]]$data, p$layers[[3]]$data)
+  expect_setequal(unique(set_rows$.ggvolc_col), c("A", "B"))
+  expect_equal(nrow(set_rows), 21)
 })
 
 test_that("highlight validates input and warns on empty sets", {
@@ -232,4 +232,18 @@ test_that("flipped contrast panels free the significance (x) axis by default", {
   expect_true(p2$facet$params$free$y)
   p3 <- suppressMessages(ggvolc(stress_timecourse, flip = TRUE, facet_scales = "fixed"))
   expect_false(p3$facet$params$free$x)
+})
+
+
+test_that("highlight_alpha sets the transparency per gene set", {
+  sets <- list(A = all_genes$genes[1:10], B = all_genes$genes[50:60])
+  alpha_of <- function(p) unname(vapply(p$layers[2:3], function(l) l$aes_params$alpha, 1))
+  expect_equal(alpha_of(ggvolc(all_genes, highlight = sets)), c(0.5, 0.5))
+  expect_equal(alpha_of(ggvolc(all_genes, highlight = sets,
+                               highlight_alpha = c(B = 0.2, A = 1))), c(1, 0.2))
+  expect_equal(alpha_of(ggvolc(all_genes, highlight = sets,
+                               highlight_alpha = 0.8)), c(0.8, 0.8))
+  expect_error(ggvolc(all_genes, highlight = sets, highlight_alpha = 2), "between 0 and 1")
+  expect_error(ggvolc(all_genes, highlight = sets, highlight_alpha = c(0.1, 0.2, 0.3)),
+               "one per highlight set")
 })

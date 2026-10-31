@@ -67,6 +67,9 @@
 #'   and significance on the x-axis. Handy when comparing contrasts side by
 #'   side, because the fold-change axis then lines up across the panels.
 #'   Default FALSE.
+#' @param highlight_alpha Transparency of the \code{highlight} points, from 0
+#'   (invisible) to 1 (solid): one value for all sets, or one per set (in
+#'   order or named by set). Default 0.5, the same as all other points.
 #' @param facet_scales When comparing contrasts, which axes each panel may set
 #'   for itself: \code{"fixed"}, \code{"free_y"}, \code{"free_x"} or
 #'   \code{"free"}. The default (\code{NULL}) frees only the significance axis
@@ -127,6 +130,11 @@
 #' # Color gene sets, e.g. a pathway
 #' ggvolc(all_genes, highlight = list(Set_A = all_genes$genes[1:15],
 #'                                    Set_B = all_genes$genes[100:130]))
+#'
+#' # ... each set with its own transparency
+#' ggvolc(all_genes, highlight = list(Set_A = all_genes$genes[1:15],
+#'                                    Set_B = all_genes$genes[100:130]),
+#'        highlight_alpha = c(Set_A = 1, Set_B = 0.5))
 #'
 #' # Compare contrasts side by side: a real stress time course
 #' ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE)
@@ -203,6 +211,7 @@ ggvolc <- function(data1,
                    show_counts = FALSE,
                    highlight = NULL,
                    highlight_colors = NULL,
+                   highlight_alpha = 0.5,
                    flip = FALSE,
                    facet_scales = NULL,
                    coef = NULL){
@@ -414,6 +423,7 @@ ggvolc <- function(data1,
   if (!is.null(highlight)) {
     set_names <- names(highlight)
     set_cols  <- highlight_set_colors(set_names, highlight_colors)
+    set_alpha <- highlight_set_alpha(set_names, highlight_alpha)
     member <- rep(NA_character_, nrow(bg))
     for (s in set_names) {
       hit <- is.na(member) & bg$genes %in% highlight[[s]]
@@ -445,8 +455,11 @@ ggvolc <- function(data1,
   sig_lab <- paste0("-log10(", sig_col, ")")
   p <- ggplot2::ggplot(dplyr::arrange(bg, threshold)) +
     geom_pt(mapping = main_aes, shape = 16, alpha = 0.5) +
+    # one layer per gene set, each with its own transparency
     (if (!is.null(set_pts))
-      geom_pt(data = set_pts, mapping = main_aes, shape = 16, alpha = 0.5)) +
+      lapply(names(set_alpha), function(s)
+        geom_pt(data = set_pts[set_pts$.ggvolc_col == s, , drop = FALSE],
+                mapping = main_aes, shape = 16, alpha = set_alpha[[s]]))) +
     ggplot2::theme_bw() +
     ggplot2::labs(title = title,
                   x = if (flip) sig_lab else "log2FoldChange",
