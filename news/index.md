@@ -29,20 +29,27 @@
   `NULL` and, when given, override the matching palette color.
 - [`genes_table()`](https://loukesio.github.io/ggvolc/reference/genes_table.md)
   colors the log2FC column to match the plot’s palette, and gains
-  `palette` and `coef` arguments.
+  `palette` and `coef` arguments. The table now spans the full width of
+  the plot panel with larger text, and takes only the height its rows
+  need (`table_height` now defaults to `NULL`; set it to fix the ratio
+  as before).
 - `top_n` in
   [`genes_table()`](https://loukesio.github.io/ggvolc/reference/genes_table.md)
   selects the most significant genes automatically.
 - **Compare contrasts.** Pass a named list of results, e.g.
   `ggvolc(list("Day 1" = res1, "Day 7" = res7))`, to get one panel per
   contrast on shared axes. `label_top` and `show_counts` work per panel,
-  and `data2` genes are highlighted in every panel.
+  and `data2` genes are highlighted in every panel. Panels are titled
+  with clean bold labels (restyle with
+  `+ theme(strip.background = ...)`).
 - **`highlight`** colors named gene sets (pathways, GO terms) with their
   own legend entries; choose colors with `highlight_colors`.
 - **`show_counts = TRUE`** prints the number of down- and upregulated
   genes in the top corners.
-- `facet_scales` lets compared panels share axes (`"fixed"`, default) or
-  not (`"free_y"`, `"free_x"`, `"free"`).
+- `facet_scales` controls which axes compared panels share. The default
+  `"free_y"` keeps the fold-change axis shared but lets each panel use
+  its full height, so a weak contrast is not squashed by a strong one;
+  `"fixed"` shares both.
 - New dataset **`stress_timecourse`**: real DESeq2 results (30, 60 and
   180 min vs 0) from a fission yeast osmotic stress time course (Leong
   et al. 2014, via the Bioconductor package *fission*), for trying out

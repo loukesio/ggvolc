@@ -62,7 +62,7 @@ It is particularly useful for visualizing differential gene expression data.</p>
 <span>  show_counts <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  highlight <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  highlight_colors <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  facet_scales <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed"</span>, <span class="st">"free_y"</span>, <span class="st">"free_x"</span>, <span class="st">"free"</span><span class="op">)</span>,</span>
+<span>  facet_scales <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"free_y"</span>, <span class="st">"fixed"</span>, <span class="st">"free_x"</span>, <span class="st">"free"</span><span class="op">)</span>,</span>
 <span>  coef <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -174,9 +174,12 @@ order or named by set. Defaults to colorblind-friendly Okabe-Ito hues.</p></dd>
 
 
 <dt id="arg-facet-scales">facet_scales<a class="anchor" aria-label="anchor" href="#arg-facet-scales"></a></dt>
-<dd><p>When comparing contrasts, whether the panels share their
-axes: <code>"fixed"</code> (default, best for comparing panels),
-<code>"free_y"</code>, <code>"free_x"</code>, or <code>"free"</code>.</p></dd>
+<dd><p>When comparing contrasts, which axes each panel may set
+for itself. The default <code>"free_y"</code> keeps the fold-change (x) axis
+shared, so effect sizes stay comparable, while each panel uses its full
+height for significance, so a weaker contrast is not squashed by a
+stronger one. Use <code>"fixed"</code> to share both axes, or <code>"free_x"</code>
+/ <code>"free"</code>.</p></dd>
 
 
 <dt id="arg-coef">coef<a class="anchor" aria-label="anchor" href="#arg-coef"></a></dt>
@@ -252,8 +255,8 @@ pipelines are detected and mapped automatically.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ggvolc: left out 384 gene(s) with NA padj or log2FoldChange (e.g. genes DESeq2 filtered as low-count or outliers).</span>
 <span class="r-plt img"><img src="ggvolc-11.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Let each panel use its own y-axis</span></span></span>
-<span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">stress_timecourse</span>, label_top <span class="op">=</span> <span class="fl">5</span>, facet_scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Share the y-axis too, to compare significance between panels</span></span></span>
+<span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">stress_timecourse</span>, label_top <span class="op">=</span> <span class="fl">5</span>, facet_scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ggvolc: left out 384 gene(s) with NA padj or log2FoldChange (e.g. genes DESeq2 filtered as low-count or outliers).</span>
 <span class="r-plt img"><img src="ggvolc-12.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>

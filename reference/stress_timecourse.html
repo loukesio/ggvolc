@@ -60,8 +60,9 @@ by 180 minutes.</p>
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>A named list of three data frames, <code>"30 min"</code>, <code>"60 min"</code>,
-  and <code>"180 min"</code>, each with 6535 rows and the columns:</p><dl><dt>genes</dt>
+    <p>A named list of three data frames, <code>"30 min vs 0 min"</code>,
+  <code>"60 min vs 0 min"</code>, and <code>"180 min vs 0 min"</code>, each with 6535
+  rows and the columns:</p><dl><dt>genes</dt>
 <dd><p>Character. Gene symbol, or the systematic ID when no symbol exists.</p></dd>
 
   <dt>baseMean</dt>
@@ -100,7 +101,7 @@ filtering.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">stress_timecourse</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "30 min"  "60 min"  "180 min"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "30 min vs 0 min"  "60 min vs 0 min"  "180 min vs 0 min"</span>
 <span class="r-in"><span><span class="fu"><a href="ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">stress_timecourse</span>, label_top <span class="op">=</span> <span class="fl">5</span>, show_counts <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ggvolc: left out 384 gene(s) with NA padj or log2FoldChange (e.g. genes DESeq2 filtered as low-count or outliers).</span>
 <span class="r-plt img"><img src="stress_timecourse-1.png" alt="" width="700" height="433"></span>

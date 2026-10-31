@@ -258,7 +258,9 @@ ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE)
 
 ![](ggvolc_files/figure-html/unnamed-chunk-14-1.png)
 
-`facet_scales = "free_y"` gives each panel its own y-axis.
+Each panel compares one time point with 0 minutes. The x-axis (fold
+change) is shared; each panel uses its own y-axis height, and
+`facet_scales = "fixed"` shares that too.
 
 A named vector sets the colors directly, and `up_reg_color`,
 `down_reg_color` and `not_sig_color` still override single colors:

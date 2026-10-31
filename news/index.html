@@ -49,17 +49,17 @@
 <li>
 <code>up_reg_color</code>, <code>down_reg_color</code> and <code>not_sig_color</code> now default to <code>NULL</code> and, when given, override the matching palette color.</li>
 <li>
-<code><a href="../reference/genes_table.html">genes_table()</a></code> colors the log2FC column to match the plot’s palette, and gains <code>palette</code> and <code>coef</code> arguments.</li>
+<code><a href="../reference/genes_table.html">genes_table()</a></code> colors the log2FC column to match the plot’s palette, and gains <code>palette</code> and <code>coef</code> arguments. The table now spans the full width of the plot panel with larger text, and takes only the height its rows need (<code>table_height</code> now defaults to <code>NULL</code>; set it to fix the ratio as before).</li>
 <li>
 <code>top_n</code> in <code><a href="../reference/genes_table.html">genes_table()</a></code> selects the most significant genes automatically.</li>
 <li>
-<strong>Compare contrasts.</strong> Pass a named list of results, e.g. <code>ggvolc(list("Day 1" = res1, "Day 7" = res7))</code>, to get one panel per contrast on shared axes. <code>label_top</code> and <code>show_counts</code> work per panel, and <code>data2</code> genes are highlighted in every panel.</li>
+<strong>Compare contrasts.</strong> Pass a named list of results, e.g. <code>ggvolc(list("Day 1" = res1, "Day 7" = res7))</code>, to get one panel per contrast on shared axes. <code>label_top</code> and <code>show_counts</code> work per panel, and <code>data2</code> genes are highlighted in every panel. Panels are titled with clean bold labels (restyle with <code>+ theme(strip.background = ...)</code>).</li>
 <li>
 <strong><code>highlight</code></strong> colors named gene sets (pathways, GO terms) with their own legend entries; choose colors with <code>highlight_colors</code>.</li>
 <li>
 <strong><code>show_counts = TRUE</code></strong> prints the number of down- and upregulated genes in the top corners.</li>
 <li>
-<code>facet_scales</code> lets compared panels share axes (<code>"fixed"</code>, default) or not (<code>"free_y"</code>, <code>"free_x"</code>, <code>"free"</code>).</li>
+<code>facet_scales</code> controls which axes compared panels share. The default <code>"free_y"</code> keeps the fold-change axis shared but lets each panel use its full height, so a weak contrast is not squashed by a strong one; <code>"fixed"</code> shares both.</li>
 <li>New dataset <strong><code>stress_timecourse</code></strong>: real DESeq2 results (30, 60 and 180 min vs 0) from a fission yeast osmotic stress time course (Leong et al. 2014, via the Bioconductor package <em>fission</em>), for trying out contrast comparison.</li>
 <li>Genes with an <code>NA</code> p-value or fold change (e.g. those DESeq2 removes by independent filtering) are left out with a message, instead of triggering ggplot2’s “Removed rows” warning.</li>
 <li>

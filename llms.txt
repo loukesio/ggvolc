@@ -385,9 +385,10 @@ ggvolc(list("Day 1" = res_day1, "Day 7" = res_day7), label_top = 5, show_counts 
 
 The package ships `stress_timecourse`, real DESeq2 results from fission
 yeast under osmotic stress ([Leong et
-al. 2014](https://doi.org/10.1038/ncomms4947)): 30, 60 and 180 minutes,
-each compared with time 0. With shared axes you can see the response
-peak at 30 minutes and fade by 180:
+al. 2014](https://doi.org/10.1038/ncomms4947)): 30, 60 and 180 minutes
+after stress, each compared with the unstressed cells at 0 minutes. In
+every panel the x-axis is the log2 fold change against 0 minutes and the
+y-axis is the significance of that change.
 
 ``` r
 
@@ -396,7 +397,10 @@ ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE, add_seg = TRUE)
 
 ![](reference/figures/README-plot14-contrasts-1.png)
 
-Use `facet_scales = "free_y"` to give each panel its own y-axis.
+The fold-change axis is shared, so effect sizes compare directly, while
+each panel uses its own height for significance; the counts in the
+corners show the response peaking at 30 minutes and fading by 180. Use
+`facet_scales = "fixed"` to share the y-axis as well.
 
 Genes that DESeq2 leaves without an adjusted p-value (low-count or
 outlier genes) are left out of the plot, with a message saying how many.

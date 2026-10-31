@@ -298,8 +298,9 @@ yeast stress time course (Leong et al. 2014):</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">stress_timecourse</span>, label_top <span class="op">=</span> <span class="fl">5</span>, show_counts <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ggvolc_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="100%"></p>
-<p><code>facet_scales = "free_y"</code> gives each panel its own
-y-axis.</p>
+<p>Each panel compares one time point with 0 minutes. The x-axis (fold
+change) is shared; each panel uses its own y-axis height, and
+<code>facet_scales = "fixed"</code> shares that too.</p>
 <p>A named vector sets the colors directly, and
 <code>up_reg_color</code>, <code>down_reg_color</code> and
 <code>not_sig_color</code> still override single colors:</p>

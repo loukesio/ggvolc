@@ -16,7 +16,7 @@ genes_table(
   sig_col = c("padj", "pvalue"),
   dir = c("both", "up", "down", "each"),
   p_value = 0.05,
-  table_height = 1,
+  table_height = NULL,
   palette = NULL,
   coef = NULL
 )
@@ -71,8 +71,9 @@ genes_table(
 
 - table_height:
 
-  Relative height of the table panel (plot panel is always 3). Default
-  is 1.
+  Optional relative height of the table panel (the plot panel is 3). By
+  default (`NULL`) the table takes exactly the height its rows need and
+  the plot fills the rest.
 
 - palette:
 

@@ -26,7 +26,7 @@ ggvolc(
   show_counts = FALSE,
   highlight = NULL,
   highlight_colors = NULL,
-  facet_scales = c("fixed", "free_y", "free_x", "free"),
+  facet_scales = c("free_y", "fixed", "free_x", "free"),
   coef = NULL
 )
 ```
@@ -138,9 +138,11 @@ ggvolc(
 
 - facet_scales:
 
-  When comparing contrasts, whether the panels share their axes:
-  `"fixed"` (default, best for comparing panels), `"free_y"`,
-  `"free_x"`, or `"free"`.
+  When comparing contrasts, which axes each panel may set for itself.
+  The default `"free_y"` keeps the fold-change (x) axis shared, so
+  effect sizes stay comparable, while each panel uses its full height
+  for significance, so a weaker contrast is not squashed by a stronger
+  one. Use `"fixed"` to share both axes, or `"free_x"` / `"free"`.
 
 - coef:
 
@@ -218,8 +220,8 @@ ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE)
 #> ggvolc: left out 384 gene(s) with NA padj or log2FoldChange (e.g. genes DESeq2 filtered as low-count or outliers).
 
 
-# Let each panel use its own y-axis
-ggvolc(stress_timecourse, label_top = 5, facet_scales = "free_y")
+# Share the y-axis too, to compare significance between panels
+ggvolc(stress_timecourse, label_top = 5, facet_scales = "fixed")
 #> ggvolc: left out 384 gene(s) with NA padj or log2FoldChange (e.g. genes DESeq2 filtered as low-count or outliers).
 
 

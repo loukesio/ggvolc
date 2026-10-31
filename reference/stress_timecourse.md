@@ -16,8 +16,9 @@ stress_timecourse
 
 ## Format
 
-A named list of three data frames, `"30 min"`, `"60 min"`, and
-`"180 min"`, each with 6535 rows and the columns:
+A named list of three data frames, `"30 min vs 0 min"`,
+`"60 min vs 0 min"`, and `"180 min vs 0 min"`, each with 6535 rows and
+the columns:
 
 - genes:
 
@@ -61,7 +62,7 @@ independent filtering.
 
 ``` r
 names(stress_timecourse)
-#> [1] "30 min"  "60 min"  "180 min"
+#> [1] "30 min vs 0 min"  "60 min vs 0 min"  "180 min vs 0 min"
 ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE)
 #> ggvolc: left out 384 gene(s) with NA padj or log2FoldChange (e.g. genes DESeq2 filtered as low-count or outliers).
 ```
