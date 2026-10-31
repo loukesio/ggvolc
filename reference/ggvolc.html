@@ -9,7 +9,7 @@ It is particularly useful for visualizing differential gene expression data."></
 
     <a class="navbar-brand me-2" href="../index.html">ggvolc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,10 +54,16 @@ It is particularly useful for visualizing differential gene expression data.</p>
 <span>  label_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"both"</span>, <span class="st">"up"</span>, <span class="st">"down"</span>, <span class="st">"each"</span><span class="op">)</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  interactive <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  not_sig_color <span class="op">=</span> <span class="st">"#808080"</span>,</span>
-<span>  down_reg_color <span class="op">=</span> <span class="st">"#00798c"</span>,</span>
-<span>  up_reg_color <span class="op">=</span> <span class="st">"#d1495b"</span>,</span>
-<span>  add_seg <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  palette <span class="op">=</span> <span class="st">"default"</span>,</span>
+<span>  not_sig_color <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  down_reg_color <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  up_reg_color <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add_seg <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  show_counts <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  highlight <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  highlight_colors <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  facet_scales <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed"</span>, <span class="st">"free_y"</span>, <span class="st">"free_x"</span>, <span class="st">"free"</span><span class="op">)</span>,</span>
+<span>  coef <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -66,15 +72,20 @@ It is particularly useful for visualizing differential gene expression data.</p>
 
 
 <dl><dt id="arg-data-">data1<a class="anchor" aria-label="anchor" href="#arg-data-"></a></dt>
-<dd><p>Data frame for the primary dataset. Accepts output from
-DESeq2 (<code>results()</code>), edgeR (<code>topTags()</code>), or limma
-(<code>topTable()</code>). Gene identifiers can live in a <code>genes</code> column
-or in the row names.</p></dd>
+<dd><p>The DE results to plot: a data frame, or a DESeq2
+(<code>DESeqResults</code>, <code>DESeqDataSet</code>), edgeR (<code>TopTags</code>,
+<code>DGELRT</code>, <code>DGEExact</code>) or limma (<code>MArrayLM</code>) object.
+Gene identifiers can live in a <code>genes</code> column or in the row names.
+To compare contrasts, pass a <em>named list</em> of results, e.g.
+<code>list("Day 1" = res1, "Day 7" = res7)</code>: each becomes a panel on
+shared axes, and <code>label_top</code> and <code>show_counts</code> work per panel.</p></dd>
 
 
 <dt id="arg-data-">data2<a class="anchor" aria-label="anchor" href="#arg-data-"></a></dt>
-<dd><p>Data frame for the secondary dataset (genes of interest).
-Uses the same auto-detection as <code>data1</code>. Default is NULL.</p></dd>
+<dd><p>Genes to highlight and label: a data frame or DE object (same
+auto-detection as <code>data1</code>), or simply a character vector of gene
+names. With a list in <code>data1</code>, the genes are highlighted in every
+panel. Default is NULL.</p></dd>
 
 
 <dt id="arg-size-var">size_var<a class="anchor" aria-label="anchor" href="#arg-size-var"></a></dt>
@@ -126,21 +137,51 @@ highlighted and labelled automatically, without building a separate
 statistics. Requires the optional <span class="pkg">ggiraph</span> package. Default FALSE.</p></dd>
 
 
-<dt id="arg-not-sig-color">not_sig_color<a class="anchor" aria-label="anchor" href="#arg-not-sig-color"></a></dt>
-<dd><p>Color for non-significant genes. Default is "#808080".</p></dd>
+<dt id="arg-palette">palette<a class="anchor" aria-label="anchor" href="#arg-palette"></a></dt>
+<dd><p>Colors for the plot: a preset name (see
+<code><a href="ggvolc_palettes.html">ggvolc_palettes</a></code>), such as <code>"default"</code>,
+<code>"okabe_ito"</code> (colorblind-safe), or one of the ltc-derived presets,
+or a named vector such as <code>c(down = "navy", up = "firebrick")</code>.</p></dd>
 
 
-<dt id="arg-down-reg-color">down_reg_color<a class="anchor" aria-label="anchor" href="#arg-down-reg-color"></a></dt>
-<dd><p>Color for downregulated genes. Default is "#00798c".</p></dd>
-
-
-<dt id="arg-up-reg-color">up_reg_color<a class="anchor" aria-label="anchor" href="#arg-up-reg-color"></a></dt>
-<dd><p>Color for upregulated genes. Default is "#d1495b".</p></dd>
+<dt id="arg-not-sig-color-down-reg-color-up-reg-color">not_sig_color, down_reg_color, up_reg_color<a class="anchor" aria-label="anchor" href="#arg-not-sig-color-down-reg-color-up-reg-color"></a></dt>
+<dd><p>Colors for
+non-significant, downregulated, and upregulated genes. When given, they
+override the matching color from <code>palette</code>. Default NULL.</p></dd>
 
 
 <dt id="arg-add-seg">add_seg<a class="anchor" aria-label="anchor" href="#arg-add-seg"></a></dt>
 <dd><p>Logical. If TRUE, dashed lines will be added to the plot
 indicating the p-value and fold change thresholds. Default is FALSE.</p></dd>
+
+
+<dt id="arg-show-counts">show_counts<a class="anchor" aria-label="anchor" href="#arg-show-counts"></a></dt>
+<dd><p>Logical. If TRUE, the number of significantly down- and
+upregulated genes is printed in the top corners of the plot (of each panel
+when comparing contrasts). Default FALSE.</p></dd>
+
+
+<dt id="arg-highlight">highlight<a class="anchor" aria-label="anchor" href="#arg-highlight"></a></dt>
+<dd><p>Optional named list of gene sets to color, e.g.
+<code>list(Ribosome = c("RPL3", "RPS2"), Glycolysis = c("PFK1", "PYK1"))</code>.
+Genes in a set are drawn in the set's color, whatever their significance,
+and each set gets a legend entry. A gene in several sets takes the first.</p></dd>
+
+
+<dt id="arg-highlight-colors">highlight_colors<a class="anchor" aria-label="anchor" href="#arg-highlight-colors"></a></dt>
+<dd><p>Optional colors for the <code>highlight</code> sets, in
+order or named by set. Defaults to colorblind-friendly Okabe-Ito hues.</p></dd>
+
+
+<dt id="arg-facet-scales">facet_scales<a class="anchor" aria-label="anchor" href="#arg-facet-scales"></a></dt>
+<dd><p>When comparing contrasts, whether the panels share their
+axes: <code>"fixed"</code> (default, best for comparing panels),
+<code>"free_y"</code>, <code>"free_x"</code>, or <code>"free"</code>.</p></dd>
+
+
+<dt id="arg-coef">coef<a class="anchor" aria-label="anchor" href="#arg-coef"></a></dt>
+<dd><p>For a multi-coefficient limma fit, the coefficient to plot; for
+a <code>DESeqDataSet</code>, the result <code>name</code>. See <code><a href="de_table.html">de_table</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -150,9 +191,9 @@ indicating the p-value and fold change thresholds. Default is FALSE.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Column names from DESeq2, edgeR, and limma are automatically detected and
-mapped internally, so you can pass the output of any of the three pipelines
-directly.</p>
+    <p>You can pass the result objects of DESeq2, edgeR, and limma directly
+(see <code><a href="de_table.html">de_table</a></code>), or a data frame. Column names from all three
+pipelines are detected and mapped automatically.</p>
     </div>
 
     <div class="section level2">
@@ -171,6 +212,7 @@ directly.</p>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="ggvolc-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># Add dashed lines to indicate significance thresholds</span></span></span>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="ggvolc-3.png" alt="" width="700" height="433"></span>
@@ -196,19 +238,42 @@ directly.</p>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">all_genes</span>, title <span class="op">=</span> <span class="st">"Treated vs. control"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="ggvolc-8.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Show how many genes go up and down</span></span></span>
+<span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">all_genes</span>, show_counts <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="ggvolc-9.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Color gene sets, e.g. a pathway</span></span></span>
+<span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">all_genes</span>, highlight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Set_A <span class="op">=</span> <span class="va">all_genes</span><span class="op">$</span><span class="va">genes</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>                                   Set_B <span class="op">=</span> <span class="va">all_genes</span><span class="op">$</span><span class="va">genes</span><span class="op">[</span><span class="fl">100</span><span class="op">:</span><span class="fl">130</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="ggvolc-10.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compare contrasts side by side: a real stress time course</span></span></span>
+<span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">stress_timecourse</span>, label_top <span class="op">=</span> <span class="fl">5</span>, show_counts <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ggvolc: left out 384 gene(s) with NA padj or log2FoldChange (e.g. genes DESeq2 filtered as low-count or outliers).</span>
+<span class="r-plt img"><img src="ggvolc-11.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Let each panel use its own y-axis</span></span></span>
+<span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">stress_timecourse</span>, label_top <span class="op">=</span> <span class="fl">5</span>, facet_scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ggvolc: left out 384 gene(s) with NA padj or log2FoldChange (e.g. genes DESeq2 filtered as low-count or outliers).</span>
+<span class="r-plt img"><img src="ggvolc-12.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Colorblind-safe colors, or any preset from ggvolc_palettes()</span></span></span>
+<span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">10</span>, palette <span class="op">=</span> <span class="st">"okabe_ito"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="ggvolc-13.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Customize colors for up- and down-regulated genes</span></span></span>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>,</span></span>
 <span class="r-in"><span>       up_reg_color <span class="op">=</span> <span class="st">"#E63946"</span>,</span></span>
 <span class="r-in"><span>       down_reg_color <span class="op">=</span> <span class="st">"#457B9D"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="ggvolc-9.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="ggvolc-14.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Scale point size by p-value instead of default</span></span></span>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, size_var <span class="op">=</span> <span class="st">"pvalue"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="ggvolc-10.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="ggvolc-15.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Adjust significance thresholds (p-value and fold change)</span></span></span>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">all_genes</span>, p_value <span class="op">=</span> <span class="fl">0.01</span>, fc <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="ggvolc-11.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="ggvolc-16.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># edgeR-style input works directly</span></span></span>
 <span class="r-in"><span><span class="va">edger_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
@@ -219,7 +284,7 @@ directly.</p>
 <span class="r-in"><span>  FDR <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">edger_df</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="ggvolc-12.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="ggvolc-17.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># limma-style input works too</span></span></span>
 <span class="r-in"><span><span class="va">limma_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
@@ -231,9 +296,16 @@ directly.</p>
 <span class="r-in"><span>  adj.P.Val <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">limma_df</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="ggvolc-13.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="ggvolc-18.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># DE objects work directly, no conversion needed</span></span></span>
+<span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="fu">DESeq2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DESeq2/man/results.html" class="external-link">results</a></span><span class="op">(</span><span class="va">dds</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="fu">edgeR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/edgeR/man/glmQLFTest.html" class="external-link">glmQLFTest</a></span><span class="op">(</span><span class="va">qlf_fit</span>, coef <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/ebayes.html" class="external-link">eBayes</a></span><span class="op">(</span><span class="va">limma_fit</span><span class="op">)</span>, coef <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Interactive volcano (requires the ggiraph package): hover a point to</span></span></span>
 <span class="r-in"><span><span class="co"># see the gene name and its statistics</span></span></span>
 <span class="r-in"><span><span class="fu">ggvolc</span><span class="op">(</span><span class="va">all_genes</span>, <span class="va">attention_genes</span>, interactive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
@@ -250,7 +322,7 @@ directly.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

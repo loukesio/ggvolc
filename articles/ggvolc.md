@@ -183,6 +183,93 @@ ggvolc(edger_genes, label_top = 8, add_seg = TRUE, title = "edgeR input")
 | edgeR (`topTags()`)  | `logFC`          | `PValue`  | `FDR`       | `logCPM`   |
 | limma (`topTable()`) | `logFC`          | `P.Value` | `adj.P.Val` | `AveExpr`  |
 
+You can also skip the conversion and pass the result objects directly:
+`DESeqResults` or `DESeqDataSet` (DESeq2), `TopTags`, `DGELRT` or
+`DGEExact` (edgeR), and `MArrayLM` (limma, choose the coefficient with
+`coef`).
+
+``` r
+
+ggvolc(DESeq2::results(dds))
+ggvolc(edgeR::glmQLFTest(fit, coef = 2))
+ggvolc(limma::eBayes(fit), coef = "treatment")
+```
+
+[`de_table()`](https://loukesio.github.io/ggvolc/reference/de_table.md)
+performs the same conversion if you want the data frame itself.
+
+## Colors and colorblind-safe palettes
+
+`palette` selects a color preset.
+[`ggvolc_palettes()`](https://loukesio.github.io/ggvolc/reference/ggvolc_palettes.md)
+lists them, including colorblind-safe options and presets from the ltc
+palettes.
+
+``` r
+
+ggvolc_palettes()
+#>     palette    down not_sig      up colorblind_safe             source
+#> 1   default #00798c #808080 #d1495b           FALSE         ltc: minou
+#> 2 okabe_ito #0072B2 #999999 #D55E00            TRUE Okabe & Ito (2008)
+#> 3      rdbu #0571b0 #999999 #ca0020            TRUE   ColorBrewer RdBu
+#> 4 pantone23 #1F2C43 #B8B8B8 #FFB000            TRUE     ltc: pantone23
+#> 5  seafarer #013D5A #BDBDBD #E4A25B            TRUE      ltc: seafarer
+#> 6  midnight #075056 #B0B0B0 #FF5B04           FALSE      ltc: midnight
+#> 7      maya #3d5a80 #A9A9A9 #ee6c4d           FALSE          ltc: maya
+#> 8     trio1 #0E7175 #B0B0B0 #FD7901           FALSE         ltc: trio1
+
+ggvolc(all_genes, label_top = 8, label_dir = "each", palette = "okabe_ito")
+```
+
+![](ggvolc_files/figure-html/unnamed-chunk-12-1.png)
+
+[`genes_table()`](https://loukesio.github.io/ggvolc/reference/genes_table.md)
+reuses the plot’s colors, darkening light ones so the table text stays
+readable.
+
+## Counts, gene sets, and several contrasts
+
+``` r
+
+# number of up- and downregulated genes in the corners
+ggvolc(all_genes, show_counts = TRUE)
+```
+
+![](ggvolc_files/figure-html/unnamed-chunk-13-1.png)
+
+``` r
+
+
+# color named gene sets
+ggvolc(all_genes, highlight = list(Set_A = all_genes$genes[1:15],
+                                   Set_B = all_genes$genes[200:260]))
+```
+
+![](ggvolc_files/figure-html/unnamed-chunk-13-2.png)
+
+To compare contrasts, pass a named list of results. `stress_timecourse`
+holds real DESeq2 results from a fission yeast stress time course (Leong
+et al. 2014):
+
+``` r
+
+ggvolc(stress_timecourse, label_top = 5, show_counts = TRUE)
+```
+
+![](ggvolc_files/figure-html/unnamed-chunk-14-1.png)
+
+`facet_scales = "free_y"` gives each panel its own y-axis.
+
+A named vector sets the colors directly, and `up_reg_color`,
+`down_reg_color` and `not_sig_color` still override single colors:
+
+``` r
+
+ggvolc(all_genes, palette = c(down = "navy", up = "firebrick"))
+```
+
+![](ggvolc_files/figure-html/unnamed-chunk-15-1.png)
+
 ## An interactive volcano
 
 With the optional [`ggiraph`](https://davidgohel.github.io/ggiraph/)

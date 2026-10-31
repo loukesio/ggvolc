@@ -16,7 +16,9 @@ genes_table(
   sig_col = c("padj", "pvalue"),
   dir = c("both", "up", "down", "each"),
   p_value = 0.05,
-  table_height = 1
+  table_height = 1,
+  palette = NULL,
+  coef = NULL
 )
 ```
 
@@ -29,8 +31,10 @@ genes_table(
 
 - data2:
 
-  A data frame containing gene details. Columns are auto-detected in the
-  same way as
+  Gene details: a data frame, or a DESeq2 / edgeR / limma result object
+  (see
+  [`de_table`](https://loukesio.github.io/ggvolc/reference/de_table.md)).
+  Columns are auto-detected in the same way as
   [`ggvolc`](https://loukesio.github.io/ggvolc/reference/ggvolc.md)
   (DESeq2, edgeR, or limma conventions). Required columns after mapping:
   `genes`, `log2FoldChange`, `pvalue`. Optional: `baseMean`, `padj`.
@@ -69,6 +73,20 @@ genes_table(
 
   Relative height of the table panel (plot panel is always 3). Default
   is 1.
+
+- palette:
+
+  Colors for the log2FC column. Default NULL takes the colors of
+  `plot_obj` when it came from
+  [`ggvolc`](https://loukesio.github.io/ggvolc/reference/ggvolc.md);
+  otherwise a preset name or named vector as in
+  [`ggvolc`](https://loukesio.github.io/ggvolc/reference/ggvolc.md).
+
+- coef:
+
+  Coefficient to extract when `data2` is a multi-coefficient limma fit
+  (see
+  [`de_table`](https://loukesio.github.io/ggvolc/reference/de_table.md)).
 
 ## Value
 

@@ -1,5 +1,63 @@
 # Changelog
 
+## ggvolc 0.4.0
+
+### DE objects in, colorblind-safe palettes
+
+- **Pass DE result objects directly.**
+  [`ggvolc()`](https://loukesio.github.io/ggvolc/reference/ggvolc.md)
+  and
+  [`genes_table()`](https://loukesio.github.io/ggvolc/reference/genes_table.md)
+  now accept the objects themselves, not only data frames:
+  - DESeq2: `DESeqResults` (from `results()` / `lfcShrink()`) and a
+    `DESeqDataSet` after `DESeq()` (`results()` is called for you).
+  - edgeR: `TopTags`, and `DGELRT` / `DGEExact` from `glmQLFTest()`,
+    `glmLRT()` and `exactTest()` (all genes are kept).
+  - limma: `MArrayLM` fits after `eBayes()`; choose the coefficient with
+    the new `coef` argument when the fit has several.
+- New exported
+  [`de_table()`](https://loukesio.github.io/ggvolc/reference/de_table.md)
+  does the conversion, for when you want the data frame yourself.
+- **`palette` argument** with built-in presets, listed by the new
+  [`ggvolc_palettes()`](https://loukesio.github.io/ggvolc/reference/ggvolc_palettes.md):
+  colorblind-safe `"okabe_ito"` and `"rdbu"`, and presets from the ltc
+  palettes (`"pantone23"`, `"seafarer"`, `"midnight"`, `"maya"`,
+  `"trio1"`). `palette` also takes a named vector such as
+  `c(down = "navy", up = "firebrick")`. The default colors are
+  unchanged.
+- `up_reg_color`, `down_reg_color` and `not_sig_color` now default to
+  `NULL` and, when given, override the matching palette color.
+- [`genes_table()`](https://loukesio.github.io/ggvolc/reference/genes_table.md)
+  colors the log2FC column to match the plot’s palette, and gains
+  `palette` and `coef` arguments.
+- `top_n` in
+  [`genes_table()`](https://loukesio.github.io/ggvolc/reference/genes_table.md)
+  selects the most significant genes automatically.
+- **Compare contrasts.** Pass a named list of results, e.g.
+  `ggvolc(list("Day 1" = res1, "Day 7" = res7))`, to get one panel per
+  contrast on shared axes. `label_top` and `show_counts` work per panel,
+  and `data2` genes are highlighted in every panel.
+- **`highlight`** colors named gene sets (pathways, GO terms) with their
+  own legend entries; choose colors with `highlight_colors`.
+- **`show_counts = TRUE`** prints the number of down- and upregulated
+  genes in the top corners.
+- `facet_scales` lets compared panels share axes (`"fixed"`, default) or
+  not (`"free_y"`, `"free_x"`, `"free"`).
+- New dataset **`stress_timecourse`**: real DESeq2 results (30, 60 and
+  180 min vs 0) from a fission yeast osmotic stress time course (Leong
+  et al. 2014, via the Bioconductor package *fission*), for trying out
+  contrast comparison.
+- Genes with an `NA` p-value or fold change (e.g. those DESeq2 removes
+  by independent filtering) are left out with a message, instead of
+  triggering ggplot2’s “Removed rows” warning.
+- `data2` can now be a plain character vector of gene names.
+- Text colors in the
+  [`genes_table()`](https://loukesio.github.io/ggvolc/reference/genes_table.md)
+  table and the counts are darkened when needed to reach a WCAG contrast
+  ratio of 4.5:1 on white, so light palette colors (e.g. `pantone23`’s
+  gold) stay readable.
+- DESeq2, edgeR and limma are optional (`Suggests`) dependencies.
+
 ## ggvolc 0.3.0
 
 ### Better significance handling, auto-labels & interactivity

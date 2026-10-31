@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggvolc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,41 @@
       <small>Source: <a href="https://github.com/loukesio/ggvolc/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="ggvolc-040">ggvolc 0.4.0<a class="anchor" aria-label="anchor" href="#ggvolc-040"></a></h2>
+<div class="section level3">
+<h3 id="de-objects-in-colorblind-safe-palettes-0-4-0">DE objects in, colorblind-safe palettes<a class="anchor" aria-label="anchor" href="#de-objects-in-colorblind-safe-palettes-0-4-0"></a></h3>
+<ul><li>
+<strong>Pass DE result objects directly.</strong> <code><a href="../reference/ggvolc.html">ggvolc()</a></code> and <code><a href="../reference/genes_table.html">genes_table()</a></code> now accept the objects themselves, not only data frames:
+<ul><li>DESeq2: <code>DESeqResults</code> (from <code>results()</code> / <code>lfcShrink()</code>) and a <code>DESeqDataSet</code> after <code>DESeq()</code> (<code>results()</code> is called for you).</li>
+<li>edgeR: <code>TopTags</code>, and <code>DGELRT</code> / <code>DGEExact</code> from <code>glmQLFTest()</code>, <code>glmLRT()</code> and <code>exactTest()</code> (all genes are kept).</li>
+<li>limma: <code>MArrayLM</code> fits after <code>eBayes()</code>; choose the coefficient with the new <code>coef</code> argument when the fit has several.</li>
+</ul></li>
+<li>New exported <code><a href="../reference/de_table.html">de_table()</a></code> does the conversion, for when you want the data frame yourself.</li>
+<li>
+<strong><code>palette</code> argument</strong> with built-in presets, listed by the new <code><a href="../reference/ggvolc_palettes.html">ggvolc_palettes()</a></code>: colorblind-safe <code>"okabe_ito"</code> and <code>"rdbu"</code>, and presets from the ltc palettes (<code>"pantone23"</code>, <code>"seafarer"</code>, <code>"midnight"</code>, <code>"maya"</code>, <code>"trio1"</code>). <code>palette</code> also takes a named vector such as <code>c(down = "navy", up = "firebrick")</code>. The default colors are unchanged.</li>
+<li>
+<code>up_reg_color</code>, <code>down_reg_color</code> and <code>not_sig_color</code> now default to <code>NULL</code> and, when given, override the matching palette color.</li>
+<li>
+<code><a href="../reference/genes_table.html">genes_table()</a></code> colors the log2FC column to match the plot’s palette, and gains <code>palette</code> and <code>coef</code> arguments.</li>
+<li>
+<code>top_n</code> in <code><a href="../reference/genes_table.html">genes_table()</a></code> selects the most significant genes automatically.</li>
+<li>
+<strong>Compare contrasts.</strong> Pass a named list of results, e.g. <code>ggvolc(list("Day 1" = res1, "Day 7" = res7))</code>, to get one panel per contrast on shared axes. <code>label_top</code> and <code>show_counts</code> work per panel, and <code>data2</code> genes are highlighted in every panel.</li>
+<li>
+<strong><code>highlight</code></strong> colors named gene sets (pathways, GO terms) with their own legend entries; choose colors with <code>highlight_colors</code>.</li>
+<li>
+<strong><code>show_counts = TRUE</code></strong> prints the number of down- and upregulated genes in the top corners.</li>
+<li>
+<code>facet_scales</code> lets compared panels share axes (<code>"fixed"</code>, default) or not (<code>"free_y"</code>, <code>"free_x"</code>, <code>"free"</code>).</li>
+<li>New dataset <strong><code>stress_timecourse</code></strong>: real DESeq2 results (30, 60 and 180 min vs 0) from a fission yeast osmotic stress time course (Leong et al. 2014, via the Bioconductor package <em>fission</em>), for trying out contrast comparison.</li>
+<li>Genes with an <code>NA</code> p-value or fold change (e.g. those DESeq2 removes by independent filtering) are left out with a message, instead of triggering ggplot2’s “Removed rows” warning.</li>
+<li>
+<code>data2</code> can now be a plain character vector of gene names.</li>
+<li>Text colors in the <code><a href="../reference/genes_table.html">genes_table()</a></code> table and the counts are darkened when needed to reach a WCAG contrast ratio of 4.5:1 on white, so light palette colors (e.g. <code>pantone23</code>’s gold) stay readable.</li>
+<li>DESeq2, edgeR and limma are optional (<code>Suggests</code>) dependencies.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="ggvolc-030">ggvolc 0.3.0<a class="anchor" aria-label="anchor" href="#ggvolc-030"></a></h2>
 <div class="section level3">
@@ -122,7 +157,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

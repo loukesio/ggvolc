@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Create Volcano Plots for Differential Gene Expression Data">
-<meta name="description" content="Provides functionality to create customizable volcano plots for visualizing differential gene expression analysis results. Accepts output from DESeq2, edgeR, and limma directly with automatic column detection. The package offers options to highlight genes of interest, adjust significance thresholds, customize colors, and add informative labels. Gene tables are rendered with gt and composed with patchwork. Designed specifically for RNA-seq data analysis workflows.">
-<meta property="og:description" content="Provides functionality to create customizable volcano plots for visualizing differential gene expression analysis results. Accepts output from DESeq2, edgeR, and limma directly with automatic column detection. The package offers options to highlight genes of interest, adjust significance thresholds, customize colors, and add informative labels. Gene tables are rendered with gt and composed with patchwork. Designed specifically for RNA-seq data analysis workflows.">
+<meta name="description" content="Creates customizable volcano plots for differential gene expression results from RNA-seq analyses. Accepts result objects or tables from DESeq2, edgeR, and limma directly, with automatic column detection. Labels the most significant or chosen genes, colors gene sets, compares several contrasts side by side, offers colorblind-safe color presets, and can produce interactive plots with ggiraph. Gene tables are rendered with gt and composed with patchwork.">
+<meta property="og:description" content="Creates customizable volcano plots for differential gene expression results from RNA-seq analyses. Accepts result objects or tables from DESeq2, edgeR, and limma directly, with automatic column detection. Labels the most significant or chosen genes, colors gene sets, compares several contrasts side by side, offers colorblind-safe color presets, and can produce interactive plots with ggiraph. Gene tables are rendered with gt and composed with patchwork.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ggvolc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,19 +53,20 @@
 </h2>
 <p>Install the package using the following commands <img align="right" src="logo/ggvolc_logo.png" width="400"></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># you can install ggvolc from CRAN </span></span>
+<code class="sourceCode R"><span><span class="co"># from CRAN</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ggvolc"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># if you want to install the developmenetal version please use</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"loukesio/ggvolc"</span><span class="op">)</span></span>
-<span><span class="co"># and load it</span></span>
+<span><span class="co"># or the development version from GitHub</span></span>
+<span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"loukesio/ggvolc"</span><span class="op">)</span></span>
+<span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://loukesio.github.io/ggvolc/">ggvolc</a></span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 <div class="section level3">
 <h3 id="how-do-i-start">How do I start?<a class="anchor" aria-label="anchor" href="#how-do-i-start"></a>
 </h3>
 <p><code>ggvolc</code> turns the results of a differential-expression analysis — from <strong>DESeq2</strong>, <strong>edgeR</strong>, or <strong>limma</strong> — into a clean, publication-ready volcano plot. From there you can highlight genes, auto-label the top hits, attach a <code>gt</code> table, or make the whole thing interactive. Start by loading the library and exploring the two example datasets that ship with the package:</p>
-<pre class="console"><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://loukesio.github.io/ggvolc/">ggvolc</a></span><span class="op">)</span></span>
+<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://loukesio.github.io/ggvolc/">ggvolc</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Welcome to ggvolc version 0.3.0 !</span></span>
 <span><span class="co">#&gt;</span></span>
 <span><span class="co">#&gt;                                 888</span></span>
@@ -217,11 +218,18 @@
 </tr>
 </tbody>
 </table>
-<p>The package ships <code>edger_genes</code>, an example <code>topTags()</code>-style table, so you can see this directly. In your own analysis you would pass the real thing:</p>
+<p>You don’t even need to convert to a table first: pass the <strong>result objects</strong> themselves and ggvolc extracts every gene for you.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># edgeR: pass topTags()$table straight in</span></span>
-<span><span class="va">edger_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">edgeR</span><span class="fu">::</span><span class="fu">topTags</span><span class="op">(</span><span class="va">qlf</span>, n <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">edger_res</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># DESeq2</span></span>
+<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="fu">DESeq2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DESeq2/man/results.html" class="external-link">results</a></span><span class="op">(</span><span class="va">dds</span><span class="op">)</span><span class="op">)</span>        <span class="co"># or just ggvolc(dds) after DESeq()</span></span>
+<span></span>
+<span><span class="co"># edgeR</span></span>
+<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="fu">edgeR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/edgeR/man/glmQLFTest.html" class="external-link">glmQLFTest</a></span><span class="op">(</span><span class="va">fit</span>, coef <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># limma: choose the coefficient for multi-coefficient fits</span></span>
+<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/ebayes.html" class="external-link">eBayes</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>, coef <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span></span></code></pre></div>
+<p>Supported: <code>DESeqResults</code> / <code>DESeqDataSet</code> (DESeq2), <code>TopTags</code> / <code>DGELRT</code> / <code>DGEExact</code> (edgeR), and <code>MArrayLM</code> (limma). <code><a href="reference/de_table.html">de_table()</a></code> does the conversion if you want the data frame yourself.</p>
+<p>The package also ships <code>edger_genes</code>, an example <code>topTags()</code>-style table:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">edger_genes</span><span class="op">)</span>          <span class="co"># an edgeR topTags()-style table (genes in the rownames)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">edger_genes</span>, <span class="fl">3</span><span class="op">)</span></span>
@@ -268,6 +276,69 @@
 <p><strong>Note:</strong> GitHub can’t run the widget, so the image below is a static preview. The live, hover-to-inspect version runs in RStudio and on the <a href="https://loukesio.github.io/ggvolc/articles/ggvolc.html">package website</a>.</p>
 </blockquote>
 <p><img src="reference/figures/README-plot10-interactive-preview-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="id_11-colorblind-safe-and-ltc-palettes">11. Colorblind-safe and ltc palettes<a class="anchor" aria-label="anchor" href="#id_11-colorblind-safe-and-ltc-palettes"></a>
+</h3>
+<p>Pick a color preset with <code>palette</code>. <code><a href="reference/ggvolc_palettes.html">ggvolc_palettes()</a></code> lists them all, including colorblind-safe options and presets taken from the <a href="https://github.com/loukesio/ltc-color-palettes" class="external-link">ltc</a> palettes (ltc does not need to be installed).</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc_palettes.html">ggvolc_palettes</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     palette    down not_sig      up colorblind_safe             source</span></span>
+<span><span class="co">#&gt; 1   default #00798c #808080 #d1495b           FALSE         ltc: minou</span></span>
+<span><span class="co">#&gt; 2 okabe_ito #0072B2 #999999 #D55E00            TRUE Okabe &amp; Ito (2008)</span></span>
+<span><span class="co">#&gt; 3      rdbu #0571b0 #999999 #ca0020            TRUE   ColorBrewer RdBu</span></span>
+<span><span class="co">#&gt; 4 pantone23 #1F2C43 #B8B8B8 #FFB000            TRUE     ltc: pantone23</span></span>
+<span><span class="co">#&gt; 5  seafarer #013D5A #BDBDBD #E4A25B            TRUE      ltc: seafarer</span></span>
+<span><span class="co">#&gt; 6  midnight #075056 #B0B0B0 #FF5B04           FALSE      ltc: midnight</span></span>
+<span><span class="co">#&gt; 7      maya #3d5a80 #A9A9A9 #ee6c4d           FALSE          ltc: maya</span></span>
+<span><span class="co">#&gt; 8     trio1 #0E7175 #B0B0B0 #FD7901           FALSE         ltc: trio1</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">8</span>, label_dir <span class="op">=</span> <span class="st">"each"</span>, palette <span class="op">=</span> <span class="st">"okabe_ito"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Colorblind-safe: Okabe-Ito"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot11-okabe-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">8</span>, label_dir <span class="op">=</span> <span class="st">"each"</span>, palette <span class="op">=</span> <span class="st">"pantone23"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"ltc: pantone23"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot11-ltc-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p>Or pass your own colors, including any ltc palette:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>down <span class="op">=</span> <span class="st">"navy"</span>, up <span class="op">=</span> <span class="st">"firebrick"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">pal</span> <span class="op">&lt;-</span> <span class="fu">ltc</span><span class="fu">::</span><span class="fu">ltc</span><span class="op">(</span><span class="st">"maya"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>down <span class="op">=</span> <span class="va">pal</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, up <span class="op">=</span> <span class="va">pal</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="reference/genes_table.html">genes_table()</a></code> colors the log2FC column to match the plot automatically. Light colors (such as the gold of <code>pantone23</code>) are darkened just enough to stay readable as table text.</p>
+</div>
+<div class="section level3">
+<h3 id="id_12-count-the-up--and-downregulated-genes">12. Count the up- and downregulated genes<a class="anchor" aria-label="anchor" href="#id_12-count-the-up--and-downregulated-genes"></a>
+</h3>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, label_top <span class="op">=</span> <span class="fl">6</span>, show_counts <span class="op">=</span> <span class="cn">TRUE</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot12-counts-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="id_13-color-gene-sets">13. Color gene sets<a class="anchor" aria-label="anchor" href="#id_13-color-gene-sets"></a>
+</h3>
+<p>Pass a named list of gene sets (a pathway, a GO term, your own list) to <code>highlight</code>. Each set gets its own color and legend entry.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ribosome</span> <span class="op">&lt;-</span> <span class="va">all_genes</span><span class="op">$</span><span class="va">genes</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">]</span>       <span class="co"># stand-ins for real gene sets</span></span>
+<span><span class="va">stress</span>   <span class="op">&lt;-</span> <span class="va">all_genes</span><span class="op">$</span><span class="va">genes</span><span class="op">[</span><span class="fl">200</span><span class="op">:</span><span class="fl">260</span><span class="op">]</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">all_genes</span>, highlight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Ribosome <span class="op">=</span> <span class="va">ribosome</span>, Stress <span class="op">=</span> <span class="va">stress</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot13-sets-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p>Choose the colors with <code>highlight_colors</code>. <code>data2</code> also accepts a plain vector of gene names: <code>ggvolc(all_genes, c("GCR1", "HMG1"))</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="id_14-compare-contrasts-side-by-side">14. Compare contrasts side by side<a class="anchor" aria-label="anchor" href="#id_14-compare-contrasts-side-by-side"></a>
+</h3>
+<p>Give <code><a href="reference/ggvolc.html">ggvolc()</a></code> a named list of results to get one panel per contrast on shared axes. <code>label_top</code> and <code>show_counts</code> are applied in each panel, and any mix of DESeq2, edgeR and limma results works.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Day 1"</span> <span class="op">=</span> <span class="va">res_day1</span>, <span class="st">"Day 7"</span> <span class="op">=</span> <span class="va">res_day7</span><span class="op">)</span>, label_top <span class="op">=</span> <span class="fl">5</span>, show_counts <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>The package ships <code>stress_timecourse</code>, real DESeq2 results from fission yeast under osmotic stress (<a href="https://doi.org/10.1038/ncomms4947" class="external-link">Leong et al. 2014</a>): 30, 60 and 180 minutes, each compared with time 0. With shared axes you can see the response peak at 30 minutes and fade by 180:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ggvolc.html">ggvolc</a></span><span class="op">(</span><span class="va">stress_timecourse</span>, label_top <span class="op">=</span> <span class="fl">5</span>, show_counts <span class="op">=</span> <span class="cn">TRUE</span>, add_seg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot14-contrasts-1.png" alt="" width="750px" style="display: block; margin: auto;"></p>
+<p>Use <code>facet_scales = "free_y"</code> to give each panel its own y-axis.</p>
+<p>Genes that DESeq2 leaves without an adjusted p-value (low-count or outlier genes) are left out of the plot, with a message saying how many.</p>
 </div>
 </div>
 <div class="section level2">
@@ -330,7 +401,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

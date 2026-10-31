@@ -9,6 +9,15 @@ Build and compose volcano plots.
 - [`genes_table()`](https://loukesio.github.io/ggvolc/reference/genes_table.md)
   : Combine a Volcano Plot with a gt Table of Genes
 
+## Input and colors
+
+Read DE result objects and choose color presets.
+
+- [`de_table()`](https://loukesio.github.io/ggvolc/reference/de_table.md)
+  : Turn a DE result object into a plain data frame
+- [`ggvolc_palettes()`](https://loukesio.github.io/ggvolc/reference/ggvolc_palettes.md)
+  : Color presets for volcano plots
+
 ## Example data
 
 - [`all_genes`](https://loukesio.github.io/ggvolc/reference/all_genes.md)
@@ -17,3 +26,5 @@ Build and compose volcano plots.
   : Attention Genes Dataset
 - [`edger_genes`](https://loukesio.github.io/ggvolc/reference/edger_genes.md)
   : edgeR-style Differential Expression Dataset
+- [`stress_timecourse`](https://loukesio.github.io/ggvolc/reference/stress_timecourse.md)
+  : Fission Yeast Stress Time Course (three contrasts)
