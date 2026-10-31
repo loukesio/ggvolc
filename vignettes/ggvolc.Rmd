@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   fig.width = 7,
   fig.height = 5,
   out.width = "100%",
-  dpi = 110,
+  dpi = 72,
   message = FALSE,
   warning = FALSE
 )
@@ -210,10 +210,20 @@ With the optional [`ggiraph`](https://davidgohel.github.io/ggiraph/) package
 installed, `interactive = TRUE` returns a widget where hovering a point reveals
 the gene name and its statistics.
 
-```{r, eval = requireNamespace("ggiraph", quietly = TRUE)}
+```{r, include = FALSE}
+# The live widget embeds every point plus its JavaScript, which makes the
+# vignette far too large for CRAN; it is rendered on the package website only.
+live_widget <- identical(Sys.getenv("IN_PKGDOWN"), "true") &&
+  requireNamespace("ggiraph", quietly = TRUE)
+```
+
+```{r, eval = live_widget}
 ggvolc(all_genes, attention_genes, interactive = TRUE)
 ```
 
-```{r, eval = !requireNamespace("ggiraph", quietly = TRUE), echo = FALSE, results = "asis"}
-cat("_Install `ggiraph` to render the interactive version:_ `install.packages(\"ggiraph\")`.")
+```{r, eval = !live_widget, echo = FALSE, results = "asis"}
+cat("```r\nggvolc(all_genes, attention_genes, interactive = TRUE)\n```\n\n",
+    "_See the live, hover-to-inspect version on the ",
+    "[package website](https://loukesio.github.io/ggvolc/articles/ggvolc.html)._",
+    sep = "")
 ```

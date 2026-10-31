@@ -1,4 +1,4 @@
-# ggvolc (development version)
+# ggvolc 0.4.0
 
 ## DE objects in, colorblind-safe palettes
 

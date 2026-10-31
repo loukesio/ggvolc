@@ -20,7 +20,7 @@ color of downregulated, non-significant, and upregulated genes.
 Presets marked \code{colorblind_safe} keep the up and down colors clearly
 apart under simulated deuteranopia, protanopia, and tritanopia (checked
 with \pkg{colorspace}). Several presets come from the
-\href{https://github.com/loukesio/ltc}{ltc} palettes; ltc does not need to be
+\href{https://github.com/loukesio/ltc-color-palettes}{ltc} palettes; ltc does not need to be
 installed to use them.
 
 You are not limited to these presets: \code{palette} also accepts a named

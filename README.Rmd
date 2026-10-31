@@ -35,16 +35,13 @@ data(attention_genes)
 Install the package using the following commands  <img align="right" src="logo/ggvolc_logo.png" width=400>
 
 ```r
-# for now, you can install the developmental version of ltc
-# first you need to install the devtools package
-# in case you have not already installed
-install.packages("devtools")
-# and load it
-library(devtools)
+# from CRAN
+install.packages("ggvolc")
 
-# then you can install the dev version of the ltc
-devtools::install_github("loukesio/ggvolc")
-# and load it
+# or the development version from GitHub
+# install.packages("remotes")
+remotes::install_github("loukesio/ggvolc")
+
 library(ggvolc)
 ```
 
@@ -279,7 +276,7 @@ ggvolc(all_genes, attention_genes)
 
 Pick a color preset with `palette`. `ggvolc_palettes()` lists them all, including
 colorblind-safe options and presets taken from the
-[ltc](https://github.com/loukesio/ltc) palettes (ltc does not need to be installed).
+[ltc](https://github.com/loukesio/ltc-color-palettes) palettes (ltc does not need to be installed).
 
 ```{r plot11-palettes-list}
 ggvolc_palettes()

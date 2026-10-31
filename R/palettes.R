@@ -1,6 +1,6 @@
 # Built-in color presets. Each gives the colors for downregulated,
 # not significant, and upregulated genes. Several pairs are taken from the
-# ltc palettes (https://github.com/loukesio/ltc); they are stored here as hex
+# ltc palettes (https://github.com/loukesio/ltc-color-palettes); they are stored here as hex
 # codes so ggvolc does not need ltc installed.
 .ggvolc_palettes <- list(
   #             down        not sig.    up          colorblind-safe  source
@@ -24,7 +24,7 @@
 #' Presets marked \code{colorblind_safe} keep the up and down colors clearly
 #' apart under simulated deuteranopia, protanopia, and tritanopia (checked
 #' with \pkg{colorspace}). Several presets come from the
-#' \href{https://github.com/loukesio/ltc}{ltc} palettes; ltc does not need to be
+#' \href{https://github.com/loukesio/ltc-color-palettes}{ltc} palettes; ltc does not need to be
 #' installed to use them.
 #'
 #' You are not limited to these presets: \code{palette} also accepts a named

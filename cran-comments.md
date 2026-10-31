@@ -1,40 +1,24 @@
-## R CMD check results
+## Submission
 
-0 errors | 0 warnings | 2 notes
+This is an update of ggvolc (0.1.0 -> 0.4.0). Main changes:
 
-* This is a new release.
+* DESeq2, edgeR and limma result objects are accepted directly (these
+  Bioconductor packages are in Suggests and used conditionally).
+* Colorblind-safe color presets, gene-set highlighting, gene counts on the
+  plot, and side-by-side comparison of several contrasts.
+* A new example dataset, `stress_timecourse` (derived from the Bioconductor
+  data package 'fission'; source cited in its help page).
 
 ## Test environments
 
-* local: macOS Sequoia 15.6.1, R 4.5.1 (2025-06-13)
-* win-builder: (devel and release) - to be tested
-* R-hub: to be tested
+* local: macOS, R 4.5.1
+* win-builder: R-devel and R-release
+* GitHub Actions: macOS, Windows (R-release); Ubuntu (R-devel, R-release, R-oldrel-1)
 
 ## R CMD check results
 
-There were 2 NOTEs:
+0 errors | 0 warnings | 0 notes
 
-1. New submission
-   - This is expected for a first-time CRAN submission.
+## Reverse dependencies
 
-2. HTML validation: 'tidy' doesn't look like recent enough HTML Tidy
-   - HTML Tidy version 5.8.0 is installed locally but R CMD check doesn't recognize it.
-   - This is a local environment issue. CRAN's automated systems will validate the HTML properly.
-   - No actual HTML validation errors exist in the documentation.
-
-## Examples
-
-All examples run successfully in under 5 seconds:
-* ggvolc: 2.1 seconds
-* genes_table: 0.7 seconds
-
-Examples demonstrate:
-* Basic volcano plot creation
-* Highlighting genes of interest
-* Adding significance thresholds
-* Customizing colors and parameters
-* Combining plots with gene tables
-
-## Downstream dependencies
-
-There are currently no downstream dependencies for this package.
+There are no reverse dependencies on CRAN.

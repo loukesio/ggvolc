@@ -131,6 +131,7 @@ ggvolc(all_genes)
 # These genes are shown with black borders and gene names
 ggvolc(all_genes, attention_genes)
 
+\donttest{
 # Add dashed lines to indicate significance thresholds
 ggvolc(all_genes, attention_genes, add_seg = TRUE)
 
@@ -197,6 +198,8 @@ limma_df <- data.frame(
   adj.P.Val = 10^-runif(50, 0, 5)
 )
 ggvolc(limma_df)
+
+}
 
 \dontrun{
 # DE objects work directly, no conversion needed
